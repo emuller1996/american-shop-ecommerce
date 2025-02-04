@@ -69,7 +69,7 @@ export const useProductos = () => {
   }
 
   const createProducto = async (data) => {
-    return postCreateProductoService(data)
+    return postCreateProductoService(data,Token)
   }
 
   return {
@@ -82,5 +82,6 @@ export const useProductos = () => {
     ImagesProduct,
     getProductById,
     dataDetalle,
+    createProducto
   }
 }

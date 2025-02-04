@@ -7,8 +7,9 @@ import CurrencyInput from 'react-currency-input-field'
 import Select from 'react-select'
 import { useCategorias } from '../../../hooks/useCategorias'
 import { genderOptions, stylesSelect, themeSelect } from '../../../utils/optionsConfig'
-import { postCreateProductoService, putUpdateProductoService } from '../../../services/productos.services'
+import {  putUpdateProductoService } from '../../../services/productos.services'
 import toast from 'react-hot-toast'
+import { useProductos } from '../../../hooks/useProductos'
 
 export default function FormProducto({ onHide, getAllProduct, producto }) {
   FormProducto.propTypes = {
@@ -23,6 +24,7 @@ export default function FormProducto({ onHide, getAllProduct, producto }) {
     formState: { errors },
   } = useForm()
 
+  const  { createProducto } = useProductos()
   const { getAllCategorias, data: ListCategorias } = useCategorias()
 
   useEffect(() => {
@@ -38,7 +40,7 @@ export default function FormProducto({ onHide, getAllProduct, producto }) {
 
     if (!producto) {
       try {
-        const result = await postCreateProductoService(data)
+        const result = await createProducto(data)
         console.log(result.data)
         onHide()
         toast.success(result.data.message)

@@ -67,16 +67,16 @@ const AppNavBarEcomerce = () => {
             <div className="col-3 col-lg-auto">
               <ul className="list-unstyled d-flex m-0 justify-content-end">
                 <li className="d-none d-lg-block">
-                  <a
-                    href="index.html"
-                    className="text-uppercase mx-3"
+                  <button
+                    className="btn text-uppercase mx-3 cursor-pointer"
                     data-bs-toggle="offcanvas"
                     data-bs-target="#offcanvasCart"
                     aria-controls="offcanvasCart"
+                    onClick={() => {}}
                   >
-                    <i className="fa-solid fa-cart-shopping"></i>{' '}
-                    <span className="cart-count">(0)</span>
-                  </a>
+                    <i className="fa-solid fa-cart-shopping"></i>
+                    <span className="cart-count text-nowrap ">(0)</span>
+                  </button>
                 </li>
                 {client ? (
                   <>
@@ -86,8 +86,8 @@ const AppNavBarEcomerce = () => {
                       </Dropdown.Toggle>
 
                       <Dropdown.Menu>
-                        <Dropdown.Item href="#/action-1">Action</Dropdown.Item>
-                        <Dropdown.Item href="#/action-2">Another action</Dropdown.Item>
+                        <Dropdown.Item href="#/action-1">Mis Compras</Dropdown.Item>
+                        <Dropdown.Item href="#/action-2">Mi Perfil</Dropdown.Item>
                         <Dropdown.Item
                           onClick={() => {
                             setTokenClient(null)
@@ -120,29 +120,54 @@ const AppNavBarEcomerce = () => {
                 )}
 
                 <li className="d-lg-none">
-                  <a
-                    href="#"
-                    className="mx-2"
+                  <button
+                    className="btn text-uppercase text-nowrap mx-3 cursor-pointer"
                     data-bs-toggle="offcanvas"
                     data-bs-target="#offcanvasCart"
                     aria-controls="offcanvasCart"
+                    onClick={() => {}}
                   >
                     <i className="fa-solid fa-cart-shopping"></i>
-                  </a>
+                    <span className="cart-count ">(0)</span>
+                  </button>
                 </li>
                 <li className="d-lg-none">
-                  <a
-                    href="#"
-                    className="mx-2"
-                    data-bs-toggle="offcanvas"
-                    data-bs-target="#offcanvasCart"
-                    aria-controls="offcanvasCart"
-                    onClick={() => {
-                      setShow(true)
-                    }}
-                  >
-                    <i className="fa-solid fa-user"></i>
-                  </a>
+                  {client ? (
+                    <>
+                      <Dropdown className="">
+                        <Dropdown.Toggle variant="light" id="dropdown-basic">
+                          {`${client?.name_client[0]}${client?.name_client[1]}`}
+                        </Dropdown.Toggle>
+
+                        <Dropdown.Menu>
+                          <Dropdown.Item href="#/action-1">Mis Compras</Dropdown.Item>
+                          <Dropdown.Item href="#/action-2">Mi Perfil</Dropdown.Item>
+                          <Dropdown.Item
+                            onClick={() => {
+                              setTokenClient(null)
+                              setTokenAccessCliente(null)
+                              setClient(null)
+                            }}
+                          >
+                            Cerrar Session
+                          </Dropdown.Item>
+                        </Dropdown.Menu>
+                      </Dropdown>
+                    </>
+                  ) : (
+                    <button
+                      className="btn text-uppercase mx-3 cursor-pointer"
+                      data-bs-toggle="offcanvas"
+                      data-bs-target="#offcanvasCart"
+                      aria-controls="offcanvasCart"
+                      onClick={() => {
+                        setShow(true)
+                      }}
+                    >
+                      <i className="fa-solid fa-right-to-bracket me-2"></i>
+                      <span className="cart-count"></span>
+                    </button>
+                  )}
                 </li>
               </ul>
             </div>

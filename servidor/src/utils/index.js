@@ -1,4 +1,4 @@
-import { INDEX_ES_MAIN } from "../config.js";
+import { INDEX_ES_MAIN, INDEX_ES_MAIN_LOGS } from "../config.js";
 import { client } from "../db.js";
 
 export const parseDateISO = (sty) => {
@@ -10,7 +10,6 @@ export const parseDateISO = (sty) => {
 
   return isoDate.toISOString();
 };
-
 
 export function getDatesByDays(startDate, endDate, days) {
   const dates = [];
@@ -59,27 +58,35 @@ export async function buscarElasticByType(type) {
   });
 }
 
-export async function buscarElasticByTypePagination(type, perPage, page, search,createdTime='createdTime') {
+export async function buscarElasticByTypePagination(
+  type,
+  perPage,
+  page,
+  search,
+  createdTime = "createdTime"
+) {
   var consulta = {
     index: INDEX_ES_MAIN,
     size: perPage,
-    from: ( (page-1) * perPage ),    
-    body: {      
+    from: (page - 1) * perPage,
+    body: {
       query: {
         bool: {
           must: [
             { match: { type: type } },
             /* { match_phrase_prefix: { name: nameQuery } } */
-          ]
-        }
+          ],
+        },
       },
       sort: [
         { [createdTime]: { order: "desc" } }, // Reemplaza con el campo por el que quieres ordenar
       ],
     },
-  }
-  if(search!=="" &&  search) {
-    consulta.body.query.bool.must.push({ match_phrase_prefix: { name: search } })
+  };
+  if (search !== "" && search) {
+    consulta.body.query.bool.must.push({
+      match_phrase_prefix: { name: search },
+    });
   }
   const searchResult = await client.search(consulta);
 
@@ -91,11 +98,11 @@ export async function buscarElasticByTypePagination(type, perPage, page, search,
   });
 
   console.log(searchResult.body);
-  return  {
-    data :data,
-    total :searchResult.body.hits.total.value,
-    total_pages: Math.ceil(searchResult.body.hits.total.value /perPage)
-  }
+  return {
+    data: data,
+    total: searchResult.body.hits.total.value,
+    total_pages: Math.ceil(searchResult.body.hits.total.value / perPage),
+  };
 }
 
 export async function crearElasticByType(data, type) {
@@ -111,6 +118,20 @@ export async function crearElasticByType(data, type) {
   return response;
 }
 
+export async function crearLogsElastic(header, body, description) {
+  var createType = {};
+  createType.header = header
+  createType.body = body
+  createType.description = description
+  createType.type = "log";
+  createType.createdTime = new Date().getTime();
+  const response = await client.index({
+    index: INDEX_ES_MAIN_LOGS,
+    body: createType, // Contenido del documento
+  });
+  await client.indices.refresh({ index: INDEX_ES_MAIN_LOGS });
+  return response;
+}
 
 export async function updateElasticByType(id, data) {
   data.updatedTime = new Date().getTime();
@@ -134,27 +155,31 @@ export async function getDocumentById(id) {
 }
 
 export async function createInMasaDocumentByType(data, type) {
-  data = data.map(c => {
-    return {...c,
-      type:type,
-      createdTime:new Date().getTime(),
-      updatedTime:new Date().getTime(),
-    }
-  })
-  const operations = data.flatMap(doc => [{ index: { _index: INDEX_ES_MAIN } }, doc])
+  data = data.map((c) => {
+    return {
+      ...c,
+      type: type,
+      createdTime: new Date().getTime(),
+      updatedTime: new Date().getTime(),
+    };
+  });
+  const operations = data.flatMap((doc) => [
+    { index: { _index: INDEX_ES_MAIN } },
+    doc,
+  ]);
 
-
-  const { body: bulkResponse } = await client.bulk({ refresh: true, body:operations })
-
-
+  const { body: bulkResponse } = await client.bulk({
+    refresh: true,
+    body: operations,
+  });
 
   if (bulkResponse.errors) {
-    const erroredDocuments = []
+    const erroredDocuments = [];
     // The items array has the same order of the dataset we just indexed.
     // The presence of the `error` key indicates that the operation
     // that we did for the document has failed.
     bulkResponse.items.forEach((action, i) => {
-      const operation = Object.keys(action)[0]
+      const operation = Object.keys(action)[0];
       if (action[operation].error) {
         erroredDocuments.push({
           // If the status is 429 it means that you can retry the document,
@@ -163,23 +188,23 @@ export async function createInMasaDocumentByType(data, type) {
           status: action[operation].status,
           error: action[operation].error,
           operation: operations[i * 2],
-          document: operations[i * 2 + 1]
-        })
+          document: operations[i * 2 + 1],
+        });
       }
-    }) 
-    console.log(erroredDocuments)
+    });
+    console.log(erroredDocuments);
   }
 
- /*  const response = await client.bulk({index:INDEX_ES_MAIN, body:{}}) */
+  /*  const response = await client.bulk({index:INDEX_ES_MAIN, body:{}}) */
   return bulkResponse;
 }
 
-export async function updateQuantityById( id, decrement) {
+export async function updateQuantityById(id, decrement) {
   try {
     // Obtener el documento actual
     const { body: document } = await client.get({
       index: INDEX_ES_MAIN,
-      id: id
+      id: id,
     });
 
     // Calcular el nuevo valor de la cantidad
@@ -187,22 +212,21 @@ export async function updateQuantityById( id, decrement) {
     console.log(newQuantity);
 
     console.log(document._source.quantity);
-    
+
     // Actualizar el documento
     const result = await client.update({
       index: INDEX_ES_MAIN,
       id: id,
       body: {
         doc: {
-          quantity: newQuantity
-        }
-      }
+          quantity: newQuantity,
+        },
+      },
     });
-    console.log('Documento actualizado:', result);
+    console.log("Documento actualizado:", result);
     return result;
   } catch (error) {
-    console.error('Error actualizando el documento:', error);
+    console.error("Error actualizando el documento:", error);
   }
   await client.indices.refresh({ index: INDEX_ES_MAIN });
-
 }

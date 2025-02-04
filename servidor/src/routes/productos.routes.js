@@ -2,6 +2,7 @@ import { Router } from "express";
 import {
   buscarElasticByType,
   crearElasticByType,
+  crearLogsElastic,
   getDocumentById,
   updateElasticByType,
 } from "../utils/index.js";
@@ -18,10 +19,13 @@ ProductosRouters.get("/", async (req, res) => {
     data = data.map(async (product) => {
       return {
         ...product,
-        categoria: product.category_id ? await getDocumentById(product?.category_id):'',
+        categoria: product.category_id
+          ? await getDocumentById(product?.category_id)
+          : "",
       };
     });
     data = await Promise.all(data);
+    
     return res.status(200).json(data);
   } catch (error) {
     return res.status(500).json({ message: error.message });
@@ -32,11 +36,16 @@ ProductosRouters.get("/:id", async (req, res) => {
   try {
     var producto = await getDocumentById(req.params.id);
     console.log(producto.image_id);
-    
-    if(producto.image_id){
-      let temp =await getDocumentById(producto.image_id)
-      producto.imageBase64 =  temp.image
+
+    if (producto.image_id) {
+      let temp = await getDocumentById(producto.image_id);
+      producto.imageBase64 = temp.image;
     }
+    crearLogsElastic(
+      JSON.stringify(req.headers),
+      JSON.stringify(req.body),
+      "Se mostro el detalle de un producto."
+    );
     return res.status(200).json(producto);
   } catch (error) {
     return res.status(500).json({ message: error.message });
@@ -49,6 +58,11 @@ ProductosRouters.post("/", async (req, res) => {
     const data = req.body;
     const response = await crearElasticByType(data, "producto");
     //recinto = response.body;
+    crearLogsElastic(
+      JSON.stringify(req.headers),
+      JSON.stringify(req.body),
+      "Se Creado  un producto."
+    );
     return res.status(201).json({ message: "Producto Creada.", recinto, data });
   } catch (error) {
     return res.status(500).json({ message: error.message });
@@ -58,10 +72,15 @@ ProductosRouters.post("/", async (req, res) => {
 ProductosRouters.put("/:id", async (req, res) => {
   try {
     console.log(req.body);
-    
+
     const r = await updateElasticByType(req.params.id, req.body);
     if (r.body.result === "updated") {
       await client.indices.refresh({ index: INDEX_ES_MAIN });
+      crearLogsElastic(
+        JSON.stringify(req.headers),
+        JSON.stringify(req.body),
+        "Se ha Actualizado un producto."
+      );
       return res.json({ message: "Producto Actualizado" });
     }
   } catch (error) {
@@ -78,7 +97,14 @@ ProductosRouters.post("/:id/images", async (req, res) => {
     };
     const resElasCreateFun = await crearElasticByType(ImageCreate, "imagen");
     //recinto = response.body;
-    return res.status(201).json({ message: "Producto Creada.",  resElasCreateFun });
+    crearLogsElastic(
+      JSON.stringify(req.headers),
+      JSON.stringify(req.body),
+      "Se ha cargado nueva imagen a un producto."
+    );
+    return res
+      .status(201)
+      .json({ message: "Producto Creada.", resElasCreateFun });
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
@@ -95,14 +121,14 @@ ProductosRouters.get("/:id/images", async (req, res) => {
             must: [
               {
                 term: {
-                  "type": {
+                  type: {
                     value: "imagen",
                   },
                 },
               },
               {
                 term: {
-                  "product_id": {
+                  product_id: {
                     value: req.params.id,
                   },
                 },

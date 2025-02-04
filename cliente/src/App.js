@@ -10,11 +10,11 @@ import axios from 'axios'
 const DefaultLayout = React.lazy(() => import('./layout/DefaultLayout'))
 axios.defaults.baseURL = import.meta.env.VITE_API_BASE_URL
 
-import Toaster from 'react-hot-toast'
 //import LandingLayout from './layout/LandingLayout'
 import Login from './views/login/Login'
 import { AuthProvider } from './context/AuthContext'
 import LoginProtected from './utils/LoginProtected'
+import { Toaster } from 'react-hot-toast'
 const LandingLayout = React.lazy(() => import('./layout/LandingLayout'))
 
 // Pages

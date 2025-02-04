@@ -101,22 +101,18 @@ const LandingLayout = () => {
                 </li>
                 <li className="nav-item mb-2">
                   <a href="#" className="nav-link p-0 text-muted">
-                    Features
+                    Productos
                   </a>
                 </li>
                 <li className="nav-item mb-2">
                   <a href="#" className="nav-link p-0 text-muted">
-                    Pricing
+                    Productos Nuevos
                   </a>
                 </li>
+
                 <li className="nav-item mb-2">
                   <a href="#" className="nav-link p-0 text-muted">
-                    FAQs
-                  </a>
-                </li>
-                <li className="nav-item mb-2">
-                  <a href="#" className="nav-link p-0 text-muted">
-                    About
+                    Contactanos
                   </a>
                 </li>
               </ul>
