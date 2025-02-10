@@ -6,6 +6,9 @@ export const DB_USER = "root";
 export const DB_PASSWORD = "password";
 export const DB_NAME = "my_database";
 
+export const USER_SMTP = "ecommerce-dev@esmuller.cloud";
+export const PASS_SMTP = "SoporteMuller1996";
+
 // Puedes agrupar la configuración en un solo objeto
 export default {
   INDEX_ES_MAIN,

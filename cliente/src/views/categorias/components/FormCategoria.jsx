@@ -8,6 +8,7 @@ import {
   postCreateCategoriaService,
   putUpdateCategoriaService,
 } from '../../../services/categorias.services'
+import { useCategorias } from '../../../hooks/useCategorias'
 
 export default function FormCategoria({ onHide, categoria, getAllCategorias }) {
   FormCategoria.propTypes = {
@@ -22,11 +23,13 @@ export default function FormCategoria({ onHide, categoria, getAllCategorias }) {
     formState: { errors },
   } = useForm()
 
+  const  { crearCategoria, actualizarCategoria } = useCategorias()
+
   const onSubmit = async (data) => {
     console.log(data)
     if (!categoria) {
       try {
-        const result = await postCreateCategoriaService(data)
+        const result = await crearCategoria(data)
         console.log(result.data)
         toast.success(result.data.message)
         onHide()
@@ -35,7 +38,7 @@ export default function FormCategoria({ onHide, categoria, getAllCategorias }) {
       }
     } else {
       try {
-        const result = await putUpdateCategoriaService(categoria._id, data)
+        const result = await actualizarCategoria(data, categoria._id)
         console.log(result.data)
         toast.success(result.data.message)
         onHide()

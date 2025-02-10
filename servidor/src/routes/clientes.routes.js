@@ -16,6 +16,7 @@ import {
   validateTokenMid,
 } from "../utils/authjws.js";
 import { INDEX_ES_MAIN } from "../config.js";
+import sendVerificationEmail from "../services/mailService.js";
 
 const fileUpload = pkg;
 const ClienteRouters = Router();
@@ -94,6 +95,7 @@ ClienteRouters.post("/", async (req, res) => {
     delete data.password_client;
     const response = await crearElasticByType(data, "cliente");
     customer = response.body;
+    await sendVerificationEmail(data.email_client)
     return res.status(200).json({
       message: "Usuario Creado.",
       detail: `se creo correctamente su cuenta, por favor revisar el correo '${data.email_client}' para verificar su cuenta.`,

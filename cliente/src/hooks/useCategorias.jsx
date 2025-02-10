@@ -1,7 +1,8 @@
 /* eslint-disable prettier/prettier */
 
-import { useState } from 'react'
-import { getAllCategoriasService } from '../services/categorias.services'
+import { useContext, useState } from 'react'
+import { getAllCategoriasService, postCreateCategoriaService, putUpdateCategoriaService } from '../services/categorias.services'
+import AuthContext from '../context/AuthContext'
 
 export const useCategorias = () => {
   const [data, setData] = useState(null)
@@ -11,11 +12,13 @@ export const useCategorias = () => {
   const [loading, setLoading] = useState(false)
   const abortController = new AbortController()
   const signal = abortController.signal
+  const { Token } = useContext(AuthContext)
+
 
   const getAllCategorias = async () => {
     setLoading(true)
     try {
-      const res = await getAllCategoriasService(signal)
+      const res = await getAllCategoriasService(Token,signal)
       if (res.status !== 200) {
         let err = new Error('Error en la petición Fetch')
         err.status = res.status || '00'
@@ -39,15 +42,13 @@ export const useCategorias = () => {
     }
   }
 
-  /* const getEventoById = async (id) => {
-    try {
-      const r = await getAllPuntoVentaByIdService(id)
-      console.log(r.data)
-      setDataDetalle(r.data)
-    } catch (error) {
-      console.log(error)
-    }
-  } */
+  const crearCategoria = async (data) => {
+    return postCreateCategoriaService(Token,data)
+  }
+
+  const actualizarCategoria = async (data,id) => {
+    return putUpdateCategoriaService(Token,id,data)
+  }
 
   return {
     data,
@@ -55,5 +56,7 @@ export const useCategorias = () => {
     loading,
     getAllCategorias,
     abortController,
+    crearCategoria,
+    actualizarCategoria
   }
 }
