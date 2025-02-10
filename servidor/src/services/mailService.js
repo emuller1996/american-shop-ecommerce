@@ -1,5 +1,4 @@
 import { createTransport } from "nodemailer";
-import { dataImgBase64 } from "./dataImage.js";
 
 // Configurar el transporte SMTP de IONOS
 const transporter = createTransport({
