@@ -1,5 +1,5 @@
 import { createTransport } from "nodemailer";
-
+import 'dotenv/config';
 // Configurar el transporte SMTP de IONOS
 const transporter = createTransport({
   host: "smtp.ionos.com", // Servidor SMTP de IONOS
