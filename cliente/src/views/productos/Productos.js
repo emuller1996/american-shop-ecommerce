@@ -76,9 +76,20 @@ const ProductosPage = () => {
                           handleShow()
                         }}
                         title="Editar Producto."
-                        className="btn btn-info btn-sm"
+                        className="btn btn-info btn-sm me-2"
                       >
                         <i className="text-white fa-regular fa-images"></i>
+                      </Link>
+                      <Link
+                        to={`${row._id}/gestion-tallas`}
+                        onClick={() => {
+                          setProductoSelecionado(row)
+                          handleShow()
+                        }}
+                        title="Gestion de Tallas del Producto."
+                        className="btn btn-secondary btn-sm"
+                      >
+                        <i className="fa-solid fa-tags"></i>
                       </Link>
                     </>
                   )
