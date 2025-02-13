@@ -1,8 +1,18 @@
 import React, { useEffect, useState } from 'react'
 import { Form } from 'react-bootstrap'
+import FormStock from './components/FormStock'
+import { useProductos } from '../../../hooks/useProductos'
+import { useParams } from 'react-router-dom'
 
 const TallasPage = () => {
-  const [show, setShow] = useState(false)
+  const [draw, setDraw] = useState(0)
+  const [StockSelected, setStockSelected] = useState(null)
+  const { getStockByProductId, StockProduct } = useProductos()
+  const { idProduct } = useParams()
+
+  useEffect(() => {
+    getStockByProductId(idProduct)
+  }, [idProduct, draw])
 
   return (
     <div>
@@ -12,41 +22,49 @@ const TallasPage = () => {
           <hr />
           <div className="row  mt-3">
             <div className="col-md-5">
-              <div className="card border">
-                <div className="card-body">
-                  <span className="text-center">Agregar Nueva Talla</span>
-                  <hr />
-                  <Form.Group className="mb-3" controlId="name">
-                    <Form.Label>Talla</Form.Label>
-                    <Form.Control defaultValue={''} type="text" placeholder="" />
-                  </Form.Group>
-
-                  <Form.Group className="mb-3" controlId="name">
-                    <Form.Label>Stock o Inventario</Form.Label>
-                    <Form.Control defaultValue={''} type="text" placeholder="" />
-                  </Form.Group>
-                  <div className="text-center">
-                    <button type="button" className="btn btn-primary text-center">
-                      Guardar
-                    </button>
-                  </div>
-                </div>
-              </div>
+              {StockSelected ? (
+                <FormStock
+                  StockProduct={StockSelected}
+                  allStock={() => {
+                    setDraw((status) => ++status)
+                  }}
+                  cancel={() => {
+                    setStockSelected(null)
+                  }}
+                />
+              ) : (
+                <FormStock
+                  allStock={() => {
+                    setDraw((status) => ++status)
+                  }}
+                  cancel={() => {
+                    setStockSelected(null)
+                  }}
+                />
+              )}
             </div>
             <div className="col-md-7">
-              {[1, 2, 3, 4, 5].map((i) => (
-                <div key={i} className="card border mb-3">
-                  <div className="card-body">
-                    <div className="d-flex align-items-center justify-content-between">
-                      <span className="card-text">Talla : M</span>
-                      <span className="card-text">Stock : 2</span>
-                      <button type="button" className="btn btn-primary">
-                        Editar
-                      </button>
+              {StockProduct &&
+                StockProduct.map((stock) => (
+                  <div key={stock._id} className="card border mb-3">
+                    <div className="card-body">
+                      <div className="d-flex align-items-center justify-content-between">
+                        <span className="card-text">Talla : {stock.size}</span>
+                        <span className="card-text">Stock : {stock.stock}</span>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            console.log(stock)
+                            setStockSelected(stock)
+                          }}
+                          className="btn btn-primary"
+                        >
+                          Editar
+                        </button>
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                ))}
             </div>
           </div>
         </div>

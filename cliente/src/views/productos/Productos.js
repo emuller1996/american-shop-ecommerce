@@ -111,6 +111,19 @@ const ProductosPage = () => {
               },
               { name: 'Marca', selector: (row) => row?.brand ?? '', width: '100px' },
               { name: 'Genero', selector: (row) => row?.gender ?? '', width: '100px' },
+              {
+                name: 'Fecha de Creacion.',
+                selector: (row) =>
+                  `${new Date(row?.createdTime).toLocaleDateString() ?? ''} ${new Date(row?.createdTime).toLocaleTimeString() ?? ''}`,
+                width: '160px',
+              },
+              {
+                name: 'Fecha de Actua',
+                selector: (row) =>
+                  `${new Date(row?.updatedTime).toLocaleDateString() ?? ''} ${new Date(row?.updatedTime).toLocaleTimeString() ?? ''}`,
+                width: '160px',
+              },
+
               { name: '', selector: (row) => row?.city ?? '' },
             ]}
             data={ListProductos && ListProductos}

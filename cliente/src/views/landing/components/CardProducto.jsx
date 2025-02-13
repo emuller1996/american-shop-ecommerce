@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import { ViewDollar } from '../../../utils'
 import { getImageByidService } from '../../../services/images.services'
 import './CardProducto.css'
+import { Link } from 'react-router-dom'
 const CardProducto = ({ producto }) => {
   CardProducto.propTypes = {
     producto: PropTypes.object,
@@ -46,9 +47,11 @@ const CardProducto = ({ producto }) => {
         <div className="card-body">
           <h4 className="card-title">{producto?.name}</h4>
           <p className="card-text">{ViewDollar(producto?.price)}</p>
-          <button className="button-ecomerce">
-            <i className="fa-solid fa-eye"></i>
-          </button>
+          <Link to={`/eco/${producto._id}/producto`}>
+            <button className="button-ecomerce">
+              <i className="fa-solid fa-eye"></i>
+            </button>
+          </Link>
         </div>
       </div>
     </div>

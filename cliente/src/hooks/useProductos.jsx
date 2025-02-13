@@ -6,7 +6,10 @@ import {
   getAllProductoByIdService,
   getAllProductoImageService,
   getAllProductoService,
+  getAllProductoStockService,
   postCreateProductoService,
+  postCreateStockProductoService,
+  putUpdateStockProductoService,
 } from '../services/productos.services'
 import AuthContext from '../context/AuthContext'
 
@@ -14,6 +17,8 @@ export const useProductos = () => {
   const [data, setData] = useState([])
   const [dataDetalle, setDataDetalle] = useState(null)
   const [ImagesProduct, setImagesProduct] = useState(null)
+  const [StockProduct, setStockProduct] = useState(null)
+
   const { Token } = useContext(AuthContext)
   const [error, setError] = useState(null)
   const [loading, setLoading] = useState(false)
@@ -58,6 +63,16 @@ export const useProductos = () => {
     }
   }
 
+  const getStockByProductId = async (id) => {
+    try {
+      const r = await getAllProductoStockService(id, signal)
+      console.log(r.data)
+      setStockProduct(r.data)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
   const getProductById = async (id) => {
     try {
       const r = await getAllProductoByIdService(id)
@@ -69,7 +84,15 @@ export const useProductos = () => {
   }
 
   const createProducto = async (data) => {
-    return postCreateProductoService(data,Token)
+    return postCreateProductoService(data, Token)
+  }
+
+  const createStockProducto = async (data) => {
+    return postCreateStockProductoService(data, data.product_id, Token)
+  }
+
+  const updateStockProducto = async (data,id) => {
+    return putUpdateStockProductoService(data, id, Token)
   }
 
   return {
@@ -82,6 +105,10 @@ export const useProductos = () => {
     ImagesProduct,
     getProductById,
     dataDetalle,
-    createProducto
+    createProducto,
+    createStockProducto,
+    StockProduct,
+    getStockByProductId,
+    updateStockProducto,
   }
 }
