@@ -85,7 +85,7 @@ ClienteRouters.post("/", async (req, res) => {
       return res.status(400).json({
         ...requestEL,
         message: "Usuario ya esta Registrado.",
-        detail: `ya hay un usuario con el correo electronico '${data.email_client}' en la base de datos como cliente.`,
+        detail: `Ya hay un usuario con el correo electronico '${data.email_client}' en la base de datos como cliente.`,
         error: true,
       });
     }
