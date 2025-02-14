@@ -1,13 +1,25 @@
 /* eslint-disable prettier/prettier */
-import React, { useEffect } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { useProductos } from '../../../hooks/useProductos'
 import { useParams } from 'react-router-dom'
 import { ViewDollar } from '../../../utils'
 import { Carousel } from 'react-bootstrap'
-
+import './ProductDetailPage.css'
+import StockComponent from './ProductDetailPage/StockComponent'
+import { useLocalStorage } from '../../../hooks/useLocalStorage'
+import toast from 'react-hot-toast'
+import AuthContext from '../../../context/AuthContext'
 export default function ProductDetailPage() {
   const { id } = useParams()
   const { getProductById, dataDetalle } = useProductos()
+
+  const [sizeSelected, setSizeSelected] = useState(null)
+  const { setCartEcommerceAmericanState, cartEcommerceAmericanState } = useContext(AuthContext)
+
+  const [cartEcommerceAmerican, setCartEcommerceAmerican] = useLocalStorage(
+    'cartEcommerceAmerican',
+    [],
+  )
 
   useEffect(() => {
     getProductById(id)
@@ -39,14 +51,48 @@ export default function ProductDetailPage() {
               <div className="col-lg-5">
                 <div className="right-content">
                   <h4>{dataDetalle?.name}</h4>
-                  <span className="d-block fs-4 fw-bold price">
+                  <span className="d-block fs-4 mb-2 fw-bold price">
                     {ViewDollar(dataDetalle?.price)}
                   </span>
 
-                  <span>{dataDetalle?.brand}</span>
+                  <span className="brad_product">{dataDetalle?.brand}</span>
+                  <hr />
                   <div className="quote">
-                    <i className="fa fa-quote-left"></i>
                     <p style={{ whiteSpace: 'pre-line' }}>{dataDetalle?.description}</p>
+                  </div>
+                  <div className="row g-3">
+                    {dataDetalle &&
+                      dataDetalle?.Stock.map((stock) => (
+                        <StockComponent
+                          key={stock?._id}
+                          stock={stock}
+                          setSizeSelected={setSizeSelected}
+                          sizeSelected={sizeSelected}
+                          
+                        />
+                      ))}
+                  </div>
+                  <div className="mt-3">
+                    <button
+                      onClick={() => {
+                        console.log(sizeSelected)
+                        sizeSelected.name_producto = dataDetalle.name
+                        sizeSelected.price_producto = dataDetalle.price
+                        console.log(
+                          cartEcommerceAmerican.find((stk) => stk._id === sizeSelected._id),
+                        )
+                        if (cartEcommerceAmerican.find((stk) => stk._id === sizeSelected._id)) {
+                          toast.error('Producto ya esta en el carrito')
+                        } else {
+                          setCartEcommerceAmerican([...cartEcommerceAmerican, sizeSelected])
+                          setCartEcommerceAmericanState([...cartEcommerceAmerican, sizeSelected])
+                        }
+                      }}
+                      className="button-ecomerce"
+                    >
+                      Agregar al Carrito
+                      <i className="ms-2 fa-solid fa-cart-plus"></i>
+                    </button>
                   </div>
                 </div>
               </div>

@@ -16,13 +16,24 @@ export const AuthProvider = ({ children }) => {
   }
 
   const [tokenAccess, setTokenAccess] = useLocalStorage('tokenAccessAmericanShop', null)
-  const [tokenAccessCliente, setTokenAccessCliente] = useLocalStorage('tokenAccessClienteAmericanShop', null)
+  const [tokenAccessCliente, setTokenAccessCliente] = useLocalStorage(
+    'tokenAccessClienteAmericanShop',
+    null,
+  )
   const [Token, setToken] = useState(tokenAccess ? tokenAccess : null)
   const [TokenClient, setTokenClient] = useState(tokenAccess ? tokenAccess : null)
 
   const [user, setUser] = useState(tokenAccess ? jwtDecode(tokenAccess) : null)
   const [client, setClient] = useState(tokenAccessCliente ? jwtDecode(tokenAccessCliente) : null)
 
+  const [cartEcommerceAmerican, setCartEcommerceAmerican] = useLocalStorage(
+    'cartEcommerceAmerican',
+    [],
+  )
+
+  const [cartEcommerceAmericanState, setCartEcommerceAmericanState] = useState(
+    cartEcommerceAmerican ? cartEcommerceAmerican : null,
+  )
 
   let contextData = {
     user,
@@ -34,7 +45,9 @@ export const AuthProvider = ({ children }) => {
     setTokenClient,
     TokenClient,
     setClient,
-    client
+    client,
+    cartEcommerceAmericanState,
+    setCartEcommerceAmericanState
   }
 
   return <AuthContext.Provider value={contextData}>{children}</AuthContext.Provider>

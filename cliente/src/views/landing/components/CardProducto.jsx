@@ -34,7 +34,7 @@ const CardProducto = ({ producto }) => {
   }
 
   return (
-    <div key={producto._id} className="col-md-4">
+    <div key={producto._id} className="col-sm-6 col-md-4">
       <div className="card text-dark h-100">
         {producto.image_id && !isLoading && (
           <img
