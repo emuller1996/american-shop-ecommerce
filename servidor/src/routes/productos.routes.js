@@ -3,11 +3,13 @@ import {
   buscarElasticByType,
   crearElasticByType,
   crearLogsElastic,
+  createInMasaDocumentByType,
   getDocumentById,
   updateElasticByType,
 } from "../utils/index.js";
 import { INDEX_ES_MAIN } from "../config.js";
 import { client } from "../db.js";
+import xlsx from "xlsx";
 
 const ProductosRouters = Router();
 
@@ -41,13 +43,13 @@ ProductosRouters.get("/:id", async (req, res) => {
       let temp = await getDocumentById(producto.image_id);
       producto.imageBase64 = temp.image;
     }
-    let images = await getAllImages(req.params.id)
+    let images = await getAllImages(req.params.id);
     console.log(images);
-    let stocks = await getAllStock(req.params.id)
+    let stocks = await getAllStock(req.params.id);
     console.log(stocks);
 
-    producto.Imagenes =images;
-    producto.Stock =stocks;
+    producto.Imagenes = images;
+    producto.Stock = stocks;
 
     crearLogsElastic(
       JSON.stringify(req.headers),
@@ -272,6 +274,32 @@ ProductosRouters.put("/stock/:idStock", async (req, res) => {
     }
   } catch (error) {
     return res.status(500).json({ message: error.message });
+  }
+});
+
+ProductosRouters.post("/import-excel", async (req, res) => {
+  try {
+    const { file } = req.files;
+    console.log(file);
+    if (!file) {
+      return res.status(400).send("No se ha seleccionado ningún archivo");
+    }
+
+    const workbook = xlsx.readFile(file.tempFilePath);
+    const worksheet = workbook.Sheets[workbook.SheetNames[0]];
+    var data = xlsx.utils.sheet_to_json(worksheet);
+    console.log(data);
+
+    data = data.map((da) => {
+      return { ...da, published: false };
+    });
+
+    const r = await createInMasaDocumentByType(data, "producto");
+    console.log(r);
+
+    return res.status(200).json({ message: "Importada Realizada", data: r });
+  } catch (error) {
+    res.status(500).send("Error al procesar el archivo: " + error.message);
   }
 });
 
