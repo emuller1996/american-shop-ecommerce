@@ -7,7 +7,7 @@ import CurrencyInput from 'react-currency-input-field'
 import Select from 'react-select'
 import { useCategorias } from '../../../hooks/useCategorias'
 import { genderOptions, stylesSelect, themeSelect } from '../../../utils/optionsConfig'
-import {  putUpdateProductoService } from '../../../services/productos.services'
+import { putUpdateProductoService } from '../../../services/productos.services'
 import toast from 'react-hot-toast'
 import { useProductos } from '../../../hooks/useProductos'
 
@@ -24,7 +24,7 @@ export default function FormProducto({ onHide, getAllProduct, producto }) {
     formState: { errors },
   } = useForm()
 
-  const  { createProducto } = useProductos()
+  const { createProducto } = useProductos()
   const { getAllCategorias, data: ListCategorias } = useCategorias()
 
   useEffect(() => {
@@ -241,6 +241,17 @@ export default function FormProducto({ onHide, getAllProduct, producto }) {
               {...register('brand', { required: true })}
               type="text"
               placeholder=""
+            />
+          </Form.Group>
+        </div>
+        <div className="col-md-12">
+          <Form.Group className="" controlId="published">
+            <Form.Check // prettier-ignore
+              type={'checkbox'}
+              id={`published`}
+              label={`Publicado?`}
+              defaultChecked={producto?.published}
+              {...register('published')}
             />
           </Form.Group>
         </div>

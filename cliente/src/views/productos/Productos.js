@@ -7,9 +7,12 @@ import FormProducto from './components/FormProducto'
 import { useProductos } from '../../hooks/useProductos'
 import { ViewDollar } from '../../utils'
 import { Link } from 'react-router-dom'
+import FormImportProductos from './components/FormImportProductos'
 
 const ProductosPage = () => {
   const [show, setShow] = useState(false)
+  const [showImport, setShowImport] = useState(false)
+  const [Draw, setDraw] = useState(1)
 
   const handleClose = () => setShow(false)
   const handleShow = () => setShow(true)
@@ -33,6 +36,16 @@ const ProductosPage = () => {
             }}
           >
             Crear Producto
+          </Button>
+          <Button
+            variant="success text-white"
+            className="text-nowrap"
+            onClick={() => {
+              setShowImport(true)
+            }}
+          >
+            <i className="fa-solid fa-file-excel me-2"></i>
+            Importar Productos
           </Button>
           <div className="w-100">
             <div className="input-group">
@@ -138,6 +151,21 @@ const ProductosPage = () => {
               producto={ProductoSelecionado}
               getAllProduct={getAllProductos}
               onHide={handleClose}
+            />
+          </Modal.Body>
+        </Modal>
+        <Modal
+          centered
+          show={showImport}
+          onHide={() => {
+            setShowImport(false)
+          }}
+        >
+          <Modal.Body>
+            <FormImportProductos
+              getAllProduct={() => {
+                setDraw((status) => ++status)
+              }}
             />
           </Modal.Body>
         </Modal>

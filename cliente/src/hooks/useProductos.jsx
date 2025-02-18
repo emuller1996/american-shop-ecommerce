@@ -9,6 +9,7 @@ import {
   getAllProductoStockService,
   postCreateProductoService,
   postCreateStockProductoService,
+  postImportProductoService,
   putUpdateStockProductoService,
 } from '../services/productos.services'
 import AuthContext from '../context/AuthContext'
@@ -95,6 +96,9 @@ export const useProductos = () => {
     return putUpdateStockProductoService(data, id, Token)
   }
 
+  const importProductos = async (data) => {
+    return postImportProductoService(data,Token)
+  }
   return {
     data,
     error,
@@ -110,5 +114,6 @@ export const useProductos = () => {
     StockProduct,
     getStockByProductId,
     updateStockProducto,
+    importProductos
   }
 }
