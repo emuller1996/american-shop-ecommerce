@@ -34,6 +34,68 @@ ProductosRouters.get("/", async (req, res) => {
   }
 });
 
+ProductosRouters.get("/pagination", async (req, res) => {
+  let type = `producto`;
+  let perPage = req.query.perPage ?? 10;
+  let page = req.query.page ?? 1;
+  let search = req.query.search ?? "";
+
+  try {
+    var consulta = {
+      index: INDEX_ES_MAIN,
+      size: perPage,
+      from: (page - 1) * perPage,
+      body: {
+        query: {
+          bool: {
+            must: [
+              /* { match_phrase_prefix: { name: nameQuery } } */
+            ],
+            filter: [
+              {
+                term: {
+                  "type": "producto",
+                },
+              },
+            ],
+          },
+        },
+      },
+    };
+    if (search !== "" && search) {
+      /* consulta.body.query.bool.must.push({
+        match_phrase_prefix: { name: search },
+      }); */
+      consulta.body.query.bool.must.push({
+        query_string: { query: `*${search}*`, fields: ["name", "description"] },
+      });
+    }
+    const searchResult = await client.search(consulta);
+
+    const data = searchResult.body.hits.hits.map((c) => {
+      return {
+        ...c._source,
+        _id: c._id,
+      };
+    });
+
+    console.log(searchResult.body);
+    /* return {
+      data: data,
+      total: searchResult.body.hits.total.value,
+      total_pages: Math.ceil(searchResult.body.hits.total.value / perPage),
+    }; */
+
+    return res.status(200).json({
+      data: data,
+      total: searchResult.body.hits.total.value,
+      total_pages: Math.ceil(searchResult.body.hits.total.value / perPage),
+    });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+});
+
 ProductosRouters.get("/:id", async (req, res) => {
   try {
     var producto = await getDocumentById(req.params.id);
