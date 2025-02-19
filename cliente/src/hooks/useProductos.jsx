@@ -7,6 +7,7 @@ import {
   getAllProductoImageService,
   getAllProductoService,
   getAllProductoStockService,
+  getProductoSearchPaginationServices,
   postCreateProductoService,
   postCreateStockProductoService,
   postImportProductoService,
@@ -16,6 +17,8 @@ import AuthContext from '../context/AuthContext'
 
 export const useProductos = () => {
   const [data, setData] = useState([])
+  const [dataP, setDataP] = useState(undefined)
+
   const [dataDetalle, setDataDetalle] = useState(null)
   const [ImagesProduct, setImagesProduct] = useState(null)
   const [StockProduct, setStockProduct] = useState(null)
@@ -53,6 +56,36 @@ export const useProductos = () => {
       }
     }
   }
+
+  const getAllProductosPagination = async (data) => {
+    setLoading(true)
+    setDataP(undefined)
+    try {
+      const res = await getProductoSearchPaginationServices(Token, data)
+      if (res.status !== 200) {
+        let err = new Error('Error en la petición Fetch')
+        err.status = res.status || '00'
+        err.statusText = res.statusText || 'Ocurrió un error'
+        throw err
+      }
+      console.log(res)
+      if (!signal.aborted) {
+        setDataP(res.data)
+        setError(null)
+      }
+    } catch (error) {
+      if (!signal.aborted) {
+        setData(null)
+        setError(error)
+      }
+    } finally {
+      if (!signal.aborted) {
+        setLoading(false)
+      }
+    }
+  }
+
+  
 
   const getImagesByProductId = async (id) => {
     try {
@@ -114,6 +147,8 @@ export const useProductos = () => {
     StockProduct,
     getStockByProductId,
     updateStockProducto,
-    importProductos
+    importProductos,
+    getAllProductosPagination,
+    dataP
   }
 }

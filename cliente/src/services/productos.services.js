@@ -42,3 +42,20 @@ export const postImportProductoService = (data, token) => {
     headers: { 'access-token': token, 'Content-Type': 'multipart/form-data' },
   })
 }
+
+
+export const getProductoSearchPaginationServices = async (token, ...params) => {
+  const searchs = new URLSearchParams();
+
+  Object.entries(params[0]).forEach(([key, value]) => {
+    if (value !== undefined && value !== null && value !== "") {
+      searchs.append(key, value);
+    }
+  });
+
+  return await axios.get(`/productos/pagination/?${searchs.toString()}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+};

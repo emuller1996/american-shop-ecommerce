@@ -13,16 +13,27 @@ const ProductosPage = () => {
   const [show, setShow] = useState(false)
   const [showImport, setShowImport] = useState(false)
   const [Draw, setDraw] = useState(1)
+  const [dataFilter, setdataFilter] = useState({
+    perPage: 10,
+    search: '',
+    page: 1,
+  })
 
   const handleClose = () => setShow(false)
   const handleShow = () => setShow(true)
 
-  const { getAllProductos, data: ListProductos } = useProductos()
+  const {
+    getAllProductos,
+    data: ListProductos,
+    getAllProductosPagination,
+    dataP,
+    loading,
+  } = useProductos()
   const [ProductoSelecionado, setProductoSelecionado] = useState(null)
 
   useEffect(() => {
-    getAllProductos()
-  }, [])
+    getAllProductosPagination(dataFilter)
+  }, [dataFilter])
   return (
     <div className="container-fluid">
       <div>
@@ -57,6 +68,11 @@ const ProductosPage = () => {
                 type="text"
                 aria-label="First name"
                 className="form-control"
+                onChange={(e) => {
+                  setdataFilter((status) => {
+                    return { ...status, search: e.target.value }
+                  })
+                }}
               />
             </div>
           </div>
@@ -139,10 +155,35 @@ const ProductosPage = () => {
 
               { name: '', selector: (row) => row?.city ?? '' },
             ]}
-            data={ListProductos && ListProductos}
+            data={dataP?.data}
             pagination
+            paginationServer
+            progressPending={loading}
+            progressComponent={
+              <div className="d-flex justify-content-center my-5">
+                <div
+                  className="spinner-border text-primary"
+                  style={{ width: '3em', height: '3em' }}
+                  role="status"
+                >
+                  <span className="visually-hidden">Loading...</span>
+                </div>
+              </div>
+            }
+            paginationTotalRows={dataP?.total}
             paginationComponentOptions={paginationComponentOptions}
             noDataComponent="No hay datos para mostrar"
+            onChangeRowsPerPage={(perPage, page) => {
+              console.log(perPage, page)
+              setdataFilter((status) => {
+                return { ...status, perPage }
+              })
+            }}
+            onChangePage={(page) => {
+              setdataFilter((status) => {
+                return { ...status, page }
+              })
+            }}
           />
         </div>
         <Modal backdrop={'static'} size="lg" centered show={show} onHide={handleClose}>
