@@ -39,6 +39,8 @@ ProductosRouters.get("/pagination", async (req, res) => {
   let perPage = req.query.perPage ?? 10;
   let page = req.query.page ?? 1;
   let search = req.query.search ?? "";
+  let gender = req.query.gender ?? "";
+
 
   try {
     var consulta = {
@@ -60,24 +62,41 @@ ProductosRouters.get("/pagination", async (req, res) => {
             ],
           },
         },
+        sort: [
+          { "name.keyword": { order: "asc" } }, // Reemplaza con el campo por el que quieres ordenar
+        ],
       },
     };
+    if (gender !== "" && gender) {
+      consulta.body.query.bool.filter.push({
+        term: {
+          "gender.keyword": gender,
+        },
+      })
+    }
     if (search !== "" && search) {
-      /* consulta.body.query.bool.must.push({
-        match_phrase_prefix: { name: search },
-      }); */
       consulta.body.query.bool.must.push({
         query_string: { query: `*${search}*`, fields: ["name", "description"] },
       });
     }
     const searchResult = await client.search(consulta);
 
-    const data = searchResult.body.hits.hits.map((c) => {
+    var data = searchResult.body.hits.hits.map((c) => {
       return {
         ...c._source,
         _id: c._id,
       };
     });
+
+    data = data.map(async (product) => {
+      return {
+        ...product,
+        categoria: product.category_id
+          ? await getDocumentById(product?.category_id)
+          : "",
+      };
+    });
+    data = await Promise.all(data);
 
     console.log(searchResult.body);
     /* return {
