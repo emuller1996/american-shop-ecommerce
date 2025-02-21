@@ -6,10 +6,13 @@ import { postLoginClientesService } from '../../services/clientes.services'
 import { Alert } from 'react-bootstrap'
 import AuthContext from '../../context/AuthContext'
 import { jwtDecode } from 'jwt-decode'
-
+import PropTypes from 'prop-types'
 // routes config
 
-const FormLogin = () => {
+const FormLogin = ({ onHide }) => {
+  FormLogin.propTypes = {
+    onHide: PropTypes.func,
+  }
   const [ErrorText, setErrorText] = useState({ status: false, message: '', detail: '' })
   const [isLoadingForm, setisLoadingForm] = useState(false)
   const [estadoFormulario, setEstadoFormulario] = useState('login')
@@ -36,6 +39,7 @@ const FormLogin = () => {
       setTokenClient(result.data.token)
       setTokenAccessCliente(result.data.token)
       setClient(jwtDecode(result.data.token))
+      onHide()
     } catch (error) {
       console.log(error)
       if (error.response.status == 404) {

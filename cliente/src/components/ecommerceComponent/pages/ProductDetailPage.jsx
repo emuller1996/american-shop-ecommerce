@@ -9,6 +9,7 @@ import StockComponent from './ProductDetailPage/StockComponent'
 import { useLocalStorage } from '../../../hooks/useLocalStorage'
 import toast from 'react-hot-toast'
 import AuthContext from '../../../context/AuthContext'
+import ConsultasProductoComponent from './ProductDetailPage/ConsultasProductoComponent'
 export default function ProductDetailPage() {
   const { id } = useParams()
   const { getProductById, dataDetalle } = useProductos()
@@ -68,14 +69,18 @@ export default function ProductDetailPage() {
                           stock={stock}
                           setSizeSelected={setSizeSelected}
                           sizeSelected={sizeSelected}
-                          
                         />
                       ))}
                   </div>
-                  <div className="mt-3">
+                  <div className="mt-4 text-center">
                     <button
+                      disabled={sizeSelected ? false : true}
                       onClick={() => {
                         console.log(sizeSelected)
+                        if (!sizeSelected) {
+                          toast.error('Elige una Talla')
+                          return
+                        }
                         sizeSelected.name_producto = dataDetalle.name
                         sizeSelected.price_producto = dataDetalle.price
                         console.log(
@@ -83,6 +88,7 @@ export default function ProductDetailPage() {
                         )
                         if (cartEcommerceAmerican.find((stk) => stk._id === sizeSelected._id)) {
                           toast.error('Producto ya esta en el carrito')
+                          return
                         } else {
                           setCartEcommerceAmerican([...cartEcommerceAmerican, sizeSelected])
                           setCartEcommerceAmericanState([...cartEcommerceAmerican, sizeSelected])
@@ -100,6 +106,12 @@ export default function ProductDetailPage() {
           </div>
         </section>
       )}
+
+      <section>
+        <div className="container mt-4">
+          <ConsultasProductoComponent />
+        </div>
+      </section>
     </>
   )
 }

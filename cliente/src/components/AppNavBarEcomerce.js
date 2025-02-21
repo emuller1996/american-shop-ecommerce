@@ -42,7 +42,11 @@ const AppNavBarEcomerce = () => {
     <>
       <Modal size="lg" centered show={show} onHide={handleClose}>
         <Modal.Body>
-          <FormLogin />
+          <FormLogin
+            onHide={() => {
+              setShow(false)
+            }}
+          />
         </Modal.Body>
       </Modal>
 
@@ -173,8 +177,12 @@ const AppNavBarEcomerce = () => {
                       </Dropdown.Toggle>
 
                       <Dropdown.Menu>
-                        <Dropdown.Item href="#/action-1">Mis Compras</Dropdown.Item>
-                        <Dropdown.Item href="#/action-2">Mi Perfil</Dropdown.Item>
+                        <Link className="dropdown-item text-decoration-none" to={`/mis-compras`}>
+                          Mis Compras
+                        </Link>
+                        <Link className="dropdown-item text-decoration-none" to={`/mis-compras`}>
+                          Mi Perfil
+                        </Link>
                         <Dropdown.Item
                           onClick={() => {
                             setTokenClient(null)
@@ -229,8 +237,12 @@ const AppNavBarEcomerce = () => {
                         </Dropdown.Toggle>
 
                         <Dropdown.Menu>
-                          <Dropdown.Item href="#/action-1">Mis Compras</Dropdown.Item>
-                          <Dropdown.Item href="#/action-2">Mi Perfil</Dropdown.Item>
+                          <Link className="dropdown-item text-decoration-none" to={`/mis-compras`}>
+                            Mis Compras
+                          </Link>
+                          <Link className="dropdown-item text-decoration-none" to={`/mis-compras`}>
+                            Mi Perfil
+                          </Link>
                           <Dropdown.Item
                             onClick={() => {
                               setTokenClient(null)

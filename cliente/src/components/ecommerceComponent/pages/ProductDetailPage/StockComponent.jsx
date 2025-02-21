@@ -13,7 +13,7 @@ export default function StockComponent({ setSizeSelected, stock, sizeSelected })
   const { cartEcommerceAmericanState } = useContext(AuthContext)
 
   return (
-    <div key={stock._id} className="col-md-4 ">
+    <div key={stock._id} className="col-6 col-md-4 ">
       <div
         onClick={() => {
           stock.cantidad = 1
@@ -25,7 +25,7 @@ export default function StockComponent({ setSizeSelected, stock, sizeSelected })
         <span className="d-block" style={{ fontSize: '0.8em' }}>
           en Stock : {stock?.stock}
         </span>
-        <div className="d-flex mi_input_group">
+        <div className="d-flex mi_input_group ">
           <button
             className="button-29 "
             onClick={() => {
