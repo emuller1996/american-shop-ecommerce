@@ -8,6 +8,7 @@ import {
   getAllProductoService,
   getAllProductoStockService,
   getProductoSearchPaginationServices,
+  getProductoSearchPublishedServices,
   postCreateProductoService,
   postCreateStockProductoService,
   postImportProductoService,
@@ -62,6 +63,34 @@ export const useProductos = () => {
     setDataP(undefined)
     try {
       const res = await getProductoSearchPaginationServices(Token, data)
+      if (res.status !== 200) {
+        let err = new Error('Error en la petición Fetch')
+        err.status = res.status || '00'
+        err.statusText = res.statusText || 'Ocurrió un error'
+        throw err
+      }
+      console.log(res)
+      if (!signal.aborted) {
+        setDataP(res.data)
+        setError(null)
+      }
+    } catch (error) {
+      if (!signal.aborted) {
+        setData(null)
+        setError(error)
+      }
+    } finally {
+      if (!signal.aborted) {
+        setLoading(false)
+      }
+    }
+  }
+
+  const getAllProductosPublished = async (data) => {
+    setLoading(true)
+    setDataP(undefined)
+    try {
+      const res = await getProductoSearchPublishedServices(Token, data)
       if (res.status !== 200) {
         let err = new Error('Error en la petición Fetch')
         err.status = res.status || '00'
@@ -149,6 +178,7 @@ export const useProductos = () => {
     updateStockProducto,
     importProductos,
     getAllProductosPagination,
-    dataP
+    dataP,
+    getAllProductosPublished
   }
 }

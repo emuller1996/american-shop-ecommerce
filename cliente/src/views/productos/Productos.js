@@ -117,7 +117,7 @@ const ProductosPage = () => {
             striped
             columns={[
               {
-                name: 'Id',
+                name: 'Acciones',
                 cell: (row) => {
                   return (
                     <>
@@ -159,6 +159,7 @@ const ProductosPage = () => {
               },
               //{ name: 'Id', selector: (row) => row._id, width: '100px' },
               { name: 'Nombre', selector: (row) => row?.name ?? '', width: '250px' },
+
               {
                 name: 'Precio',
                 selector: (row) => row?.price ?? '',
@@ -166,6 +167,12 @@ const ProductosPage = () => {
                 width: '150px',
               },
               { name: 'Costo', selector: (row) => ViewDollar(row?.cost) ?? '', width: '150px' },
+              {
+                name: 'Estado',
+                selector: (row) => (row?.published ? 'Publicado' : 'No Publicado'),
+                width: '150px',
+              },
+
               {
                 name: 'Categoria',
                 selector: (row) => row?.categoria?.name ?? '',

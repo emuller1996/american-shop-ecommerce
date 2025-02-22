@@ -59,3 +59,19 @@ export const getProductoSearchPaginationServices = async (token, ...params) => {
     },
   });
 };
+
+export const getProductoSearchPublishedServices = async (token, ...params) => {
+  const searchs = new URLSearchParams();
+
+  Object.entries(params[0]).forEach(([key, value]) => {
+    if (value !== undefined && value !== null && value !== "") {
+      searchs.append(key, value);
+    }
+  });
+
+  return await axios.get(`/productos/published/?${searchs.toString()}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+};

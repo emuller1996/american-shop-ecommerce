@@ -44,14 +44,28 @@ const CardProducto = ({ producto }) => {
             alt="Title"
           />
         )}
+        {!producto.image_id && (
+          <div className="p-2">
+            <img
+              className="card-img-top"
+              style={{ height: '320px', opacity: '0.2' }}
+              src={`https://ecommerce.esmuller.cloud/assets/Logo-LBxHafXJ.png`}
+              alt="Title"
+            />
+          </div>
+        )}
         <div className="card-body">
           <h4 className="card-title">{producto?.name}</h4>
-          <p className="card-text">{ViewDollar(producto?.price)}</p>
-          <Link to={`/eco/${producto._id}/producto`}>
-            <button className="button-ecomerce">
-              <i className="fa-solid fa-eye"></i>
-            </button>
-          </Link>
+          <p className="card-text m-0">{ViewDollar(producto?.price)}</p>
+          <p className="card-text  m-0 text-muted">{producto?.categoria?.name}</p>
+          <p className="card-text text-muted">{producto?.gender}</p>
+          <div className="text-center">
+            <Link to={`/eco/${producto._id}/producto`}>
+              <button className="button-ecomerce">
+                <i className="fa-solid fa-eye"></i>
+              </button>
+            </Link>
+          </div>
         </div>
       </div>
     </div>
