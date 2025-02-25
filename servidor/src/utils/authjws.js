@@ -1,5 +1,5 @@
 import jsonwebtoken from "jsonwebtoken";
-import { SECRECT_CLIENT } from "../config.js";
+import { SECRECT_CLIENT, SECRECT_CLIENT_CLIENT } from "../config.js";
 
 const validateToken = (req, res) => {
   const accessToken = req.headers["access-token"];
@@ -7,7 +7,7 @@ const validateToken = (req, res) => {
     return res
       .status(403)
       .json({ message: "ACCES DENIED: TOKEN NO SUMINISTRADO." });
-  jsonwebtoken.verify(accessToken, "EVENTOMULL", (err, user) => {
+  jsonwebtoken.verify(accessToken,SECRECT_CLIENT, (err, user) => {
     if (err) {
       return res
         .status(405)
@@ -18,13 +18,32 @@ const validateToken = (req, res) => {
   });
 };
 
+const validateTokenClient = (req, res) => {
+  const accessToken = req.headers["authorization"];
+  if (!accessToken)
+    return res
+      .status(403)
+      .json({ message: "ACCES DENIED: TOKEN NO SUMINISTRADO." });
+  jsonwebtoken.verify(accessToken,SECRECT_CLIENT_CLIENT, (err, user) => {
+    if (err) {
+      return res
+        .status(405)
+        .json({ message: "ERROR-> TOKEN EXPIRED OR INCORRECT" });
+    } else {
+      return res.status(200).json({ message: "ALL FINE" ,user});
+    }
+  });
+};
+
+
+
 const validateTokenMid = (req, res, next) => {
   const accessToken = req.headers["access-token"];
   if (!accessToken)
     return res
       .status(403)
       .json({ message: "ACCES DENIED: TOKEN NO SUMINISTRADO." });
-  jsonwebtoken.verify(accessToken, "EVENTOMULL", (err, user) => {
+  jsonwebtoken.verify(accessToken, SECRECT_CLIENT, (err, user) => {
     if (err) {
       return res
         .status(405)
@@ -36,7 +55,7 @@ const validateTokenMid = (req, res, next) => {
 };
 
 const generateClienteAccessToken = (user) => {
-  return jsonwebtoken.sign(user, SECRECT_CLIENT, { expiresIn: "480m" });
+  return jsonwebtoken.sign(user, SECRECT_CLIENT_CLIENT, { expiresIn: "15m" });
 };
 
-export { validateToken, validateTokenMid, generateClienteAccessToken };
+export { validateToken, validateTokenMid, generateClienteAccessToken, validateTokenClient };

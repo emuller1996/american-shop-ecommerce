@@ -13,6 +13,7 @@ import {
 import md5 from "md5";
 import {
   generateClienteAccessToken,
+  validateTokenClient,
   validateTokenMid,
 } from "../utils/authjws.js";
 import { INDEX_ES_MAIN } from "../config.js";
@@ -110,13 +111,14 @@ ClienteRouters.put("/:id", async (req, res) => {
   try {
     const r = await updateElasticByType(req.params.id, req.body);
     if (r.body.result === "updated") {
-      await client.indices.refresh({ index: "barbermul" });
+      await client.indices.refresh({ index: INDEX_ES_MAIN });
       return res.json({ message: "Cliente Actualizado" });
     }
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
 });
+ClienteRouters.get("/validate", validateTokenClient)
 
 ClienteRouters.post("/login", async (req, res) => {
   try {
@@ -151,6 +153,7 @@ ClienteRouters.post("/login", async (req, res) => {
 
     if (requestEL.body.hits.total.value > 0) {
       let dataUser = requestEL.body.hits.hits[0]?._source;
+      dataUser._id = requestEL.body.hits.hits[0]?._id
       console.log(dataUser);
       console.log(md5(data.password_client) === dataUser.hash);
       if (md5(data.password_client) === dataUser.hash) {

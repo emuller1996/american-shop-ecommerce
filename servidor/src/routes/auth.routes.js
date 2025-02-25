@@ -11,7 +11,7 @@ import {
 import { client } from "../db.js";
 import md5 from "md5";
 import { validateToken } from "../utils/authjws.js";
-import { INDEX_ES_MAIN } from "../config.js";
+import { INDEX_ES_MAIN, SECRECT_CLIENT } from "../config.js";
 
 const AuthRouters = Router();
 
@@ -73,7 +73,7 @@ AuthRouters.post("/login", async (req, res) => {
 });
 
 const generateAccessToken = (user) => {
-  return jsonwebtoken.sign(user, "EVENTOMULL", { expiresIn: "480m" });
+  return jsonwebtoken.sign(user,SECRECT_CLIENT, { expiresIn: "480m" });
 };
 
 export default AuthRouters;
