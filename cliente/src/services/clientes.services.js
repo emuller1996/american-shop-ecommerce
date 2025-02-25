@@ -13,6 +13,6 @@ export const getAllClientesService = (token, signal) => {
   return axios.get('/clientes', { headers: { 'access-token': token }, signal: signal })
 }
 
-export const putUpdateClientesService = (id, data) => {
-  return axios.put(`/clientes/${id}`, data)
+export const putUpdateClientesService = (token, id, data) => {
+  return axios.put(`/clientes/${id}`, data, { headers: { 'access-token': token } })
 }

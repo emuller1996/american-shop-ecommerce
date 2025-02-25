@@ -6,6 +6,8 @@ import FormLogin from './ecommerceComponent/FormLogin'
 import AuthContext from '../context/AuthContext'
 import { useLocalStorage } from '../hooks/useLocalStorage'
 import { ViewDollar } from '../utils'
+import { AuthClientComponent } from './ecommerceComponent/AuthClientComponent'
+import CartComponent from './ecommerceComponent/CartComponent'
 
 const AppNavBarEcomerce = () => {
   const headerRef = useRef()
@@ -59,7 +61,7 @@ const AppNavBarEcomerce = () => {
         }}
       >
         <Modal.Body>
-          <p>Mi Carrito</p>
+          {/*  <p>Mi Carrito</p>
           <div className="table-responsive">
             <table className="table ">
               <thead>
@@ -113,7 +115,8 @@ const AppNavBarEcomerce = () => {
                 <i className="fa-solid fa-money-bill me-3"></i> Ir a Pagar
               </button>
             </div>
-          </div>
+          </div> */}
+          <CartComponent />
         </Modal.Body>
       </Modal>
 
@@ -169,50 +172,11 @@ const AppNavBarEcomerce = () => {
                     </span>
                   </button>
                 </li>
-                {client ? (
-                  <>
-                    <Dropdown className="d-none d-lg-block">
-                      <Dropdown.Toggle variant="light" id="dropdown-basic">
-                        {client?.name_client}
-                      </Dropdown.Toggle>
-
-                      <Dropdown.Menu>
-                        <Link className="dropdown-item text-decoration-none" to={`/mis-compras`}>
-                          Mis Compras
-                        </Link>
-                        <Link className="dropdown-item text-decoration-none" to={`/mis-compras`}>
-                          Mi Perfil
-                        </Link>
-                        <Dropdown.Item
-                          onClick={() => {
-                            setTokenClient(null)
-                            setTokenAccessCliente(null)
-                            setClient(null)
-                          }}
-                        >
-                          Cerrar Session
-                        </Dropdown.Item>
-                      </Dropdown.Menu>
-                    </Dropdown>
-                  </>
-                ) : (
-                  <>
-                    <li className="d-none d-lg-block">
-                      <button
-                        className="btn text-uppercase cursor-pointer"
-                        data-bs-toggle="offcanvas"
-                        data-bs-target="#offcanvasCart"
-                        aria-controls="offcanvasCart"
-                        onClick={() => {
-                          setShow(true)
-                        }}
-                      >
-                        <i className="fa-solid fa-right-to-bracket me-2"></i>
-                        <span className="cart-count">Ingresar</span>
-                      </button>
-                    </li>
-                  </>
-                )}
+                <AuthClientComponent
+                  onShow={() => {
+                    setShow(true)
+                  }}
+                />
 
                 <li className="d-lg-none">
                   <button
@@ -237,10 +201,16 @@ const AppNavBarEcomerce = () => {
                         </Dropdown.Toggle>
 
                         <Dropdown.Menu>
-                          <Link className="dropdown-item text-decoration-none" to={`/mis-compras`}>
+                          <Link
+                            className="dropdown-item text-decoration-none"
+                            to={`/eco/mis-compras`}
+                          >
                             Mis Compras
                           </Link>
-                          <Link className="dropdown-item text-decoration-none" to={`/mis-compras`}>
+                          <Link
+                            className="dropdown-item text-decoration-none"
+                            to={`/eco/mis-compras`}
+                          >
                             Mi Perfil
                           </Link>
                           <Dropdown.Item

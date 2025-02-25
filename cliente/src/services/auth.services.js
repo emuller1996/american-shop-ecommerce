@@ -23,3 +23,11 @@ export const getValidateTokensService = async (token) => {
     },
   })
 }
+
+export const getClienteValidateTokensService = async (token) => {
+  return await axios.get(`/clientes/validate/`, {
+    headers: {
+      'Authorization': token,
+    },
+  })
+}

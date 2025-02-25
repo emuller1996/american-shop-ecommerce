@@ -66,6 +66,7 @@ const App = () => {
                 </LoginProtected>
               }
             />
+            <Route path="/*" element={<>404 PAGE</>} />
           </Routes>
         </Suspense>
         <Toaster position="top-center" reverseOrder={false} />

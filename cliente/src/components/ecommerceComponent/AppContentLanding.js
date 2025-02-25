@@ -3,12 +3,16 @@ import { Navigate, Route, Routes } from 'react-router-dom'
 import { CContainer, CSpinner } from '@coreui/react'
 import HomeLanding from './pages/HomeLanding'
 import ProductDetailPage from './pages/ProductDetailPage'
+import LoginProtectedClient from '../../utils/LoginProtectedClient'
+const MiProfilePage = React.lazy(() => import('./pages/MiPerfilPage/MiProfilePage'))
+const MisComprasPages = React.lazy(() => import('./pages/MisComprasPage/MisComprasPages'))
 
 // routes config
 
 const routes = [
   { path: '/', exact: true, name: 'Home', element: HomeLanding },
-  { path: '/eco/:id/producto', exact: true, name: 'Home', element: ProductDetailPage },
+  { path: '/eco/:id/producto', exact: true, name: 'Producto Detalle', element: ProductDetailPage },
+  { path: '/eco/mis-compras', exact: true, name: 'Mis Compras', element: MisComprasPages },
 ]
 
 const AppContentLanding = () => {
@@ -29,7 +33,18 @@ const AppContentLanding = () => {
               )
             )
           })}
-          <Route path="/" element={<>404 PAGE</>} />
+          <Route
+            key={'mi-perfil'}
+            path={'/eco/mi-perfil'}
+            exact={true}
+            name={'Mi Perfil'}
+            element={
+              <LoginProtectedClient>
+                <MiProfilePage />
+              </LoginProtectedClient>
+            }
+          />
+          <Route path="/*" element={<>404 PAGE</>} />
         </Routes>
       </Suspense>
     </CContainer>

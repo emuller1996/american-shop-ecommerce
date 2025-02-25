@@ -2,7 +2,7 @@
 
 import { useContext, useState } from 'react'
 import { getAllCategoriasService } from '../services/categorias.services'
-import { getAllClientesService } from '../services/clientes.services'
+import { getAllClientesService, putUpdateClientesService } from '../services/clientes.services'
 import AuthContext from '../context/AuthContext'
 
 export const useClientes = () => {
@@ -13,7 +13,7 @@ export const useClientes = () => {
   const [loading, setLoading] = useState(false)
   const abortController = new AbortController()
   const signal = abortController.signal
-  const { Token } = useContext(AuthContext)
+  const { Token, TokenClient } = useContext(AuthContext)
 
   const getAllClientes = async () => {
     setLoading(true)
@@ -42,15 +42,15 @@ export const useClientes = () => {
     }
   }
 
-  /* const getEventoById = async (id) => {
+  const putClienteById = async (id, data) => {
     try {
-      const r = await getAllPuntoVentaByIdService(id)
+      const r = await putUpdateClientesService(TokenClient, id, data)
       console.log(r.data)
       setDataDetalle(r.data)
     } catch (error) {
       console.log(error)
     }
-  } */
+  }
 
   return {
     data,
@@ -58,5 +58,6 @@ export const useClientes = () => {
     loading,
     getAllClientes,
     abortController,
+    putClienteById
   }
 }
