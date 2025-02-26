@@ -25,6 +25,10 @@ export const putUpdateStockProductoService = (data, product_id, token) => {
   return axios.put(`/productos/stock/${product_id}/`, data, { headers: { 'access-token': token } })
 }
 
+export const postValidateStockProductoService = (data, product_id, token) => {
+  return axios.post(`/productos/stock/${product_id}/validate/`, data, { headers: { 'access-token': token } })
+}
+
 export const getAllProductoImageService = (product_id, signal) => {
   return axios.get(`/productos/${product_id}/images`, { signal: signal })
 }

@@ -1,19 +1,63 @@
 /* eslint-disable prettier/prettier */
-import React, { useContext } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { useLocalStorage } from '../../hooks/useLocalStorage'
 import AuthContext from '../../context/AuthContext'
 import { ViewDollar } from '../../utils'
+import { useProductos } from '../../hooks/useProductos'
+import toast from 'react-hot-toast'
 
 export default function CartComponent() {
   const [cartEcommerceAmerican, setCartEcommerceAmerican] = useLocalStorage(
     'cartEcommerceAmerican',
     [],
   )
-  const {
-    client,
-    cartEcommerceAmericanState,
-    setCartEcommerceAmericanState,
-  } = useContext(AuthContext)
+  const { client, cartEcommerceAmericanState, setCartEcommerceAmericanState } =
+    useContext(AuthContext)
+
+  const { validateProductoCart } = useProductos()
+
+  const [Data, setData] = useState(null)
+  const [isLoading, setisLoading] = useState(false)
+
+  useEffect(() => {
+    getAllProductCart()
+  }, [])
+
+  const getAllProductCart = async () => {
+    try {
+      setisLoading(true)
+      const rest = cartEcommerceAmericanState.map(async (pro) => {
+        try {
+          const resss = await validateProductoCart(pro._id, pro)
+          return { ...resss.data.resutl, cantidad: pro.cantidad }
+        } catch (error) {
+          setCartEcommerceAmericanState(
+            cartEcommerceAmericanState.filter((c) => c._id !== pro?._id),
+          )
+          setCartEcommerceAmerican(
+            cartEcommerceAmericanState.filter((c) => c._id !== pro?._id),
+          )
+          toast.error(`Se Borro un producto de tu carrito por que  no esta disponible.`)
+          return null
+        }
+      })
+      console.log(rest)
+      const res2 = await Promise.all(rest)
+      console.log(res2)
+      res2.forEach( c =>{
+        if(c ===null){
+
+        }
+      })
+      console.log(res2.filter(c => c !==null).map((c) => c))
+      setData(res2.filter(c => c !==null).map((c) => c))
+    } catch (error) {
+      console.log(error)
+    } finally {
+      setisLoading(false)
+    }
+  }
+
   return (
     <>
       <p>Mi Carrito</p>
@@ -29,34 +73,73 @@ export default function CartComponent() {
             </tr>
           </thead>
           <tbody>
-            {cartEcommerceAmericanState.map((st) => (
-              <tr key={st._id} className="">
-                <td scope="row">{st.name_producto}</td>
-                <td>{st.cantidad}</td>
-                <td>{st.size}</td>
-                <td>{ViewDollar(st.price_producto)}</td>
-                <td>
-                  <button
-                    onClick={() => {
-                      console.log(cartEcommerceAmericanState.filter((c) => c._id !== st._id))
-                      setCartEcommerceAmericanState(
-                        cartEcommerceAmericanState.filter((c) => c._id !== st._id),
-                      )
-                      setCartEcommerceAmerican(
-                        cartEcommerceAmericanState.filter((c) => c._id !== st._id),
-                      )
-                    }}
-                    type="button"
-                    className="btn btn-sm btn-danger text-white"
-                  >
-                    <i className="fa-regular fa-trash-can"></i>
-                  </button>
+            {isLoading && (
+              <tr>
+                <td colSpan={5}>
+                  <div className="d-flex justify-content-center my-4">
+                    <div className="spinner-border" role="status" style={{ color: '#5b64db' }}>
+                      <span className="visually-hidden">Loading...</span>
+                    </div>
+                  </div>
                 </td>
               </tr>
-            ))}
+            )}
+            {Data &&
+              Data.map((st) => (
+                <tr key={st?._id} className="">
+                  <td width={'450px'} scope="row">
+                    <img
+                      className="img-fluid me-3"
+                      style={{ width: '60px', height: '60px', borderRadius: 50 }}
+                      src={st?.image?.image}
+                      alt=""
+                    />
+                    <span className="text-nowrap">{st?.product?.name}</span>
+                  </td>
+                  <td>{st?.cantidad}</td>
+                  <td>{st?.size}</td>
+                  <td>{ViewDollar(st?.product?.price)}</td>
+                  <td>
+                    <button
+                      onClick={() => {
+                        console.log(cartEcommerceAmericanState.filter((c) => c._id !== st?._id))
+
+                        setCartEcommerceAmericanState(
+                          cartEcommerceAmericanState.filter((c) => c._id !== st?._id),
+                        )
+                        setCartEcommerceAmerican(
+                          cartEcommerceAmericanState.filter((c) => c._id !== st?._id),
+                        )
+                        setData(Data.filter((c) => c._id !== st?._id))
+                      }}
+                      type="button"
+                      className="btn btn-sm btn-danger text-white"
+                    >
+                      <i className="fa-regular fa-trash-can"></i>
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            <tr>
+              <td colSpan={3} align="right">
+                <span className="fw-bold fs-5">Total</span>
+              </td>
+              <td colSpan={1}>
+                <span className=" fs-5">
+                  {Data &&
+                    ViewDollar(
+                      Data.reduce(
+                        (acumulador, actual) => acumulador + actual.product.price * actual.cantidad,
+                        0,
+                      ),
+                    )}
+                </span>
+              </td>
+              <td></td>
+            </tr>
           </tbody>
         </table>
-        <p>
+        {/* <p className="text-end me-5">
           Total{' '}
           {ViewDollar(
             cartEcommerceAmericanState.reduce(
@@ -64,7 +147,7 @@ export default function CartComponent() {
               0,
             ),
           )}
-        </p>
+        </p> */}
         <div className="mt-3 mb-2 text-center">
           <button disabled={client ? false : true} className="button-ecomerce">
             <i className="fa-solid fa-money-bill me-3"></i> Ir a Pagar

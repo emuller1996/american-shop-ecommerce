@@ -12,6 +12,7 @@ import {
   postCreateProductoService,
   postCreateStockProductoService,
   postImportProductoService,
+  postValidateStockProductoService,
   putUpdateStockProductoService,
 } from '../services/productos.services'
 import AuthContext from '../context/AuthContext'
@@ -161,6 +162,10 @@ export const useProductos = () => {
   const importProductos = async (data) => {
     return postImportProductoService(data,Token)
   }
+
+  const validateProductoCart = async (id,data) => {
+    return postValidateStockProductoService(data, id, Token)
+  }
   return {
     data,
     error,
@@ -179,6 +184,7 @@ export const useProductos = () => {
     importProductos,
     getAllProductosPagination,
     dataP,
-    getAllProductosPublished
+    getAllProductosPublished,
+    validateProductoCart
   }
 }
