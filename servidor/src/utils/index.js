@@ -120,9 +120,9 @@ export async function crearElasticByType(data, type) {
 
 export async function crearLogsElastic(header, body, description) {
   var createType = {};
-  createType.header = header
-  createType.body = body
-  createType.description = description
+  createType.header = header;
+  createType.body = body;
+  createType.description = description;
   createType.type = "log";
   createType.createdTime = new Date().getTime();
   const response = await client.index({
@@ -151,7 +151,7 @@ export async function getDocumentById(id) {
     index: INDEX_ES_MAIN, // Nombre del índice
     id: id, // ID del documento
   });
-  return response.body._source;
+  return { ...response.body._source, _id: response.body._id };
 }
 
 export async function createInMasaDocumentByType(data, type) {
