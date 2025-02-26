@@ -41,7 +41,6 @@ ProductosRouters.get("/pagination", async (req, res) => {
   let search = req.query.search ?? "";
   let gender = req.query.gender ?? "";
 
-
   try {
     var consulta = {
       index: INDEX_ES_MAIN,
@@ -56,7 +55,7 @@ ProductosRouters.get("/pagination", async (req, res) => {
             filter: [
               {
                 term: {
-                  "type": "producto",
+                  type: "producto",
                 },
               },
             ],
@@ -72,7 +71,7 @@ ProductosRouters.get("/pagination", async (req, res) => {
         term: {
           "gender.keyword": gender,
         },
-      })
+      });
     }
     if (search !== "" && search) {
       consulta.body.query.bool.must.push({
@@ -115,7 +114,6 @@ ProductosRouters.get("/pagination", async (req, res) => {
   }
 });
 
-
 ProductosRouters.get("/published", async (req, res) => {
   let type = `producto`;
   let perPage = req.query.perPage ?? 10;
@@ -133,16 +131,18 @@ ProductosRouters.get("/published", async (req, res) => {
         query: {
           bool: {
             must: [
-              {"term": {
-                "published": {
-                  "value": "true"
-                }
-              }}
+              {
+                term: {
+                  published: {
+                    value: "true",
+                  },
+                },
+              },
             ],
             filter: [
               {
                 term: {
-                  "type": "producto",
+                  type: "producto",
                 },
               },
             ],
@@ -158,14 +158,14 @@ ProductosRouters.get("/published", async (req, res) => {
         term: {
           "gender.keyword": gender,
         },
-      })
+      });
     }
     if (categoy !== "" && categoy) {
       consulta.body.query.bool.filter.push({
         term: {
           "category_id.keyword": categoy,
         },
-      })
+      });
     }
     if (search !== "" && search) {
       consulta.body.query.bool.must.push({
@@ -447,6 +447,25 @@ ProductosRouters.put("/stock/:idStock", async (req, res) => {
     }
   } catch (error) {
     return res.status(500).json({ message: error.message });
+  }
+});
+
+ProductosRouters.post("/stock/:idStock/validate", async (req, res) => {
+  try {
+    const resutl = await getDocumentById(req.params.idStock);
+    const resutl_sce = await getDocumentById(resutl.product_id);
+    const resutl_img = await getDocumentById(resutl_sce.image_id);
+
+    resutl.product = resutl_sce;
+    resutl.image = resutl_img;
+    console.log(req.body);
+    if (req.body.cantidad > resutl.stock) {
+      return res.status(400).json({ message: "error", resutl });
+    }
+
+    return res.status(200).json({ message: "test", resutl });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
   }
 });
 
