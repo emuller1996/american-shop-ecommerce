@@ -80,7 +80,7 @@ const FormRegister = ({ client }) => {
             type="email"
             className="form-control "
             defaultValue={client?.email_client}
-            readOnly
+            readOnly={client ? true : false}
             id="email_client"
             placeholder=""
           />

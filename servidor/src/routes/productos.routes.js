@@ -10,7 +10,8 @@ import {
 import { INDEX_ES_MAIN } from "../config.js";
 import { client } from "../db.js";
 import xlsx from "xlsx";
-
+import { validateTokenClient, validateTokenClientMid } from "../utils/authjws.js";
+import { jwtDecode } from "jwt-decode";
 const ProductosRouters = Router();
 
 ProductosRouters.get("/", async (req, res) => {
@@ -364,6 +365,78 @@ ProductosRouters.get("/:id/images", async (req, res) => {
                 term: {
                   type: {
                     value: "imagen",
+                  },
+                },
+              },
+              {
+                term: {
+                  product_id: {
+                    value: req.params.id,
+                  },
+                },
+              },
+            ],
+          },
+        },
+        sort: [
+          { createdTime: { order: "asc" } }, // Reemplaza con el campo por el que quieres ordenar
+        ],
+      },
+    });
+    const dataImages = searchResult.body.hits.hits.map((c) => {
+      return {
+        ...c._source,
+        _id: c._id,
+      };
+    });
+    return res.status(200).json(dataImages);
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+});
+
+
+ProductosRouters.post("/:id/consultas",validateTokenClientMid, async (req, res) => {
+  try {
+    const dataImage = req.body;
+
+    const accessToken = req.headers["authorization"];
+    const decoded = jwtDecode(accessToken);
+    const ImageCreate = {
+      ...dataImage,
+      product_id: req.params.id,
+      status: "pending",
+      client_id: decoded._id,
+
+    };
+    const resElasCreateFun = await crearElasticByType(ImageCreate, "consulta");
+    //recinto = response.body;
+    crearLogsElastic(
+      JSON.stringify(req.headers),
+      JSON.stringify(req.body),
+      "Se ha cargado nueva consulta a un producto."
+    );
+    return res
+      .status(201)
+      .json({ message: "Consulta Creada.", /* resElasCreateFun */ });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+});
+
+ProductosRouters.get("/:id/consultas", async (req, res) => {
+  try {
+    const searchResult = await client.search({
+      index: INDEX_ES_MAIN,
+      size: 1000,
+      body: {
+        query: {
+          bool: {
+            must: [
+              {
+                term: {
+                  type: {
+                    value: "consulta",
                   },
                 },
               },

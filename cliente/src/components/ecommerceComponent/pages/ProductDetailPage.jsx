@@ -92,6 +92,7 @@ export default function ProductDetailPage() {
                         } else {
                           setCartEcommerceAmerican([...cartEcommerceAmerican, sizeSelected])
                           setCartEcommerceAmericanState([...cartEcommerceAmerican, sizeSelected])
+                          toast.success(`Producto se agrego al carrito correctamente.`,{duration:2000})
                         }
                       }}
                       className="button-ecomerce"
@@ -109,7 +110,7 @@ export default function ProductDetailPage() {
 
       <section>
         <div className="container mt-4">
-          <ConsultasProductoComponent />
+          <ConsultasProductoComponent productId={id} />
         </div>
       </section>
     </>

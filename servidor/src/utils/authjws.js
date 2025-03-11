@@ -36,6 +36,23 @@ const validateTokenClient = (req, res) => {
 };
 
 
+const validateTokenClientMid = (req, res, next) => {
+  const accessToken = req.headers["authorization"];
+  if (!accessToken)
+    return res
+      .status(403)
+      .json({ message: "ACCES DENIED: TOKEN NO SUMINISTRADO." });
+  jsonwebtoken.verify(accessToken,SECRECT_CLIENT_CLIENT, (err, user) => {
+    if (err) {
+      return res
+        .status(405)
+        .json({ message: "ERROR-> TOKEN EXPIRED OR INCORRECT" });
+    } else {
+      next();
+    }
+  });
+};
+
 
 const validateTokenMid = (req, res, next) => {
   const accessToken = req.headers["access-token"];
@@ -55,7 +72,7 @@ const validateTokenMid = (req, res, next) => {
 };
 
 const generateClienteAccessToken = (user) => {
-  return jsonwebtoken.sign(user, SECRECT_CLIENT_CLIENT, { expiresIn: "15m" });
+  return jsonwebtoken.sign(user, SECRECT_CLIENT_CLIENT, { expiresIn: "240m" });
 };
 
-export { validateToken, validateTokenMid, generateClienteAccessToken, validateTokenClient };
+export { validateToken, validateTokenMid, generateClienteAccessToken, validateTokenClient,validateTokenClientMid };

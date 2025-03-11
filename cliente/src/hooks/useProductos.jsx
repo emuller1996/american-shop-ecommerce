@@ -4,11 +4,13 @@ import { useContext, useState } from 'react'
 import { getAllCategoriasService } from '../services/categorias.services'
 import {
   getAllProductoByIdService,
+  getAllProductoConsultaService,
   getAllProductoImageService,
   getAllProductoService,
   getAllProductoStockService,
   getProductoSearchPaginationServices,
   getProductoSearchPublishedServices,
+  postCreateConsultaProductoService,
   postCreateProductoService,
   postCreateStockProductoService,
   postImportProductoService,
@@ -24,8 +26,10 @@ export const useProductos = () => {
   const [dataDetalle, setDataDetalle] = useState(null)
   const [ImagesProduct, setImagesProduct] = useState(null)
   const [StockProduct, setStockProduct] = useState(null)
+  const [ConsultasProduct, setConsultasProduct] = useState(null)
 
-  const { Token } = useContext(AuthContext)
+
+  const { Token, TokenClient} = useContext(AuthContext)
   const [error, setError] = useState(null)
   const [loading, setLoading] = useState(false)
   const abortController = new AbortController()
@@ -137,6 +141,16 @@ export const useProductos = () => {
     }
   }
 
+  const getConsultakByProductId = async (id) => {
+    try {
+      const r = await getAllProductoConsultaService(id, signal)
+      console.log(r.data)
+      setConsultasProduct(r.data)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
   const getProductById = async (id) => {
     try {
       const r = await getAllProductoByIdService(id)
@@ -153,6 +167,10 @@ export const useProductos = () => {
 
   const createStockProducto = async (data) => {
     return postCreateStockProductoService(data, data.product_id, Token)
+  }
+
+  const createConsultaProducto = async (data) => {
+    return postCreateConsultaProductoService(data, data.product_id, TokenClient)
   }
 
   const updateStockProducto = async (data,id) => {
@@ -185,6 +203,9 @@ export const useProductos = () => {
     getAllProductosPagination,
     dataP,
     getAllProductosPublished,
-    validateProductoCart
+    validateProductoCart,
+    getConsultakByProductId,
+    ConsultasProduct,
+    createConsultaProducto
   }
 }
