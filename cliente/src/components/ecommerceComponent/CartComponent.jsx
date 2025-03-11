@@ -111,6 +111,7 @@ export default function CartComponent() {
                           cartEcommerceAmericanState.filter((c) => c._id !== st?._id),
                         )
                         setData(Data.filter((c) => c._id !== st?._id))
+                       toast.success(`Se Borro el producto de tu carrito.`)
                       }}
                       type="button"
                       className="btn btn-sm btn-danger text-white"
