@@ -7,6 +7,7 @@ import { paginationComponentOptions } from '../../utils/optionsConfig'
 
 const UsuariosPage = () => {
   const [show, setShow] = useState(false)
+  const [Draw, setDraw] = useState(1)
 
   const handleClose = () => setShow(false)
   const handleShow = () => setShow(true)
@@ -18,7 +19,7 @@ const UsuariosPage = () => {
     return () => {
       abortController.abort()
     }
-  }, [])
+  }, [Draw])
   return (
     <div>
       <div>
@@ -47,7 +48,12 @@ const UsuariosPage = () => {
 
       <Modal backdrop={'static'} size="lg" centered show={show} onHide={handleClose}>
         <Modal.Body>
-          <FormUsuarios onHide={handleClose} />
+          <FormUsuarios
+            onHide={handleClose}
+            allUser={() => {
+              setDraw((status) => ++status)
+            }}
+          />
         </Modal.Body>
       </Modal>
     </div>

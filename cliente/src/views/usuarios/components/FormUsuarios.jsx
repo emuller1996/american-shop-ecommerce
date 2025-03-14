@@ -7,30 +7,31 @@ import toast from 'react-hot-toast'
 import { postCreatePuntoVentaService } from '../../../services/punto_venta.services'
 import { postCreateUsuariosService } from '../../../services/usuarios.services'
 import PropTypes from 'prop-types'
+import { useUsuarios } from '../../../hooks/useUsuarios'
 
-export default function FormUsuarios({ onHide }) {
-
+export default function FormUsuarios({ onHide, allUser }) {
   FormUsuarios.propTypes = {
     onHide: PropTypes.func,
+    allUser: PropTypes.func,
   }
   const {
     register,
     handleSubmit,
-    watch,
     formState: { errors },
   } = useForm()
 
+  const { postCreateUsuarios } = useUsuarios()
+
   const onSubmit = async (data) => {
     console.log(data)
-    postCreateUsuariosService
     try {
-      const result = await postCreateUsuariosService(data)
-      console.log(result.data);
+      const result = await postCreateUsuarios(data)
+      console.log(result.data)
       toast.success(result.data.message)
-     onHide()
+      onHide()
+      allUser()
     } catch (error) {
-      console.log(error);
-      
+      console.log(error)
     }
   }
 
@@ -49,11 +50,11 @@ export default function FormUsuarios({ onHide }) {
           </Form.Group>
         </div>
         <div className="col-md-6">
-          <Form.Label htmlFor='type_sales_point'>Rol</Form.Label>
+          <Form.Label htmlFor="type_sales_point">Rol</Form.Label>
           <Form.Select
             {...register('role', { required: true })}
             aria-label="Default select example"
-            id='type_sales_point'
+            id="type_sales_point"
           >
             <option selected value="Administrador">
               Administrador
@@ -82,9 +83,6 @@ export default function FormUsuarios({ onHide }) {
           </Form.Group>
         </div>
       </div>
-
-
-    
 
       <div className="mt-5 d-flex gap-4 justify-content-center">
         <button type="button" onClick={onHide} className="btn btn-danger text-white">
