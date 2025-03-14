@@ -209,7 +209,7 @@ const AppNavBarEcomerce = () => {
                           </Link>
                           <Link
                             className="dropdown-item text-decoration-none"
-                            to={`/eco/mis-compras`}
+                            to={`/eco/mi-perfil`}
                           >
                             Mi Perfil
                           </Link>

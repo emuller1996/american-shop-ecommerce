@@ -65,6 +65,12 @@ const _nav = [
     icon: <i className="fa-solid fa-address-book nav-icon"></i>,
   },
   {
+    component: CNavItem,
+    name: 'Consultas',
+    to: '/d/consultas',
+    icon: <i className="fa-solid fa-comment-dots nav-icon"></i>,
+  },
+  {
     component: CNavTitle,
     name: 'Configuraciones',
   },

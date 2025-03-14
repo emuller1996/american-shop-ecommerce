@@ -1,7 +1,7 @@
 /* eslint-disable prettier/prettier */
 
 import { useContext, useState } from 'react'
-import { getAllUsuariosService } from '../services/usuarios.services'
+import { getAllUsuariosService, postCreateUsuariosService } from '../services/usuarios.services'
 import AuthContext from '../context/AuthContext'
 
 export const useUsuarios = () => {
@@ -42,6 +42,9 @@ export const useUsuarios = () => {
     }
   }
 
+  const postCreateUsuarios = (data) =>{
+    return postCreateUsuariosService(Token, data)
+  }
   /* const getEventoById = async (id) => {
     try {
       const r = await getAllPuntoVentaByIdService(id)
@@ -58,5 +61,6 @@ export const useUsuarios = () => {
     loading,
     getAlUsuarios,
     abortController,
+    postCreateUsuarios
   }
 }
