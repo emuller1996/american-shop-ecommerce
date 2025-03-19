@@ -14,11 +14,12 @@ import md5 from "md5";
 import {
   generateClienteAccessToken,
   validateTokenClient,
+  validateTokenClientMid,
   validateTokenMid,
 } from "../utils/authjws.js";
 import { INDEX_ES_MAIN } from "../config.js";
 import sendVerificationEmail from "../services/mailService.js";
-
+import { jwtDecode } from "jwt-decode";
 const fileUpload = pkg;
 const ClienteRouters = Router();
 
@@ -96,7 +97,7 @@ ClienteRouters.post("/", async (req, res) => {
     delete data.password_client;
     const response = await crearElasticByType(data, "cliente");
     customer = response.body;
-    await sendVerificationEmail(data.email_client)
+    await sendVerificationEmail(data.email_client);
     return res.status(200).json({
       message: "Usuario Creado.",
       detail: `se creo correctamente su cuenta, por favor revisar el correo '${data.email_client}' para verificar su cuenta.`,
@@ -107,7 +108,7 @@ ClienteRouters.post("/", async (req, res) => {
   }
 });
 
-ClienteRouters.put("/:id", async (req, res) => {
+ClienteRouters.put("/:id", validateTokenClientMid, async (req, res) => {
   try {
     const r = await updateElasticByType(req.params.id, req.body);
     if (r.body.result === "updated") {
@@ -118,7 +119,7 @@ ClienteRouters.put("/:id", async (req, res) => {
     return res.status(500).json({ message: error.message });
   }
 });
-ClienteRouters.get("/validate", validateTokenClient)
+ClienteRouters.get("/validate", validateTokenClient);
 
 ClienteRouters.post("/login", async (req, res) => {
   try {
@@ -153,7 +154,7 @@ ClienteRouters.post("/login", async (req, res) => {
 
     if (requestEL.body.hits.total.value > 0) {
       let dataUser = requestEL.body.hits.hits[0]?._source;
-      dataUser._id = requestEL.body.hits.hits[0]?._id
+      dataUser._id = requestEL.body.hits.hits[0]?._id;
       console.log(dataUser);
       console.log(md5(data.password_client) === dataUser.hash);
       if (md5(data.password_client) === dataUser.hash) {
@@ -180,6 +181,80 @@ ClienteRouters.post("/login", async (req, res) => {
         detail: `No hay usuario con el correo electronico '${data.email_client} en la base de datos como cliente.'`,
       });
     }
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+});
+
+ClienteRouters.post(
+  "/new/address",
+  validateTokenClientMid,
+  async (req, res) => {
+    try {
+      const decoded = jwtDecode(req.headers.authorization);
+      var dataAddress = req.body;
+      dataAddress.client_id = decoded._id;
+      const response = await crearElasticByType(
+        dataAddress,
+        "direccion_cliente"
+      );
+      return res
+        .status(200)
+        .json({ melo: dataAddress, body: req.body, decoded, response });
+    } catch (error) {
+      return res.status(500).json({ message: error.message });
+    }
+  }
+);
+
+ClienteRouters.get("/get/address", validateTokenClientMid, async (req, res) => {
+  try {
+    const decoded = jwtDecode(req.headers.authorization);
+    let perPage = req.query.perPage ?? 10;
+    let page = req.query.page ?? 1;
+    var direccion_cliente = await buscarElasticByType("direccion_cliente");
+
+    var consulta = {
+      index: INDEX_ES_MAIN,
+      size: perPage,
+      from: (page - 1) * perPage,
+      body: {
+        query: {
+          bool: {
+            must: [
+              {
+                term: {
+                  "client_id.keyword": {
+                    value: decoded._id,
+                  },
+                },
+              },
+            ],
+            filter: [
+              {
+                term: {
+                  type: "direccion_cliente",
+                },
+              },
+            ],
+          },
+        },
+        sort: [
+          { "createdTime": { order: "desc" } }, // Reemplaza con el campo por el que quieres ordenar
+        ],
+      },
+    };
+
+    const searchResult = await client.search(consulta);
+
+    var data = searchResult.body.hits.hits.map((c) => {
+      return {
+        ...c._source,
+        _id: c._id,
+      };
+    });
+
+    return res.status(200).json(data);
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
