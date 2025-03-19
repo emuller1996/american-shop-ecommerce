@@ -185,9 +185,6 @@ const FormRegister = ({ client }) => {
             </>
           )}
         </div>
-        <div className="mt-4">
-          <p className="text-muted">TE VISTE REAL Y TE DEJA DE PAKER</p>
-        </div>
       </form>
     </CContainer>
   )

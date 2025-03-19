@@ -14,5 +14,14 @@ export const getAllClientesService = (token, signal) => {
 }
 
 export const putUpdateClientesService = (token, id, data) => {
-  return axios.put(`/clientes/${id}`, data, { headers: { 'access-token': token } })
+  return axios.put(`/clientes/${id}`, data, { headers: { 'Authorization': token } })
+}
+
+export const postNewAddressClientesService = (token, data) => {
+  return axios.post(`/clientes/new/address`, data, { headers: { 'Authorization': token } })
+}
+
+
+export const getGetAddressClientesService = (token) => {
+  return axios.get(`/clientes/get/address`,{ headers: { 'Authorization': token } })
 }

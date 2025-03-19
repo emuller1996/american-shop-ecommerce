@@ -5,6 +5,7 @@ import { Dropdown } from 'react-bootstrap'
 import AuthContext from '../../context/AuthContext'
 import { Link } from 'react-router-dom'
 import PropTypes from 'prop-types'
+import LoginProtectedClient from '../../utils/LoginProtectedClient'
 
 export const AuthClientComponent = ({onShow}) => {
     AuthClientComponent.propTypes ={
@@ -20,6 +21,7 @@ export const AuthClientComponent = ({onShow}) => {
     <>
       {client ? (
         <>
+        <LoginProtectedClient>
           <Dropdown className="d-none d-lg-block">
             <Dropdown.Toggle variant="light" id="dropdown-basic">
               {client?.name_client}
@@ -43,6 +45,7 @@ export const AuthClientComponent = ({onShow}) => {
               </Dropdown.Item>
             </Dropdown.Menu>
           </Dropdown>
+        </LoginProtectedClient>
         </>
       ) : (
         <>

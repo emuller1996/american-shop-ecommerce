@@ -21,7 +21,7 @@ export const AuthProvider = ({ children }) => {
     null,
   )
   const [Token, setToken] = useState(tokenAccess ? tokenAccess : null)
-  const [TokenClient, setTokenClient] = useState(tokenAccess ? tokenAccess : null)
+  const [TokenClient, setTokenClient] = useState(tokenAccessCliente ? tokenAccessCliente : null)
 
   const [user, setUser] = useState(tokenAccess ? jwtDecode(tokenAccess) : null)
   const [client, setClient] = useState(tokenAccessCliente ? jwtDecode(tokenAccessCliente) : null)

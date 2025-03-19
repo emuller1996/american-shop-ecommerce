@@ -3,6 +3,7 @@
 import React, { useContext, useEffect } from 'react'
 import FormRegister from '../../FormRegister'
 import AuthContext from '../../../../context/AuthContext'
+import MisDirecciones from './components/MisDirecciones'
 
 export default function MiProfilePage() {
   useEffect(() => {
@@ -19,6 +20,7 @@ export default function MiProfilePage() {
         poder cominicarte contigo para poder atenderte mejor.
       </p>
       <div>{client && <FormRegister client={client} />}</div>
+      <MisDirecciones />
     </div>
   )
 }

@@ -12,14 +12,17 @@ import {
 } from '../services/auth.services'
 
 export default function LoginProtectedClient({ children }) {
-  const { setTokenClient,setClient } = useContext(AuthContext)
+  const { setTokenClient, setClient } = useContext(AuthContext)
   const [isLoading, setisLoading] = useState(true)
   const navigate = useNavigate()
   useEffect(() => {
     validateTest()
   }, [])
 
-  const [tokenAccessCliente,setTokenAccessCliente] = useLocalStorage('tokenAccessClienteAmericanShop', null)
+  const [tokenAccessCliente, setTokenAccessCliente] = useLocalStorage(
+    'tokenAccessClienteAmericanShop',
+    null,
+  )
 
   const validateTest = async () => {
     try {
@@ -42,7 +45,9 @@ export default function LoginProtectedClient({ children }) {
         className="d-flex justify-content-center align-items-center "
         style={{ height: '100vh', width: '100&' }}
       >
-        cargando...
+        <div className="spinner-border text-primary" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </div>
       </div>
     )
   }
