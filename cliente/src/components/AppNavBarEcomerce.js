@@ -116,7 +116,11 @@ const AppNavBarEcomerce = () => {
               </button>
             </div>
           </div> */}
-          <CartComponent />
+          <CartComponent
+            onHide={() => {
+              setShowCart(false)
+            }}
+          />
         </Modal.Body>
       </Modal>
 

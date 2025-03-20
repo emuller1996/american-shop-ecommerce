@@ -5,8 +5,9 @@ import AuthContext from '../../context/AuthContext'
 import { ViewDollar } from '../../utils'
 import { useProductos } from '../../hooks/useProductos'
 import toast from 'react-hot-toast'
+import { Link } from 'react-router-dom'
 
-export default function CartComponent() {
+export default function CartComponent({ onHide }) {
   const [cartEcommerceAmerican, setCartEcommerceAmerican] = useLocalStorage(
     'cartEcommerceAmerican',
     [],
@@ -34,9 +35,7 @@ export default function CartComponent() {
           setCartEcommerceAmericanState(
             cartEcommerceAmericanState.filter((c) => c._id !== pro?._id),
           )
-          setCartEcommerceAmerican(
-            cartEcommerceAmericanState.filter((c) => c._id !== pro?._id),
-          )
+          setCartEcommerceAmerican(cartEcommerceAmericanState.filter((c) => c._id !== pro?._id))
           toast.error(`Se Borro un producto de tu carrito por que  no esta disponible.`)
           return null
         }
@@ -44,13 +43,12 @@ export default function CartComponent() {
       console.log(rest)
       const res2 = await Promise.all(rest)
       console.log(res2)
-      res2.forEach( c =>{
-        if(c ===null){
-
+      res2.forEach((c) => {
+        if (c === null) {
         }
       })
-      console.log(res2.filter(c => c !==null).map((c) => c))
-      setData(res2.filter(c => c !==null).map((c) => c))
+      console.log(res2.filter((c) => c !== null).map((c) => c))
+      setData(res2.filter((c) => c !== null).map((c) => c))
     } catch (error) {
       console.log(error)
     } finally {
@@ -111,7 +109,7 @@ export default function CartComponent() {
                           cartEcommerceAmericanState.filter((c) => c._id !== st?._id),
                         )
                         setData(Data.filter((c) => c._id !== st?._id))
-                       toast.success(`Se Borro el producto de tu carrito.`)
+                        toast.success(`Se Borro el producto de tu carrito.`)
                       }}
                       type="button"
                       className="btn btn-sm btn-danger text-white"
@@ -149,11 +147,14 @@ export default function CartComponent() {
             ),
           )}
         </p> */}
-        <div className="mt-3 mb-2 text-center">
+      </div>
+      <div className="mt-3 mb-2 text-center">
+        <Link to={`/eco/confirmar-compra`} onClick={onHide}>
           <button disabled={client ? false : true} className="button-ecomerce">
             <i className="fa-solid fa-money-bill me-3"></i> Ir a Pagar
           </button>
-        </div>
+        </Link>
+        {/*    <button disabled={client ? false : true} className="button-ecomerce"></button> */}
       </div>
     </>
   )

@@ -6,6 +6,9 @@ import ProductDetailPage from './pages/ProductDetailPage'
 import LoginProtectedClient from '../../utils/LoginProtectedClient'
 const MiProfilePage = React.lazy(() => import('./pages/MiPerfilPage/MiProfilePage'))
 const MisComprasPages = React.lazy(() => import('./pages/MisComprasPage/MisComprasPages'))
+const ConfirmarCompraPage = React.lazy(
+  () => import('./pages/ConfirmarCompraPage/ConfirmarCompraPage'),
+)
 
 // routes config
 
@@ -41,6 +44,17 @@ const AppContentLanding = () => {
             element={
               <LoginProtectedClient>
                 <MiProfilePage />
+              </LoginProtectedClient>
+            }
+          />
+          <Route
+            key={'confirmar-compra'}
+            path={'/eco/confirmar-compra'}
+            exact={true}
+            name={'Mi Perfil'}
+            element={
+              <LoginProtectedClient>
+                <ConfirmarCompraPage />
               </LoginProtectedClient>
             }
           />
