@@ -6,12 +6,18 @@ import { ViewDollar } from '../../../../utils'
 import { Accordion } from 'react-bootstrap'
 import { Payment, initMercadoPago } from '@mercadopago/sdk-react'
 import './ConfirmarCompraPage.css'
-
+import SelectAddressShop from './components/SelectAddressShop'
+import axios from 'axios'
+import toast from 'react-hot-toast'
 
 initMercadoPago(import.meta.env.VITE_MERCA_PUBLIC_KEY)
 
 export default function ConfirmarCompraPage({}) {
   const { validateProductoCart } = useProductos()
+
+  const [direccionSelecionada, setDireccionSelecionada] = useState(null)
+
+  const [pasoActive, setPasoActive] = useState('0')
 
   useEffect(() => {
     getAllProductCart()
@@ -21,7 +27,10 @@ export default function ConfirmarCompraPage({}) {
   const [isLoading, setisLoading] = useState(false)
   const [total, settotal] = useState(null)
 
-  const { cartEcommerceAmericanState, setCartEcommerceAmericanState } = useContext(AuthContext)
+  const { cartEcommerceAmericanState, setCartEcommerceAmericanState, client } =
+    useContext(AuthContext)
+
+  console.log(client)
 
   const customization = {
     paymentMethods: {
@@ -73,25 +82,55 @@ export default function ConfirmarCompraPage({}) {
   const onSubmit = async ({ selectedPaymentMethod, formData }) => {
     // callback llamado al hacer clic en el botón enviar datos
     return new Promise((resolve, reject) => {
-      formData.ordenData = watch()
-      formData.ordenData.total_order = parseFloat(total)
-      formData.ordenData.boletos = BoletosSelecionados
-      formData.ordenData.funcion_id = idShow
-      formData.ordenData.evento_id = dataDetalle.evento_id
+      /* formData.ordenData.total_order = parseFloat(total)
+      formData.ordenData.productos = Data
+      formData.ordenData.address_id = direccionSelecionada */
       console.log(formData)
+      console.log({
+        paymentMercado: formData,
+        orderData: {
+          products: Data.map((stk) => {
+            return {
+              stock_id: stk._id,
+              cantidad: stk.cantidad,
+              product_id: stk.product_id,
+              price: stk.product.price,
+            }
+          }),
+          address_id: direccionSelecionada,
+          client_id: client._id,
+        },
+      })
       axios
-        .post('/ordenes/process_payment', JSON.stringify(formData), {
-          headers: {
-            'Content-Type': 'application/json',
+        .post(
+          '/ordenes/process_payment',
+          JSON.stringify({
+            paymentMercado: formData,
+            orderData: {
+              products: Data.map((stk) => {
+                return {
+                  stock_id: stk._id,
+                  cantidad: stk.cantidad,
+                  product_id: stk.product_id,
+                  price: stk.product.price,
+                }
+              }),
+              address_id: direccionSelecionada,
+              client_id: client._id,
+            },
+          }),
+          {
+            headers: {
+              'Content-Type': 'application/json',
+            },
           },
-        })
+        )
         .then((response) => {
           // recibir el resultado del pago
           console.log(response)
           if (response.data.mercaResponse.status === 'approved') {
-            toast.success('SE GENERO SU ORDE')
-            setPasoActive('3')
-            setdataPayment(response.data.mercaResponse)
+            toast.success('Se ha Generado su Pedido Correctamente.')
+            setPasoActive('2')
             resolve()
           } else {
             //toast.error('HUBO UN ERROR EN EL PROCESO DE PAGO')
@@ -139,27 +178,32 @@ export default function ConfirmarCompraPage({}) {
       <p className="text-center">CONFIRMAR MI COMPRA</p>
       <div className="row g-4">
         <div className="col-md-6">
-          <Accordion defaultActiveKey="0">
+          <Accordion defaultActiveKey="0" activeKey={pasoActive}>
             <Accordion.Item eventKey="0">
               <Accordion.Header>Direccion de Envio</Accordion.Header>
               <Accordion.Body>
-                <span>Seleccione una Dirección de Envió</span>
-                <div>
-                  <div className="card">
-                    <div className="card-body">
-                      Nombre Direccion
-                      <div>Valle del Cauca, Buenaventura</div>
-                      <div>Cra 13 N° 3 a 40, Bosque (Csa 244)</div>
-                    </div>
-                  </div>
-                </div>
+                <SelectAddressShop
+                  setDireccionSelecionada={setDireccionSelecionada}
+                  direccionSelecionada={direccionSelecionada}
+                  setPasoActive={setPasoActive}
+                />
               </Accordion.Body>
             </Accordion.Item>
             <Accordion.Item eventKey="1">
               <Accordion.Header>Metodo de Pago</Accordion.Header>
               <Accordion.Body>
                 <div>
-                  {total && (
+                  <div className="text-center">
+                    <button
+                      className="btn btn-danger text-white"
+                      onClick={() => {
+                        setPasoActive('0')
+                      }}
+                    >
+                      Atras
+                    </button>
+                  </div>
+                  {total && pasoActive === '1' && (
                     <Payment
                       initialization={{ amount: total }}
                       customization={customization}
@@ -219,10 +263,12 @@ export default function ConfirmarCompraPage({}) {
                   {Data &&
                     Data.map((st) => (
                       <tr key={st?._id} className="">
-                        <td style={{color:"#696969"}} >{st?.product?.name}</td>
-                        <td style={{color:"#696969"}}  align="center">{st?.cantidad}</td>
-                        <td style={{color:"#696969"}} >{st?.size}</td>
-                        <td style={{color:"#696969"}} >{ViewDollar(st?.product?.price)}</td>
+                        <td style={{ color: '#696969' }}>{st?.product?.name}</td>
+                        <td style={{ color: '#696969' }} align="center">
+                          {st?.cantidad}
+                        </td>
+                        <td style={{ color: '#696969' }}>{st?.size}</td>
+                        <td style={{ color: '#696969' }}>{ViewDollar(st?.product?.price)}</td>
                       </tr>
                     ))}
                   <tr>
