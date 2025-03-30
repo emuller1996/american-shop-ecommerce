@@ -85,22 +85,6 @@ export default function ConfirmarCompraPage({}) {
       /* formData.ordenData.total_order = parseFloat(total)
       formData.ordenData.productos = Data
       formData.ordenData.address_id = direccionSelecionada */
-      console.log(formData)
-      console.log({
-        paymentMercado: formData,
-        orderData: {
-          products: Data.map((stk) => {
-            return {
-              stock_id: stk._id,
-              cantidad: stk.cantidad,
-              product_id: stk.product_id,
-              price: stk.product.price,
-            }
-          }),
-          address_id: direccionSelecionada,
-          client_id: client._id,
-        },
-      })
       axios
         .post(
           '/ordenes/process_payment',
@@ -116,7 +100,14 @@ export default function ConfirmarCompraPage({}) {
                 }
               }),
               address_id: direccionSelecionada,
-              client_id: client._id,
+              cliente: {
+                client_id: client._id,
+                name_client: client.name_client,
+                email_client: client.email_client,
+                phone_client: client.phone_client,
+                number_document_client: client.number_document_client,
+              },
+              total_order: total,
             },
           }),
           {
