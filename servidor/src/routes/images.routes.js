@@ -10,8 +10,6 @@ const ImagesRouters = Router();
 ImagesRouters.get("/:id", async (req, res) => {
   try {
     var producto = await getDocumentById(req.params.id);
-    console.log(producto.image_id);
-
     if (producto.image_id) {
       let temp = await getDocumentById(producto.image_id);
       producto.imageBase64 = temp.image;

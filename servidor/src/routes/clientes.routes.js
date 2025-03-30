@@ -30,7 +30,6 @@ ClienteRouters.get("/", validateTokenMid, async (req, res) => {
       if (c.ruta_id && c.ruta_id !== "") {
         try {
           const re = await getDocumentById(c.ruta_id);
-          console.log(re.body);
           return {
             ...c,
             ruta_view: { ...re.body._source, _id: re.body._id },
@@ -155,8 +154,6 @@ ClienteRouters.post("/login", async (req, res) => {
     if (requestEL.body.hits.total.value > 0) {
       let dataUser = requestEL.body.hits.hits[0]?._source;
       dataUser._id = requestEL.body.hits.hits[0]?._id;
-      console.log(dataUser);
-      console.log(md5(data.password_client) === dataUser.hash);
       if (md5(data.password_client) === dataUser.hash) {
         delete dataUser.hash;
         let token = generateClienteAccessToken(dataUser);

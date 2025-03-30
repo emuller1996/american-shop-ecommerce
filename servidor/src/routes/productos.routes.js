@@ -97,8 +97,6 @@ ProductosRouters.get("/pagination", async (req, res) => {
       };
     });
     data = await Promise.all(data);
-
-    console.log(searchResult.body);
     /* return {
       data: data,
       total: searchResult.body.hits.total.value,
@@ -191,8 +189,6 @@ ProductosRouters.get("/published", async (req, res) => {
       };
     });
     data = await Promise.all(data);
-
-    console.log(searchResult.body);
     /* return {
       data: data,
       total: searchResult.body.hits.total.value,
@@ -211,17 +207,13 @@ ProductosRouters.get("/published", async (req, res) => {
 ProductosRouters.get("/:id", async (req, res) => {
   try {
     var producto = await getDocumentById(req.params.id);
-    console.log(producto.image_id);
 
     if (producto.image_id) {
       let temp = await getDocumentById(producto.image_id);
       producto.imageBase64 = temp.image;
     }
     let images = await getAllImages(req.params.id);
-    console.log(images);
     let stocks = await getAllStock(req.params.id);
-    console.log(stocks);
-
     producto.Imagenes = images;
     producto.Stock = stocks;
 
@@ -255,8 +247,6 @@ ProductosRouters.post("/", async (req, res) => {
 
 ProductosRouters.put("/:id", async (req, res) => {
   try {
-    console.log(req.body);
-
     const r = await updateElasticByType(req.params.id, req.body);
     if (r.body.result === "updated") {
       await client.indices.refresh({ index: INDEX_ES_MAIN });
@@ -512,7 +502,6 @@ ProductosRouters.get("/:id/stock", async (req, res) => {
 
 ProductosRouters.put("/stock/:idStock", async (req, res) => {
   try {
-    console.log(req.body);
     const r = await updateElasticByType(req.params.idStock, req.body);
     if (r.body.result === "updated") {
       await client.indices.refresh({ index: INDEX_ES_MAIN });
@@ -531,7 +520,6 @@ ProductosRouters.post("/stock/:idStock/validate", async (req, res) => {
 
     resutl.product = resutl_sce;
     resutl.image = resutl_img;
-    console.log(req.body);
     if (req.body.cantidad > resutl.stock) {
       return res.status(400).json({ message: "error", resutl });
     }
@@ -545,7 +533,6 @@ ProductosRouters.post("/stock/:idStock/validate", async (req, res) => {
 ProductosRouters.post("/import-excel", async (req, res) => {
   try {
     const { file } = req.files;
-    console.log(file);
     if (!file) {
       return res.status(400).send("No se ha seleccionado ningún archivo");
     }
@@ -553,14 +540,12 @@ ProductosRouters.post("/import-excel", async (req, res) => {
     const workbook = xlsx.readFile(file.tempFilePath);
     const worksheet = workbook.Sheets[workbook.SheetNames[0]];
     var data = xlsx.utils.sheet_to_json(worksheet);
-    console.log(data);
 
     data = data.map((da) => {
       return { ...da, published: false };
     });
 
     const r = await createInMasaDocumentByType(data, "producto");
-    console.log(r);
 
     return res.status(200).json({ message: "Importada Realizada", data: r });
   } catch (error) {

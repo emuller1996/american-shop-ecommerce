@@ -85,8 +85,6 @@ ConsultasRouters.get("/pagination", async (req, res) => {
       };
     });
     data = await Promise.all(data);
-
-    console.log(searchResult.body);
     /* return {
       data: data,
       total: searchResult.body.hits.total.value,

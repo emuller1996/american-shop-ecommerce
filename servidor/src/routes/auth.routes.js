@@ -17,8 +17,6 @@ const AuthRouters = Router();
 
 AuthRouters.get("/validate", validateToken)
 AuthRouters.post("/login", async (req, res) => {
-  console.log(req.body);
-
   const searchResult = await client.search({
     index: INDEX_ES_MAIN,
     size: 1000,
