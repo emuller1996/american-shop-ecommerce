@@ -1,13 +1,20 @@
 import { Router } from "express";
 
 import axios from "axios";
-import { buscarElasticByType, crearElasticByType } from "../utils/index.js";
+import {
+  buscarElasticByType,
+  crearElasticByType,
+  getDocumentById,
+} from "../utils/index.js";
+import { INDEX_ES_MAIN } from "../config.js";
+import { client } from "../db.js";
 const OrdenesRouters = Router();
 
 OrdenesRouters.post("/process_payment", async (req, res) => {
   let data = req.body;
   let ordenData = req.body.orderData;
-  let paymentMercado = req.body.paymentMercado
+  let paymentMercado = req.body.paymentMercado;
+
   delete data.ordenData;
   console.log(req.body);
   console.log(data);
@@ -67,6 +74,86 @@ OrdenesRouters.get("/", async (req, res) => {
 
     ordenes = await Promise.all(ordenes);
     return res.status(200).json(ordenes);
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+});
+
+OrdenesRouters.get("/pagination", async (req, res) => {
+  let perPage = req.query.perPage ?? 10;
+  let page = req.query.page ?? 1;
+  let search = req.query.search ?? "";
+  let gender = req.query.gender ?? "";
+
+  try {
+    var consulta = {
+      index: INDEX_ES_MAIN,
+      size: perPage,
+      from: (page - 1) * perPage,
+      body: {
+        query: {
+          bool: {
+            must: [
+              /* { match_phrase_prefix: { name: nameQuery } } */
+            ],
+            filter: [
+              {
+                term: {
+                  type: "orden",
+                },
+              },
+            ],
+          },
+        },
+        sort: [
+          { "createdTime": { order: "desc" } }, // Reemplaza con el campo por el que quieres ordenar
+        ],
+      },
+    };
+    if (gender !== "" && gender) {
+      consulta.body.query.bool.filter.push({
+        term: {
+          "gender.keyword": gender,
+        },
+      });
+    }
+    if (search !== "" && search) {
+      consulta.body.query.bool.must.push({
+        query_string: { query: `*${search}*`, fields: ["cliente.name_client", "cliente.email_client", "cliente.phone_client", "cliente.number_document_client"] },
+      });
+    }
+    const searchResult = await client.search(consulta);
+
+    var data = searchResult.body.hits.hits.map((c) => {
+      return {
+        ...c._source,
+        _id: c._id,
+      };
+    });
+
+    data = data.map(async (product) => {
+      return {
+        ...product,
+       /*  cliente: product.client_id
+          ? await getDocumentById(product?.client_id)
+          : "", */
+        address: product.address_id
+          ? await getDocumentById(product?.address_id)
+          : "",
+      };
+    });
+    data = await Promise.all(data);
+    /* return {
+      data: data,
+      total: searchResult.body.hits.total.value,
+      total_pages: Math.ceil(searchResult.body.hits.total.value / perPage),
+    }; */
+
+    return res.status(200).json({
+      data: data,
+      total: searchResult.body.hits.total.value,
+      total_pages: Math.ceil(searchResult.body.hits.total.value / perPage),
+    });
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
