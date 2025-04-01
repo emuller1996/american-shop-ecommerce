@@ -257,4 +257,56 @@ ClienteRouters.get("/get/address", validateTokenClientMid, async (req, res) => {
   }
 });
 
+
+ClienteRouters.get("/get/shopping", validateTokenClientMid, async (req, res) => {
+  try {
+    const decoded = jwtDecode(req.headers.authorization);
+    let perPage = req.query.perPage ?? 10;
+    let page = req.query.page ?? 1;
+    var consulta = {
+      index: INDEX_ES_MAIN,
+      size: perPage,
+      from: (page - 1) * perPage,
+      body: {
+        query: {
+          bool: {
+            must: [
+              {
+                term: {
+                  "cliente.client_id.keyword": {
+                    value: decoded._id,
+                  },
+                },
+              },
+            ],
+            filter: [
+              {
+                term: {
+                  type: "orden",
+                },
+              },
+            ],
+          },
+        },
+        sort: [
+          { "createdTime": { order: "desc" } }, // Reemplaza con el campo por el que quieres ordenar
+        ],
+      },
+    };
+
+    const searchResult = await client.search(consulta);
+
+    var data = searchResult.body.hits.hits.map((c) => {
+      return {
+        ...c._source,
+        _id: c._id,
+      };
+    });
+
+    return res.status(200).json(data);
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+});
+
 export default ClienteRouters;
