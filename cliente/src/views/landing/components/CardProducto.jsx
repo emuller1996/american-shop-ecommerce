@@ -49,7 +49,7 @@ const CardProducto = ({ producto }) => {
             <img
               className="card-img-top"
               style={{ height: '320px', opacity: '0.2' }}
-              src={`https://ecommerce.esmuller.cloud/assets/Logo-LBxHafXJ.png`}
+              src={`https://esmuller.cloud/assets/Logo-LBxHafXJ.png`}
               alt="Title"
             />
           </div>

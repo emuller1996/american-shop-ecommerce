@@ -25,3 +25,8 @@ export const postNewAddressClientesService = (token, data) => {
 export const getGetAddressClientesService = (token) => {
   return axios.get(`/clientes/get/address`,{ headers: { 'Authorization': token } })
 }
+
+
+export const getGetShoppingClientesService = (token) => {
+  return axios.get(`/clientes/get/shopping`,{ headers: { 'Authorization': token } })
+}

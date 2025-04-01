@@ -11,7 +11,7 @@ export default function HomeLanding() {
 
   const [dataFilter, setDataFilter] = useState({
     page: 1,
-    perPage: 15,
+    perPage: 9,
   })
 
   useEffect(() => {
