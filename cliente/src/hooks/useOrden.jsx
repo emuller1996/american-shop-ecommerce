@@ -1,19 +1,23 @@
 /* eslint-disable prettier/prettier */
 
 import { useContext, useState } from 'react'
-import { getAllOrdenService, getOrdenesSearchPaginationServices } from '../services/ordenes.services'
+import {
+  getAllOrdenService,
+  getOrdenByIdServices,
+  getOrdenesSearchPaginationServices,
+} from '../services/ordenes.services'
 import AuthContext from '../context/AuthContext'
 
 export const useOrden = () => {
   const [data, setData] = useState(null)
   const [dataP, setDataP] = useState(undefined)
-
+  const [dataDetalle, setDataDetalle] = useState(null)
 
   const [error, setError] = useState(null)
   const [loading, setLoading] = useState(false)
   const abortController = new AbortController()
   const signal = abortController.signal
-  const { Token, TokenClient} = useContext(AuthContext)
+  const { Token, TokenClient } = useContext(AuthContext)
 
   /* const getAllOrdenes = async (id) => {
     try {
@@ -32,7 +36,7 @@ export const useOrden = () => {
     setLoading(true)
     setData([])
     try {
-      const res = await getAllOrdenService({signal:signal})
+      const res = await getAllOrdenService({ signal: signal })
       if (res.status !== 200) {
         let err = new Error('Error en la petición Fetch')
         err.status = res.status || '00'
@@ -56,36 +60,61 @@ export const useOrden = () => {
     }
   }
 
-  
-
-  
   const getAllOrdenesPagination = async (data) => {
-      setLoading(true)
-      setDataP(undefined)
-      try {
-        const res = await getOrdenesSearchPaginationServices(Token, data)
-        if (res.status !== 200) {
-          let err = new Error('Error en la petición Fetch')
-          err.status = res.status || '00'
-          err.statusText = res.statusText || 'Ocurrió un error'
-          throw err
-        }
-        console.log(res)
-        if (!signal.aborted) {
-          setDataP(res.data)
-          setError(null)
-        }
-      } catch (error) {
-        if (!signal.aborted) {
-          setData(null)
-          setError(error)
-        }
-      } finally {
-        if (!signal.aborted) {
-          setLoading(false)
-        }
+    setLoading(true)
+    setDataP(undefined)
+    try {
+      const res = await getOrdenesSearchPaginationServices(Token, data)
+      if (res.status !== 200) {
+        let err = new Error('Error en la petición Fetch')
+        err.status = res.status || '00'
+        err.statusText = res.statusText || 'Ocurrió un error'
+        throw err
+      }
+      console.log(res)
+      if (!signal.aborted) {
+        setDataP(res.data)
+        setError(null)
+      }
+    } catch (error) {
+      if (!signal.aborted) {
+        setData(null)
+        setError(error)
+      }
+    } finally {
+      if (!signal.aborted) {
+        setLoading(false)
       }
     }
+  }
+
+  const getOrdenById = async (id) => {
+    setLoading(true)
+    setDataP(undefined)
+    try {
+      const res = await getOrdenByIdServices(Token, id)
+      if (res.status !== 200) {
+        let err = new Error('Error en la petición Fetch')
+        err.status = res.status || '00'
+        err.statusText = res.statusText || 'Ocurrió un error'
+        throw err
+      }
+      console.log(res)
+      if (!signal.aborted) {
+        setDataDetalle(res.data)
+        setError(null)
+      }
+    } catch (error) {
+      if (!signal.aborted) {
+        setDataDetalle(null)
+        setError(error)
+      }
+    } finally {
+      if (!signal.aborted) {
+        setLoading(false)
+      }
+    }
+  }
 
   return {
     data,
@@ -94,6 +123,8 @@ export const useOrden = () => {
     getAllOrdenes,
     abortController,
     getAllOrdenesPagination,
-    dataP
+    dataP,
+    getOrdenById,
+    dataDetalle
   }
 }
