@@ -83,8 +83,8 @@ OrdenesRouters.get("/pagination", async (req, res) => {
   let perPage = req.query.perPage ?? 10;
   let page = req.query.page ?? 1;
   let search = req.query.search ?? "";
-  let gender = req.query.gender ?? "";
-
+  let status = req.query.status ?? "";
+  console.log(req.query);
   try {
     var consulta = {
       index: INDEX_ES_MAIN,
@@ -110,10 +110,10 @@ OrdenesRouters.get("/pagination", async (req, res) => {
         ],
       },
     };
-    if (gender !== "" && gender) {
+    if (status !== "" && status) {
       consulta.body.query.bool.filter.push({
         term: {
-          "gender.keyword": gender,
+          "status.keyword": status,
         },
       });
     }

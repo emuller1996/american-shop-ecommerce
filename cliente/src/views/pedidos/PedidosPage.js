@@ -3,8 +3,8 @@ import { CContainer } from '@coreui/react'
 import { Button, Form, Modal, Tooltip } from 'react-bootstrap'
 import DataTable from 'react-data-table-component'
 import {
-  genderOptions,
   paginationComponentOptions,
+  StatusOrderOptions,
   stylesSelect,
   themeSelect,
 } from '../../utils/optionsConfig'
@@ -44,17 +44,17 @@ const PedidosPage = () => {
               <div>
                 <Form.Label htmlFor="gender">Estado</Form.Label>
                 <Select
-                  name={'gender'}
+                  name={'status'}
                   placeholder=""
                   onChange={(e) => {
                     console.log(e)
                     setdataFilter((status) => {
-                      return { ...status, gender: e?.value ?? '' }
+                      return { ...status, status: e?.value ?? '' }
                     })
                   }}
                   styles={stylesSelect}
                   theme={themeSelect}
-                  options={genderOptions}
+                  options={StatusOrderOptions}
                   isClearable
                 />
               </div>
