@@ -12,6 +12,14 @@ export const genderOptions = [
   { label: 'Ninos', value: 'kid' },
 ]
 
+export const StatusOrderOptions = [
+  { label: 'Pendiente', value: 'Pendiente' },
+  { label: 'En Proceso', value: 'En Proceso' },
+  { label: 'En Camino', value: 'En Camino' },
+  { label: 'Entregada', value: 'Entregada' },
+  { label: 'Cancelada', value: 'Cancelada' },
+]
+
 
 
 export const stylesSelect = {

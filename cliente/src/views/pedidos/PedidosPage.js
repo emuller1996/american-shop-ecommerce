@@ -3,8 +3,8 @@ import { CContainer } from '@coreui/react'
 import { Button, Form, Modal, Tooltip } from 'react-bootstrap'
 import DataTable from 'react-data-table-component'
 import {
-  genderOptions,
   paginationComponentOptions,
+  StatusOrderOptions,
   stylesSelect,
   themeSelect,
 } from '../../utils/optionsConfig'
@@ -44,17 +44,17 @@ const PedidosPage = () => {
               <div>
                 <Form.Label htmlFor="gender">Estado</Form.Label>
                 <Select
-                  name={'gender'}
+                  name={'status'}
                   placeholder=""
                   onChange={(e) => {
                     console.log(e)
                     setdataFilter((status) => {
-                      return { ...status, gender: e?.value ?? '' }
+                      return { ...status, status: e?.value ?? '' }
                     })
                   }}
                   styles={stylesSelect}
                   theme={themeSelect}
-                  options={genderOptions}
+                  options={StatusOrderOptions}
                   isClearable
                 />
               </div>
@@ -89,10 +89,11 @@ const PedidosPage = () => {
             columns={[
               {
                 name: 'Acciones',
+                width: '80px',
                 cell: (row) => {
                   return (
                     <>
-                      <button
+                      {/* <button
                         onClick={() => {
                           setProductoSelecionado(row)
                           handleShow()
@@ -100,20 +101,20 @@ const PedidosPage = () => {
                         title="Editar Producto."
                         className="btn btn-primary btn-sm me-2"
                       >
-                        <i className="fa-solid fa-pen-to-square"></i>
-                      </button>
-                      {/* <Link
-                        to={`${row._id}/images`}
+                        <i className="fa-solid fa-eye"></i>
+                      </button> */}
+                      <Link
+                        to={`${row._id}/detalle`}
                         onClick={() => {
                           setProductoSelecionado(row)
                           handleShow()
                         }}
-                        title="Editar Producto."
-                        className="btn btn-info btn-sm me-2"
+                        title="Detalle Orden."
+                        className="btn text-white btn-info btn-sm me-2"
                       >
-                        <i className="text-white fa-regular fa-images"></i>
+                        <i className="fa-solid fa-eye"></i>
                       </Link>
-                      <Link
+                      {/*<Link
                         to={`${row._id}/gestion-tallas`}
                         onClick={() => {
                           setProductoSelecionado(row)

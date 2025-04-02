@@ -4,6 +4,7 @@ import axios from "axios";
 import {
   buscarElasticByType,
   crearElasticByType,
+  crearLogsElastic,
   getDocumentById,
 } from "../utils/index.js";
 import { INDEX_ES_MAIN } from "../config.js";
@@ -83,8 +84,8 @@ OrdenesRouters.get("/pagination", async (req, res) => {
   let perPage = req.query.perPage ?? 10;
   let page = req.query.page ?? 1;
   let search = req.query.search ?? "";
-  let gender = req.query.gender ?? "";
-
+  let status = req.query.status ?? "";
+  console.log(req.query);
   try {
     var consulta = {
       index: INDEX_ES_MAIN,
@@ -110,10 +111,10 @@ OrdenesRouters.get("/pagination", async (req, res) => {
         ],
       },
     };
-    if (gender !== "" && gender) {
+    if (status !== "" && status) {
       consulta.body.query.bool.filter.push({
         term: {
-          "gender.keyword": gender,
+          "status.keyword": status,
         },
       });
     }
@@ -154,6 +155,41 @@ OrdenesRouters.get("/pagination", async (req, res) => {
       total: searchResult.body.hits.total.value,
       total_pages: Math.ceil(searchResult.body.hits.total.value / perPage),
     });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+});
+
+OrdenesRouters.get("/:id", async (req, res) => {
+  try {
+    var orden = await getDocumentById(req.params.id);
+
+    if (orden.address_id) {
+      let temp = await getDocumentById(orden.address_id);
+      orden.address = temp;
+    }
+    console.log(orden.products);
+    var productosData = orden.products.map( async c =>{
+      //console.log(await getDocumentById(c.product_id));
+      let image_id = (await getDocumentById(c.product_id)).image_id;
+      return {...c,
+        producto_data : await getDocumentById(c.product_id),
+        stock_data : await getDocumentById(c.stock_id),
+        image_id,
+        image: (await getDocumentById(image_id)).image,
+      }
+    })
+    productosData = await Promise.all(productosData)
+    
+    console.log(productosData);
+    orden.products = productosData;
+
+    crearLogsElastic(
+      JSON.stringify(req.headers),
+      JSON.stringify(req.body),
+      "Se mostro el detalle de un orden."
+    );
+    return res.status(200).json(orden);
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
