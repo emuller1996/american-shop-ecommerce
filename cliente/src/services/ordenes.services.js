@@ -32,3 +32,11 @@ export const getOrdenByIdServices = async (token, id) => {
     },
   })
 }
+
+export const putUpdateOrdenByIdServices = async (token, data,id) => {
+  return await axios.put(`/ordenes/${id}`,data ,{
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  })
+}

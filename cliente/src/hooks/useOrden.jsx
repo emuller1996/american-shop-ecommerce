@@ -5,6 +5,7 @@ import {
   getAllOrdenService,
   getOrdenByIdServices,
   getOrdenesSearchPaginationServices,
+  putUpdateOrdenByIdServices,
 } from '../services/ordenes.services'
 import AuthContext from '../context/AuthContext'
 
@@ -116,6 +117,10 @@ export const useOrden = () => {
     }
   }
 
+  const changeStatusOrder = async (id,data ) => {
+    return putUpdateOrdenByIdServices(Token, data, id)
+  }
+
   return {
     data,
     error,
@@ -125,6 +130,7 @@ export const useOrden = () => {
     getAllOrdenesPagination,
     dataP,
     getOrdenById,
-    dataDetalle
+    dataDetalle,
+    changeStatusOrder
   }
 }
