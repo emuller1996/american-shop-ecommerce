@@ -6,9 +6,12 @@ import {
   crearElasticByType,
   crearLogsElastic,
   getDocumentById,
+  updateElasticByType,
 } from "../utils/index.js";
 import { INDEX_ES_MAIN } from "../config.js";
 import { client } from "../db.js";
+import { sendOrdenDetail } from "../services/mailService.js";
+import { getHTMLOrderDetail } from "../services/MailUtils.js";
 const OrdenesRouters = Router();
 
 OrdenesRouters.post("/process_payment", async (req, res) => {
@@ -35,6 +38,29 @@ OrdenesRouters.post("/process_payment", async (req, res) => {
     if (t.data.status === "approved") {
       const response = await crearElasticByType(ordenData, "orden");
       let order = response.body;
+      var ordenDataSend = await getDocumentById(response.body._id);
+
+      if (ordenDataSend.address_id) {
+        let temp = await getDocumentById(ordenDataSend.address_id);
+        ordenDataSend.address = temp;
+      }
+      console.log(ordenDataSend.products);
+      var productosData = ordenDataSend.products.map(async (c) => {
+        //console.log(await getDocumentById(c.product_id));
+        let image_id = (await getDocumentById(c.product_id)).image_id;
+        return {
+          ...c,
+          producto_data: await getDocumentById(c.product_id),
+          stock_data: await getDocumentById(c.stock_id),
+          image_id,
+          image: (await getDocumentById(image_id)).image,
+        };
+      });
+      productosData = await Promise.all(productosData);
+
+      console.log(productosData);
+      ordenDataSend.products = productosData;
+      await sendOrdenDetail(ordenDataSend)
       return res.json({ message: "Melo", order, mercaResponse: t.data });
     } else {
       return res.json({
@@ -80,6 +106,23 @@ OrdenesRouters.get("/", async (req, res) => {
   }
 });
 
+OrdenesRouters.put("/:id", async (req, res) => {
+  try {
+    const r = await updateElasticByType(req.params.id, req.body);
+    if (r.body.result === "updated") {
+      await client.indices.refresh({ index: INDEX_ES_MAIN });
+      crearLogsElastic(
+        JSON.stringify(req.headers),
+        JSON.stringify(req.body),
+        "Se ha Actualizado un Orden."
+      );
+      return res.json({ message: "Orden  Actualizada" });
+    }
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+});
+
 OrdenesRouters.get("/pagination", async (req, res) => {
   let perPage = req.query.perPage ?? 10;
   let page = req.query.page ?? 1;
@@ -107,7 +150,7 @@ OrdenesRouters.get("/pagination", async (req, res) => {
           },
         },
         sort: [
-          { "createdTime": { order: "desc" } }, // Reemplaza con el campo por el que quieres ordenar
+          { createdTime: { order: "desc" } }, // Reemplaza con el campo por el que quieres ordenar
         ],
       },
     };
@@ -120,7 +163,15 @@ OrdenesRouters.get("/pagination", async (req, res) => {
     }
     if (search !== "" && search) {
       consulta.body.query.bool.must.push({
-        query_string: { query: `*${search}*`, fields: ["cliente.name_client", "cliente.email_client", "cliente.phone_client", "cliente.number_document_client"] },
+        query_string: {
+          query: `*${search}*`,
+          fields: [
+            "cliente.name_client",
+            "cliente.email_client",
+            "cliente.phone_client",
+            "cliente.number_document_client",
+          ],
+        },
       });
     }
     const searchResult = await client.search(consulta);
@@ -135,7 +186,7 @@ OrdenesRouters.get("/pagination", async (req, res) => {
     data = data.map(async (product) => {
       return {
         ...product,
-       /*  cliente: product.client_id
+        /*  cliente: product.client_id
           ? await getDocumentById(product?.client_id)
           : "", */
         address: product.address_id
@@ -169,20 +220,24 @@ OrdenesRouters.get("/:id", async (req, res) => {
       orden.address = temp;
     }
     console.log(orden.products);
-    var productosData = orden.products.map( async c =>{
+    var productosData = orden.products.map(async (c) => {
       //console.log(await getDocumentById(c.product_id));
       let image_id = (await getDocumentById(c.product_id)).image_id;
-      return {...c,
-        producto_data : await getDocumentById(c.product_id),
-        stock_data : await getDocumentById(c.stock_id),
+      return {
+        ...c,
+        producto_data: await getDocumentById(c.product_id),
+        stock_data: await getDocumentById(c.stock_id),
         image_id,
         image: (await getDocumentById(image_id)).image,
-      }
-    })
-    productosData = await Promise.all(productosData)
-    
+      };
+    });
+    productosData = await Promise.all(productosData);
+
     console.log(productosData);
     orden.products = productosData;
+
+    let html = getHTMLOrderDetail(orden);
+        console.log(html);
 
     crearLogsElastic(
       JSON.stringify(req.headers),

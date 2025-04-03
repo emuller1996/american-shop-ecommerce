@@ -1,5 +1,6 @@
 import { createTransport } from "nodemailer";
-import 'dotenv/config';
+import "dotenv/config";
+import { getHTMLOrderDetail } from "./MailUtils.js";
 // Configurar el transporte SMTP de IONOS
 const transporter = createTransport({
   host: "smtp.ionos.com", // Servidor SMTP de IONOS
@@ -15,7 +16,7 @@ const transporter = createTransport({
 });
 
 // Función para enviar el correo de verificación
-const sendVerificationEmail = async (email) => {
+export const sendVerificationEmail = async (email) => {
   const mailOptions = {
     from: '"ECOMMERCE AMERICAN SHOP" <ecommerce-dev@esmuller.cloud>', // Remitente
     to: email, // Destinatario
@@ -75,7 +76,7 @@ const sendVerificationEmail = async (email) => {
         >
           <img
             class="card-img-top"
-            src="https://ecommerce.esmuller.cloud/assets/Logo-LBxHafXJ.png"
+            src="https://esmuller.cloud/assets/Logo-LBxHafXJ.png"
             alt="Title"
             style="width: 110px"
           />
@@ -112,4 +113,20 @@ const sendVerificationEmail = async (email) => {
   }
 };
 
-export default sendVerificationEmail;
+
+export const sendOrdenDetail = async (data) => {
+  try {
+    let html = getHTMLOrderDetail(data);
+    console.log(html);
+    const mailOptions = {
+      from: '"ECOMMERCE AMERICAN SHOP (DETALLE DE COMPRA)" <ecommerce-dev@esmuller.cloud>', // Remitente
+      to: data?.cliente?.email_client, // Destinatario
+      subject: "DETALLE DE COMPRA",
+      html: html,
+    };
+    await transporter.sendMail(mailOptions);
+    console.log(`Correo de verificación enviado a ${data?.cliente?.email_client}`);
+  } catch (error) {
+    console.error("Error enviando el correo:", error);
+  }
+};

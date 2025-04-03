@@ -18,8 +18,8 @@ import {
   validateTokenMid,
 } from "../utils/authjws.js";
 import { INDEX_ES_MAIN } from "../config.js";
-import sendVerificationEmail from "../services/mailService.js";
 import { jwtDecode } from "jwt-decode";
+import { sendVerificationEmail } from "../services/mailService.js";
 const fileUpload = pkg;
 const ClienteRouters = Router();
 

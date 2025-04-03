@@ -6,11 +6,12 @@ import { Form } from 'react-bootstrap'
 import { useParams } from 'react-router-dom'
 import { useOrden } from '../../../hooks/useOrden'
 import { ViewDollar } from '../../../utils'
+import toast from 'react-hot-toast'
 
 export default function PedidoDetallesPage() {
   const { idOrder } = useParams()
 
-  const { getOrdenById, dataDetalle, loading } = useOrden()
+  const { getOrdenById, dataDetalle, loading, changeStatusOrder } = useOrden()
 
   useEffect(() => {
     getOrdenById(idOrder)
@@ -38,7 +39,7 @@ export default function PedidoDetallesPage() {
       )}
       {dataDetalle && (
         <>
-          <div className="card p-3">
+          <div className="card p-3 mb-3">
             <div className="col-md-3 mx-auto">
               <Form.Label htmlFor="status">Cambiar de Estado</Form.Label>
               {dataDetalle && (
@@ -47,8 +48,13 @@ export default function PedidoDetallesPage() {
                   id="status"
                   placeholder=""
                   defaultValue={StatusOrderOptions.find((sta) => sta.value === dataDetalle?.status)}
-                  onChange={(e) => {
-                    console.log(e)
+                  onChange={async (e) => {
+                    try {
+                      await changeStatusOrder(idOrder, { status: e?.value })
+                      toast.success(`Se ha cambiado de estado la Orden.`)
+                    } catch (error) {
+                      console.log(error)
+                    }
                   }}
                   styles={stylesSelect}
                   theme={themeSelect}
@@ -58,6 +64,33 @@ export default function PedidoDetallesPage() {
             </div>
           </div>
           <div className="row g-3">
+            <div className="col-md-6">
+              <span className="d-flex justify-content-center text-muted">Datos de Cliente</span>
+              <div className="card">
+                <div className="card-body">
+                  <div className="d-flex justify-content-between">
+                    <span className="">Nombre</span>
+                    <span className="">{dataDetalle?.cliente?.name_client}</span>
+                  </div>
+                  <div className="d-flex justify-content-between">
+                    <span className="">Correo</span>
+                    <span className="">{dataDetalle?.cliente?.email_client}</span>
+                  </div>
+                  <div className="d-flex justify-content-between">
+                    <span className="">Telefono</span>
+                    <span className="">{dataDetalle?.cliente?.phone_client}</span>
+                  </div>
+                  <div className="d-flex justify-content-between">
+                    <span className="">Num Documento</span>
+                    <span className="">{dataDetalle?.cliente?.number_document_client}</span>
+                  </div>
+                  <div className="d-flex justify-content-between">
+                    <span className=""> <br /></span>
+                    <span className=""></span>
+                  </div>
+                </div>
+              </div>
+            </div>
             <div className="col-md-6">
               <span className="d-flex justify-content-center text-muted">Datos de Envio</span>
               <div className="card">
