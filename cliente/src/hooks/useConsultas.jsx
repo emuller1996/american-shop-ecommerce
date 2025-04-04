@@ -2,7 +2,7 @@
 
 import { useContext, useState } from 'react'
 import AuthContext from '../context/AuthContext'
-import { getConsultasPaginationServices } from '../services/consultas.services'
+import { getConsultasPaginationServices, putUpdateConsultasByIdServices } from '../services/consultas.services'
 
 export const useConsultas = () => {
   const { Token } = useContext(AuthContext)
@@ -41,10 +41,15 @@ export const useConsultas = () => {
     }
   }
 
+  const changeStatusConsultas = async (id,data ) => {
+      return putUpdateConsultasByIdServices(Token, data, id)
+    }
+
   return {
     getAllConsultasPagination,
     dataP,
     error,
     loading,
+    changeStatusConsultas
   }
 }

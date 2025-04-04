@@ -6,19 +6,29 @@ import { useConsultas } from '../../hooks/useConsultas'
 import Pagination from '@mui/material/Pagination'
 import ReactTimeAgo from 'react-time-ago'
 import { ViewDollar } from '../../utils'
+import toast from 'react-hot-toast'
+import { Chip } from '@mui/material'
 
 const ConsultasPages = () => {
   const [show, setShow] = useState(false)
+  const [showHide, setShowHide] = useState(false)
+
   const [consultaSelecionada, setConsultaSelecionada] = useState(null)
   const [Draw, setDraw] = useState(1)
 
   const [filterData, setfilterData] = useState({ page: 1, status: '' })
 
-  const { getAllConsultasPagination, dataP, loading } = useConsultas()
+  const { getAllConsultasPagination, dataP, loading, changeStatusConsultas } = useConsultas()
 
   useEffect(() => {
     getAllConsultasPagination(filterData)
-  }, [filterData])
+  }, [filterData, Draw])
+
+  const translateStatus = {
+    pending: 'Pendientes',
+    completed: 'Completados',
+    hide: 'Ocultos',
+  }
 
   return (
     <div>
@@ -67,7 +77,13 @@ const ConsultasPages = () => {
         {dataP &&
           dataP?.data?.map((consul) => (
             <div key={consul._id} className="col-md-6">
-              <div className="card">
+              <div
+                className="card"
+                style={{
+                  backgroundColor: consul.status === 'hide' ? '#ffd9d9' : '',
+                  filter: consul.status === 'hide' ? 'blur(4px)' : '',
+                }}
+              >
                 <div className="card-body">
                   <div className="d-flex justify-content-between border-bottom pb-2 mb-2">
                     <span>Fecha</span>
@@ -76,7 +92,7 @@ const ConsultasPages = () => {
                   </div>
                   <div className="d-flex justify-content-between border-bottom pb-2 mb-2">
                     <span>Estado</span>
-                    <span className="badge rounded text-bg-primary">Pendiente</span>
+                    <Chip label={translateStatus[consul.status]} variant="outlined" />
                   </div>
                   <div className="d-flex justify-content-between align-items-center border-bottom pb-2 mb-2">
                     <span>Producto</span>
@@ -102,7 +118,13 @@ const ConsultasPages = () => {
                     >
                       <i className="fa-solid fa-reply me-2"></i>Responder
                     </button>
-                    <button className="btn btn-danger text-white">
+                    <button
+                      className="btn btn-danger text-white"
+                      onClick={() => {
+                        setConsultaSelecionada(consul)
+                        setShowHide(true)
+                      }}
+                    >
                       <i className="fa-solid fa-eye-slash me-2"></i>Ocultar
                     </button>
                   </div>
@@ -182,6 +204,50 @@ const ConsultasPages = () => {
                 </button>
               </div>
             </div>
+          </div>
+        </Modal.Body>
+      </Modal>
+
+      <Modal
+        size="lg"
+        centered
+        show={showHide}
+        onHide={() => {
+          setShowHide(false)
+        }}
+      >
+        <Modal.Body>
+          <p className="text-center">Seguro desea Ocultar esta Consulta?</p>
+          <hr />
+          <p className="text-center">{`" ${consultaSelecionada?.consulta} "`}</p>
+          <hr />
+          <div className="d-flex gap-4 justify-content-center">
+            <button
+              onClick={async () => {
+                try {
+                  console.log(consultaSelecionada)
+                  await changeStatusConsultas(consultaSelecionada._id, { status: 'hide' })
+                  toast.success(`Consulta Ocultada Correctamente.`)
+                  setDraw((status) => ++status)
+                  setConsultaSelecionada(null)
+                  setShowHide(false)
+                } catch (error) {
+                  console.log(error)
+                }
+              }}
+              className="btn btn-info text-white"
+            >
+              <i className="fa-solid fa-eye-slash me-2"></i>Ocultar
+            </button>
+            <button
+              className="btn btn-danger text-white"
+              onClick={() => {
+                setConsultaSelecionada(null)
+                setShowHide(false)
+              }}
+            >
+              Cancelar
+            </button>
           </div>
         </Modal.Body>
       </Modal>

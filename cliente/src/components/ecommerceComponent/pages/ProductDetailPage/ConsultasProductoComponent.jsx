@@ -3,13 +3,16 @@ import React, { useContext, useEffect, useState } from 'react'
 import AuthContext from '../../../../context/AuthContext'
 import { useProductos } from '../../../../hooks/useProductos'
 import toast from 'react-hot-toast'
+import ReactTimeAgo from 'react-time-ago'
+import PropTypes from 'prop-types'
+
 export default function ConsultasProductoComponent({ productId }) {
+  ConsultasProductoComponent.propTypes = {
+    productId: PropTypes.string.isRequired,
+  }
   const { client } = useContext(AuthContext)
   const { ConsultasProduct, getConsultakByProductId, createConsultaProducto } = useProductos()
-
-  const [consultaSend, setConsultaSend] = useState('second')
-
-  console.log(client)
+  const [consultaSend, setConsultaSend] = useState('')
 
   useEffect(() => {
     getConsultakByProductId(productId)
@@ -42,9 +45,29 @@ export default function ConsultasProductoComponent({ productId }) {
               ConsultasProduct.map((consul) => (
                 <div key={consul._id} className="col-12">
                   <div className="card">
-                    <div className="card-body">
-                      <span className="card-title">Usuario</span>
-                      <p className="card-text">{consul?.consulta}</p>
+                    <div className="card-body position-relative">
+                      <span
+                        style={{ fontSize: '0.8em' }}
+                        className="text-muted position-absolute top-0 end-0 d-block text-start pt-1 pe-2"
+                      >
+                        <ReactTimeAgo date={consul.createdTime} locale="en-US" />
+                      </span>
+                      <div className="row">
+                        <div className="flex-shrink-1 col-12 col-md-2">
+                          <div className="text-center">
+                            <i
+                              style={{ color: '#818181' }}
+                              className="fa-regular fa-circle-user fa-2x"
+                            ></i>
+                            <span className="card-title d-block text-muted">
+                              {consul?.cliente?.name_client}
+                            </span>
+                          </div>
+                        </div>
+                        <div className="p-2 col-12 col-md-10">
+                          <p className="card-text">{consul?.consulta}</p>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -102,6 +125,9 @@ export default function ConsultasProductoComponent({ productId }) {
                   className="form-control"
                   name=""
                   id=""
+                  placeholder='Ingresa tu Consulta aca.'
+                  minLength={20}
+                  maxLength={300}
                   rows="3"
                 ></textarea>
               </div>
