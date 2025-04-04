@@ -441,16 +441,28 @@ ProductosRouters.get("/:id/consultas", async (req, res) => {
           },
         },
         sort: [
-          { createdTime: { order: "asc" } }, // Reemplaza con el campo por el que quieres ordenar
+          { createdTime: { order: "desc" } }, // Reemplaza con el campo por el que quieres ordenar
         ],
       },
     });
-    const dataImages = searchResult.body.hits.hits.map((c) => {
+    let dataImages = searchResult.body.hits.hits.map((c) => {
       return {
         ...c._source,
         _id: c._id,
       };
     });
+    dataImages = dataImages.map( async c =>{
+      let cliente =  await getDocumentById(c.client_id)
+      return {...c, 
+        cliente : {
+          name_client:cliente.name_client,
+          email_client:cliente.email_client,
+          phone_client:cliente.phone_client,
+        }
+      }
+    })
+
+    dataImages =  await Promise.all(dataImages);
     return res.status(200).json(dataImages);
   } catch (error) {
     return res.status(500).json({ message: error.message });
