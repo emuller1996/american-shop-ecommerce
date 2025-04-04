@@ -437,6 +437,11 @@ ProductosRouters.get("/:id/consultas", async (req, res) => {
                   },
                 },
               },
+              {
+                terms: {
+                  status: ['pending','completed'],
+                },
+              },
             ],
           },
         },

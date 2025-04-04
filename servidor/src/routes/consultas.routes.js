@@ -2,7 +2,9 @@ import { Router } from "express";
 import {
   buscarElasticByType,
   crearElasticByType,
+  crearLogsElastic,
   getDocumentById,
+  updateElasticByType,
 } from "../utils/index.js";
 
 import md5 from "md5";
@@ -120,6 +122,23 @@ ConsultasRouters.post("/", async (req, res) => {
     const response = await crearElasticByType(data, "usuario");
     //recinto = response.body;
     return res.status(201).json({ message: "Usuario Creado.", recinto, data });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+});
+
+ConsultasRouters.put("/:id", async (req, res) => {
+  try {
+    const r = await updateElasticByType(req.params.id, req.body);
+    if (r.body.result === "updated") {
+      await client.indices.refresh({ index: INDEX_ES_MAIN });
+      crearLogsElastic(
+        JSON.stringify(req.headers),
+        JSON.stringify(req.body),
+        "Se ha Actualizado un Consulta."
+      );
+      return res.json({ message: "Consulta Actualizada." });
+    }
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }

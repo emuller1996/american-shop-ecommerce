@@ -17,3 +17,11 @@ export const getConsultasPaginationServices = async (token, ...params) => {
     },
   })
 }
+
+export const putUpdateConsultasByIdServices = async (token, data,id) => {
+  return await axios.put(`/consultas/${id}`,data ,{
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  })
+}
