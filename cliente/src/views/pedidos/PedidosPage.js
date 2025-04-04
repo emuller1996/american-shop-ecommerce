@@ -12,6 +12,7 @@ import { ViewDollar } from '../../utils'
 import { Link } from 'react-router-dom'
 import Select from 'react-select'
 import { useOrden } from '../../hooks/useOrden'
+import { Chip } from '@mui/material'
 
 const PedidosPage = () => {
   const [show, setShow] = useState(false)
@@ -151,6 +152,33 @@ const PedidosPage = () => {
                 name: 'Estado',
                 selector: (row) => row?.status,
                 width: '150px',
+                cell: (row) => {
+                  let color = ``
+                  if (row?.status === 'Pendiente') {
+                    color = '#f6f68e'
+                  }
+                  if (row?.status === 'En Proceso') {
+                    color = '#95a4f9'
+                  }
+                  if (row?.status === 'Cancelada') {
+                    color = '#f99a95'
+                  }
+                  if (row?.status === 'En Camino') {
+                    color = '#8ef6eb'
+                  }
+                  if (row?.status === 'Entregada') {
+                    color = '#a3f995'
+                  }
+                  return (
+                    <>
+                      <Chip
+                        sx={{ fontSize: '1em', backgroundColor: color }}
+                        label={row?.status}
+                        variant="outlined"
+                      />
+                    </>
+                  )
+                },
               },
 
               {
