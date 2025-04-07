@@ -25,3 +25,19 @@ export const putUpdateConsultasByIdServices = async (token, data,id) => {
     },
   })
 }
+
+export const postCreateRespuestaByConsultaServices = async (token, data) => {
+  return await axios.post(`/consultas/respuesta`,data ,{
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  })
+}
+
+export const getRespuestaByConsultaServices = async (token, id) => {
+  return await axios.get(`/consultas/${id}/respuesta`,{
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  })
+}
