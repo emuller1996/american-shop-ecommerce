@@ -43,34 +43,75 @@ export default function ConsultasProductoComponent({ productId }) {
           <div className="row g-3 mb-3">
             {ConsultasProduct &&
               ConsultasProduct.map((consul) => (
-                <div key={consul._id} className="col-12">
-                  <div className="card">
-                    <div className="card-body position-relative">
-                      <span
-                        style={{ fontSize: '0.8em' }}
-                        className="text-muted position-absolute top-0 end-0 d-block text-start pt-1 pe-2"
-                      >
-                        <ReactTimeAgo date={consul.createdTime} locale="en-US" />
-                      </span>
-                      <div className="row">
-                        <div className="flex-shrink-1 col-12 col-md-2">
-                          <div className="text-center">
-                            <i
-                              style={{ color: '#818181' }}
-                              className="fa-regular fa-circle-user fa-2x"
-                            ></i>
-                            <span className="card-title d-block text-muted">
-                              {consul?.cliente?.name_client}
-                            </span>
+                <>
+                  <div key={consul._id} className="col-12">
+                    <div className="card">
+                      <div className="card-body position-relative">
+                        <span
+                          style={{ fontSize: '0.8em' }}
+                          className="text-muted position-absolute top-0 end-0 d-block text-start pt-1 pe-2"
+                        >
+                          <ReactTimeAgo date={consul.createdTime} locale="en-US" />
+                        </span>
+                        <div className="row">
+                          <div className="flex-shrink-1 col-12 col-md-2">
+                            <div className="text-center">
+                              <i
+                                style={{ color: '#818181' }}
+                                className="fa-regular fa-circle-user fa-2x"
+                              ></i>
+                              <span className="card-title d-block text-muted">
+                                {consul?.cliente?.name_client}
+                              </span>
+                            </div>
                           </div>
-                        </div>
-                        <div className="p-2 col-12 col-md-10">
-                          <p className="card-text">{consul?.consulta}</p>
+                          <div className="p-2 col-12 col-md-10">
+                            <p className="card-text">{consul?.consulta}</p>
+                          </div>
                         </div>
                       </div>
                     </div>
                   </div>
-                </div>
+                  {consul.respuestas.map((res) => (
+                    <div key={res._id} className="col-12 ">
+                      <div className="d-flex">
+                        <div className="col-2 col-md-1 align-self-center">
+                          <div className='text-center text-muted' style={{rotate:"180deg"}}>
+                            <i className="fa-solid fa-reply fa-xl"></i>
+                          </div>
+                        </div>
+                        <div className="col-10 col-md-11">
+                          <div className="card">
+                            <div className="card-body position-relative">
+                              <span
+                                style={{ fontSize: '0.8em' }}
+                                className="text-muted position-absolute top-0 end-0 d-block text-start pt-1 pe-2"
+                              >
+                                <ReactTimeAgo date={res.createdTime} locale="en-US" />
+                              </span>
+                              <div className="row">
+                                <div className="flex-shrink-1 col-12 col-md-2">
+                                  <div className="text-center">
+                                    <i
+                                      style={{ color: '#818181' }}
+                                      className="fa-regular fa-circle-user fa-2x"
+                                    ></i>
+                                    <span className="card-title d-block text-muted">
+                                      {res?.user?.name}
+                                    </span>
+                                  </div>
+                                </div>
+                                <div className="p-2 col-12 col-md-10">
+                                  <p className="card-text">{res?.respuesta}</p>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </>
               ))}
             {ConsultasProduct && ConsultasProduct.length === 0 && (
               <>
@@ -125,7 +166,7 @@ export default function ConsultasProductoComponent({ productId }) {
                   className="form-control"
                   name=""
                   id=""
-                  placeholder='Ingresa tu Consulta aca.'
+                  placeholder="Ingresa tu Consulta aca."
                   minLength={20}
                   maxLength={300}
                   rows="3"

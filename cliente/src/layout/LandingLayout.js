@@ -21,41 +21,19 @@ const LandingLayout = () => {
 
       <div className="bg-white border-top">
         <div className="container ">
-          <footer className="row row-cols-1 row-cols-sm-2 row-cols-md-5 py-4 my-4 ">
-            <div className="col mb-3">
-              <a href="/" className="d-flex align-items-center mb-3 link-dark text-decoration-none">
-                <svg className="bi me-2" width="40" height="32"></svg>
-              </a>
-              <p className="text-muted">© 2022</p>
-            </div>
-
-            <div className="col mb-3">
-              <div className="d-flex gap-4 justify-content-center">
-                <Link className="nav-link" to={`/login`}>
-                  Login
-                </Link>
-                <Nav.Link eventKey={2} href="#memes">
-                  <Link to={`/d/`}>Admin</Link>
-                </Nav.Link>
-              </div>
-            </div>
-
-            <div className="col mb-3">
-              <h5>Section</h5>
+          <footer className="row  py-4 my-4 ">
+            <div className="col-md-6 mb-3">
+              <h5>American Shop Vip</h5>
               <ul className="nav flex-column">
                 <li className="nav-item mb-2">
                   <a href="#" className="nav-link p-0 text-muted">
-                    Home
+                    Puntos de Ventas Fisicos
                   </a>
                 </li>
+
                 <li className="nav-item mb-2">
                   <a href="#" className="nav-link p-0 text-muted">
-                    Productos
-                  </a>
-                </li>
-                <li className="nav-item mb-2">
-                  <a href="#" className="nav-link p-0 text-muted">
-                    Productos Nuevos
+                    Terminos y Condiciones
                   </a>
                 </li>
 
@@ -64,9 +42,36 @@ const LandingLayout = () => {
                     Contactanos
                   </a>
                 </li>
+                <li className="nav-item mb-2">
+                  <Link className="text-decoration-none" to={`/d/`}>
+                    Admin
+                  </Link>
+                </li>
               </ul>
             </div>
+            <div className="col-md-6 align-self-center">
+              <div className="d-flex justify-content-end">
+                <img
+                  width={'300px'}
+                  src="https://mercadoroyal.com/assets/images/footer/lpago.png"
+                />
+              </div>
+            </div>
+
+            {/* <div className="col-6 mb-3">
+              <div className="d-flex gap-4 justify-content-center">
+                <Link className="nav-link" to={`/login`}>
+                  Login
+                </Link>
+                <Nav.Link eventKey={2} href="#memes">
+                  <Link to={`/d/`}>Admin</Link>
+                </Nav.Link>
+              </div>
+            </div> */}
           </footer>
+          <div className="py-2 " style={{ borderTop: '1px solid #e2e2e2' }}>
+            <p className="text-center text-muted m-0">Amerian Shop VIP © 2025</p>
+          </div>
         </div>
       </div>
     </div>

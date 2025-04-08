@@ -8,6 +8,7 @@ import ReactTimeAgo from 'react-time-ago'
 import { ViewDollar } from '../../utils'
 import toast from 'react-hot-toast'
 import { Chip } from '@mui/material'
+import FormConsultaRespuesta from './components/FormConsultaRespuesta'
 
 const ConsultasPages = () => {
   const [show, setShow] = useState(false)
@@ -156,55 +157,7 @@ const ConsultasPages = () => {
         }}
       >
         <Modal.Body>
-          <p className="text-center"> Responder una Consulta</p>
-          <span>Detalles de Consulta</span>
-          <div className="card p-2 mb-3">
-            <span className="text-muted">Datos del Cliente</span>
-            <div className="d-flex justify-content-between ">
-              <span>Nombre</span>
-              <span className="">{consultaSelecionada?.cliente?.name_client}</span>
-            </div>
-            <div className="d-flex justify-content-between ">
-              <span>Correo</span>
-              <span className="">{consultaSelecionada?.cliente?.email_client}</span>
-            </div>
-          </div>
-          <div className="card p-2 mb-3">
-            <span className="text-muted">Datos de Producto</span>
-            <div className="d-flex justify-content-between ">
-              <span>Nombre</span>
-              <span className="">{consultaSelecionada?.producto?.name}</span>
-            </div>
-            <div className="d-flex justify-content-between ">
-              <span>Precio</span>
-              <span className="">{ViewDollar(consultaSelecionada?.producto?.price)}</span>
-            </div>
-          </div>
-          <div>
-            <div className="d-flex gap-3 align-items-center">
-              <div className="w-100">
-                <div className="">
-                  <textarea
-                    onChange={(e) => {}}
-                    className="form-control"
-                    name=""
-                    id=""
-                    rows="3"
-                  ></textarea>
-                </div>
-              </div>
-              <div className=" flex-shrink-1 ">
-                <button
-                  style={{ height: '88px' }}
-                  type="button"
-                  className=" btn btn-primary"
-                  onClick={() => {}}
-                >
-                  Responder
-                </button>
-              </div>
-            </div>
-          </div>
+          <FormConsultaRespuesta consultaSelecionada={consultaSelecionada} />
         </Modal.Body>
       </Modal>
 

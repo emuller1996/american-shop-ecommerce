@@ -6,6 +6,7 @@ import {
   getDocumentById,
   updateElasticByType,
 } from "../utils/index.js";
+import { jwtDecode } from "jwt-decode";
 
 import md5 from "md5";
 import { INDEX_ES_MAIN } from "../config.js";
@@ -113,15 +114,63 @@ ConsultasRouters.get("/:id", async (req, res) => {
   }
 });
 
-ConsultasRouters.post("/", async (req, res) => {
+ConsultasRouters.post("/respuesta", async (req, res) => {
   try {
-    var recinto = {};
     const data = req.body;
+    const user_token = jwtDecode(req.headers.authorization);
+    data.user_id = user_token._id;
+    const response = await crearElasticByType(data, "respuesta");
+    return res
+      .status(201)
+      .json({ message: "Usuario Creado.", /* response, */ data });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+});
 
-    data.password = md5(data.password);
-    const response = await crearElasticByType(data, "usuario");
-    //recinto = response.body;
-    return res.status(201).json({ message: "Usuario Creado.", recinto, data });
+ConsultasRouters.get("/:id/respuesta", async (req, res) => {
+  try {
+    var consulta = {
+      index: INDEX_ES_MAIN,
+      size: 9999,
+      body: {
+        query: {
+          bool: {
+            must: [
+              /* { match_phrase_prefix: { name: nameQuery } } */
+            ],
+            filter: [
+              {
+                term: {
+                  type: "respuesta",
+                },
+              },
+              {
+                term: {
+                  "consulta_id.keyword": req.params.id,
+                },
+              },
+            ],
+          },
+        },
+        sort: [
+          { createdTime: { order: "desc" } }, // Reemplaza con el campo por el que quieres ordenar
+        ],
+      },
+    };
+    const searchResult = await client.search(consulta);
+
+    var data = searchResult.body.hits.hits.map( async(c) => {
+      let user =await getDocumentById(c._source.user_id);
+      console.log(user);
+      return {
+        ...c._source,
+        _id: c._id,
+        user: { name: user.name , role :user.role}
+      };
+    });
+    data = await Promise.all(data);
+    return res.status(200).json(data);
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
