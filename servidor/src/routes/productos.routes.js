@@ -458,12 +458,15 @@ ProductosRouters.get("/:id/consultas", async (req, res) => {
     });
     dataImages = dataImages.map( async c =>{
       let cliente =  await getDocumentById(c.client_id)
+      let respuestas =  await getAllRespuestasByConsulta(c._id)
+
       return {...c, 
         cliente : {
           name_client:cliente.name_client,
           email_client:cliente.email_client,
           phone_client:cliente.phone_client,
-        }
+        },
+        respuestas
       }
     })
 
@@ -473,6 +476,54 @@ ProductosRouters.get("/:id/consultas", async (req, res) => {
     return res.status(500).json({ message: error.message });
   }
 });
+
+const getAllRespuestasByConsulta = async (consulta_id) =>{
+  try {
+    var consulta = {
+      index: INDEX_ES_MAIN,
+      size: 9999,
+      body: {
+        query: {
+          bool: {
+            must: [
+              /* { match_phrase_prefix: { name: nameQuery } } */
+            ],
+            filter: [
+              {
+                term: {
+                  type: "respuesta",
+                },
+              },
+              {
+                term: {
+                  "consulta_id.keyword": consulta_id,
+                },
+              },
+            ],
+          },
+        },
+        sort: [
+          { createdTime: { order: "desc" } }, // Reemplaza con el campo por el que quieres ordenar
+        ],
+      },
+    };
+    const searchResult = await client.search(consulta);
+
+    var data = searchResult.body.hits.hits.map( async(c) => {
+      let user =await getDocumentById(c._source.user_id);
+      console.log(user);
+      return {
+        ...c._source,
+        _id: c._id,
+        user: { name: user.name , role :user.role}
+      };
+    });
+    data = await Promise.all(data);
+    return data;
+  } catch (error) {
+    console.log(error);
+  }
+}
 
 ProductosRouters.get("/:id/stock", async (req, res) => {
   try {

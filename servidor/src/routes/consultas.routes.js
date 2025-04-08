@@ -130,7 +130,6 @@ ConsultasRouters.post("/respuesta", async (req, res) => {
 
 ConsultasRouters.get("/:id/respuesta", async (req, res) => {
   try {
-    var funcion = await getDocumentById(req.params.id);
     var consulta = {
       index: INDEX_ES_MAIN,
       size: 9999,
@@ -161,13 +160,16 @@ ConsultasRouters.get("/:id/respuesta", async (req, res) => {
     };
     const searchResult = await client.search(consulta);
 
-    var data = searchResult.body.hits.hits.map((c) => {
+    var data = searchResult.body.hits.hits.map( async(c) => {
+      let user =await getDocumentById(c._source.user_id);
+      console.log(user);
       return {
         ...c._source,
         _id: c._id,
+        user: { name: user.name , role :user.role}
       };
     });
-
+    data = await Promise.all(data);
     return res.status(200).json(data);
   } catch (error) {
     return res.status(500).json({ message: error.message });

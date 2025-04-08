@@ -4,6 +4,7 @@ import { ViewDollar } from '../../../utils'
 import PropTypes from 'prop-types'
 import { useConsultas } from '../../../hooks/useConsultas'
 import toast from 'react-hot-toast'
+import ReactTimeAgo from 'react-time-ago'
 
 export default function FormConsultaRespuesta({ consultaSelecionada }) {
   FormConsultaRespuesta.propTypes = {
@@ -12,7 +13,7 @@ export default function FormConsultaRespuesta({ consultaSelecionada }) {
   const [Respuesta, setRespuesta] = useState('')
   const { postCreateRespuesta, getRespuestaByConsulta } = useConsultas()
   const [Draw, setDraw] = useState(1)
-  const [Data, setData] = useState([])
+  const [Data, setData] = useState(null)
 
   useEffect(() => {
     getAllRespuestasConsulta(consultaSelecionada._id)
@@ -60,20 +61,41 @@ export default function FormConsultaRespuesta({ consultaSelecionada }) {
       </div>
       <div className="card p-2 mb-3">
         <span className="text-center mb-2 text-muted">Respuestas Registradas</span>
-        {Data.length === 0 && (
+        {Data && Data.length === 0 && (
           <>
             <div className="alert alert-secondary text-center" role="alert">
               No hay Respuestas Registradas.
             </div>
           </>
         )}
-        {Data.map((consulta) => (
-          <>
-            <div className="card p-2 mb-2">
-              <span>{consulta.respuesta}</span>
-            </div>
-          </>
-        ))}
+        {Data &&
+          Data.map((consulta) => (
+            <>
+              <div className="card p-2 mb-2 position-relative">
+                <div className="position-absolute top-0 end-0 me-2">
+                  <span className="badge text-bg-light">
+                    <ReactTimeAgo date={consulta.createdTime} locale="en-US" />
+                  </span>
+                </div>
+
+                <div className="d-flex">
+                  <div className="flex-shrink-1">
+                    <div className="" style={{borderRight:"1px solid #d4d4d4" , marginRight:"0.5em", paddingRight:"0.5em"}}>
+                      <span style={{ fontSize: '0.8em' }} className="d-block text-nowrap">
+                        {consulta?.user?.name}
+                      </span>
+                      <span style={{ fontSize: '0.8em' }} className="">
+                        {consulta?.user?.role}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="p-1 mt-2 w-100">
+                    <span className="">{consulta.respuesta}</span>
+                  </div>
+                </div>
+              </div>
+            </>
+          ))}
       </div>
       <div>
         <div className="d-flex gap-3 align-items-center">
