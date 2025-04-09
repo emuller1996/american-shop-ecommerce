@@ -8,6 +8,7 @@ const ImagesPage = React.lazy(() => import('./views/productos/ImagesPage/ImagesP
 const ClientePage = React.lazy(() => import('./views/clientes/ClientePage'))
 const TallasPage = React.lazy(() => import('./views/productos/TallasPage/TallasPage'))
 const ConsultasPages = React.lazy(() => import('./views/consultas/ConsultasPages'))
+const PuntosVentasPages = React.lazy(() => import('./views/puntos-ventas/PuntosVentasPages'))
 const PedidosPage = React.lazy(() => import('./views/pedidos/PedidosPage'))
 const PedidoDetallesPage = React.lazy(
   () => import('./views/pedidos/PedidoDetallesPage/PedidoDetallesPage'),
@@ -22,6 +23,7 @@ const routes = [
   { path: '/consultas', name: 'Consultas', element: ConsultasPages },
   { path: '/clientes', name: 'Clientes', element: ClientePage },
   { path: '/ordenes', name: 'Ordenes', element: PedidosPage },
+  { path: '/puntos-venta/', name: 'ImagesPage', element: PuntosVentasPages },
   { path: '/ordenes/:idOrder/detalle', name: 'Ordenes', element: PedidoDetallesPage },
   { path: '/productos/:idProduct/images', name: 'ImagesPage', element: ImagesPage },
   { path: '/productos/:idProduct/gestion-tallas', name: 'ImagesPage', element: TallasPage },
