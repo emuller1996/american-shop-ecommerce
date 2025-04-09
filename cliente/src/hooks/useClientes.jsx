@@ -1,8 +1,14 @@
 /* eslint-disable prettier/prettier */
 
 import { useContext, useState } from 'react'
-import { getAllCategoriasService } from '../services/categorias.services'
-import { getAllClientesService, getGetAddressClientesService, getGetShoppingClientesService, postNewAddressClientesService, putUpdateClientesService } from '../services/clientes.services'
+import {
+  getAllClientesService,
+  getGetAddressClientesService,
+  getGetShoppingClientesService,
+  getShopByIdService,
+  postNewAddressClientesService,
+  putUpdateClientesService,
+} from '../services/clientes.services'
 import AuthContext from '../context/AuthContext'
 
 export const useClientes = () => {
@@ -10,7 +16,7 @@ export const useClientes = () => {
   const [dataDetalle, setDataDetalle] = useState(null)
   const [dataAddress, setDataAddress] = useState(null)
   const [dataShopping, setDataShopping] = useState(null)
-
+  const [dataShopDetail, setDataShopDetail] = useState(null)
 
   const [error, setError] = useState(null)
   const [loading, setLoading] = useState(false)
@@ -92,6 +98,9 @@ export const useClientes = () => {
     }
   }
 
+  const getShopDetailById = async (id, data) => {
+    return await getShopByIdService(TokenClient, id)
+  }
 
   const getAllAddressByClientes = async () => {
     setLoading(true)
@@ -131,6 +140,8 @@ export const useClientes = () => {
     getAllAddressByClientes,
     dataAddress,
     getAllShoppingByClientes,
-    dataShopping
+    dataShopping,
+    getShopDetailById,
+    dataShopDetail,
   }
 }

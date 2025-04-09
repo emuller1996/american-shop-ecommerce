@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useRef, useState } from 'react'
 import { Container, Dropdown, Modal, Nav, Navbar } from 'react-bootstrap'
 import logo from '../assets/Logo.png'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import FormLogin from './ecommerceComponent/FormLogin'
 import AuthContext from '../context/AuthContext'
 import { useLocalStorage } from '../hooks/useLocalStorage'
@@ -39,6 +39,7 @@ const AppNavBarEcomerce = () => {
     'cartEcommerceAmerican',
     [],
   )
+  const navigate = useNavigate()
 
   return (
     <>
@@ -222,6 +223,7 @@ const AppNavBarEcomerce = () => {
                               setTokenClient(null)
                               setTokenAccessCliente(null)
                               setClient(null)
+                              navigate('/')
                             }}
                           >
                             Cerrar Session
