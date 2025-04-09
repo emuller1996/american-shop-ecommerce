@@ -4,6 +4,7 @@ import CardProducto from '../../../views/landing/components/CardProducto'
 import { useProductos } from '../../../hooks/useProductos'
 import { useCategorias } from '../../../hooks/useCategorias'
 import Pagination from '@mui/material/Pagination'
+import { Carousel } from 'react-bootstrap'
 
 export default function HomeLanding() {
   const { dataP: Productos, getAllProductosPublished, loading } = useProductos()
@@ -23,6 +24,62 @@ export default function HomeLanding() {
   }, [dataFilter])
   return (
     <>
+      <div className="container">
+        <Carousel>
+          <Carousel.Item>
+            <div className="row p-5">
+              <div className="mx-auto col-md-8 col-lg-6 order-lg-last">
+                <img
+                  className="img-fluid"
+                  src="https://american-shop-eco.vercel.app/assets/img/banner_1_home.png"
+                  alt=""
+                />
+              </div>
+              <div className="col-lg-6 mb-0 d-flex align-items-center">
+                <div className="text-align-left align-self-center">
+                  <h1 className="h1 text-primary">
+                    <b>AmericanShop</b> Comercio Electronico
+                  </h1>
+                  <h3 className="h2">Te Viste Real y te Deja de Paker!!</h3>
+                  <p>
+                    La Moda de América, en tu Hogar. Envíos Rápidos en Toda Colombia
+                    <span className="d-block">
+                      Descubre la Colección Exclusiva de Réplicas AAA: Lujo Auténtico a tu Alcance.
+                      Explora Estilo y Calidad en Cada Detalle. ¡Bienvenido
+                    </span>
+                  </p>
+                </div>
+              </div>
+            </div>
+          </Carousel.Item>
+          <Carousel.Item>
+            <div className="row p-5">
+              <div className="mx-auto col-md-8 col-lg-6">
+                <img
+                  className="img-fluid"
+                  src="https://american-shop-eco.vercel.app/assets/img/banner_1_home.png"
+                  alt=""
+                />
+              </div>
+              <div className="col-lg-6 mb-0 d-flex align-items-center">
+                <div className="text-align-left align-self-center">
+                  <h1 className="h1 text-primary">
+                    <b>Envio a </b> Toda Colombia.
+                  </h1>
+                  <h3 className="h2">Te Viste Real y te Deja de Paker!!</h3>
+                  <p>
+                    La Moda de América, en tu Hogar. Envíos Rápidos en Toda Colombia
+                    <span className="d-block">
+                      Descubre la Colección Exclusiva de Réplicas AAA: Lujo Auténtico a tu Alcance.
+                      Explora Estilo y Calidad en Cada Detalle. ¡Bienvenido
+                    </span>
+                  </p>
+                </div>
+              </div>
+            </div>
+          </Carousel.Item>
+        </Carousel>
+      </div>
       <div className="container mt-4">
         <div className="border p-2 rounded bg-white">
           <p className="m-0 mb-2">Filtra por Categoria</p>

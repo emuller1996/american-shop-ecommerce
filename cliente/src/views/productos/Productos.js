@@ -14,6 +14,7 @@ import { ViewDollar } from '../../utils'
 import { Link } from 'react-router-dom'
 import FormImportProductos from './components/FormImportProductos'
 import Select from 'react-select'
+import { Chip } from '@mui/material'
 
 const ProductosPage = () => {
   const [show, setShow] = useState(false)
@@ -171,6 +172,20 @@ const ProductosPage = () => {
                 name: 'Estado',
                 selector: (row) => (row?.published ? 'Publicado' : 'No Publicado'),
                 width: '150px',
+                cell: (row) => {
+                  return (
+                    <>
+                      <Chip
+                        style={{
+                          backgroundColor: row?.published ? '#23b866' : '#F78181',
+                          color: 'white',
+                        }}
+                        label={row?.published ? 'Publicado' : 'No Publicado'}
+                        variant="outlined"
+                      />
+                    </>
+                  )
+                },
               },
 
               {

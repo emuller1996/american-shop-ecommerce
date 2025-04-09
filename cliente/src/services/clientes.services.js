@@ -30,3 +30,7 @@ export const getGetAddressClientesService = (token) => {
 export const getGetShoppingClientesService = (token) => {
   return axios.get(`/clientes/get/shopping`,{ headers: { 'Authorization': token } })
 }
+
+export const getShopByIdService = (token, id) => {
+  return axios.get(`/clientes/get/shopping/${id}`,{ headers: { 'Authorization': token } })
+}

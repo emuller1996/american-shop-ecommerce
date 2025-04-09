@@ -7,6 +7,7 @@ import { client } from "../db.js";
 import {
   buscarElasticByType,
   crearElasticByType,
+  crearLogsElastic,
   getDocumentById,
   updateElasticByType,
 } from "../utils/index.js";
@@ -304,6 +305,32 @@ ClienteRouters.get("/get/shopping", validateTokenClientMid, async (req, res) => 
     });
 
     return res.status(200).json(data);
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+});
+
+ClienteRouters.get("/get/shopping/:id", validateTokenClientMid, async (req, res) => {
+  try {
+     var orden = await getDocumentById(req.params.id);
+        if (orden.address_id) {
+          let temp = await getDocumentById(orden.address_id);
+          orden.address = temp;
+        }
+        var productosData = orden.products.map(async (c) => {
+          //console.log(await getDocumentById(c.product_id));
+          let image_id = (await getDocumentById(c.product_id)).image_id;
+          return {
+            ...c,
+            producto_data: await getDocumentById(c.product_id),
+            stock_data: await getDocumentById(c.stock_id),
+            image_id,
+            image: (await getDocumentById(image_id)).image,
+          };
+        });
+        productosData = await Promise.all(productosData);
+        orden.products = productosData;
+        return res.status(200).json(orden);
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
