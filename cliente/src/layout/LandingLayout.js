@@ -26,9 +26,12 @@ const LandingLayout = () => {
               <h5>American Shop Vip</h5>
               <ul className="nav flex-column">
                 <li className="nav-item mb-2">
-                  <a href="#" className="nav-link p-0 text-muted">
+                  <Link className="nav-link p-0 text-muted" to={`/eco/puntos-ventas/`}>
                     Puntos de Ventas Fisicos
-                  </a>
+                  </Link>
+                  {/*  <a href="/eco/puntos-ventas/" className="nav-link p-0 text-muted">
+                    Puntos de Ventas Fisicos
+                  </a> */}
                 </li>
 
                 <li className="nav-item mb-2">
