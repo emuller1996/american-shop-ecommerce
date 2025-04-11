@@ -195,11 +195,8 @@ export default function HomeLanding() {
           </div>
         )}
       </div>
-      <div className="container" style={{ minHeight: '50vh' }}>
-        <p>QUE RARO</p>
-      </div>
-      <div className="container" style={{ minHeight: '50vh' }}>
-        <p>QUE RARO</p>
+      <div className="container" style={{ minHeight: '100px' }}>
+        <p></p>
       </div>
     </>
   )

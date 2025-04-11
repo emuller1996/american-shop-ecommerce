@@ -4,6 +4,8 @@ import { CContainer, CSpinner } from '@coreui/react'
 import HomeLanding from './pages/HomeLanding'
 import ProductDetailPage from './pages/ProductDetailPage'
 import LoginProtectedClient from '../../utils/LoginProtectedClient'
+
+const PuntosVentasPages = React.lazy(() => import('./pages/PuntosVentasPages/PuntosVentasPages'))
 const MiProfilePage = React.lazy(() => import('./pages/MiPerfilPage/MiProfilePage'))
 const MisComprasPages = React.lazy(() => import('./pages/MisComprasPage/MisComprasPages'))
 const ConfirmarCompraPage = React.lazy(
@@ -15,7 +17,12 @@ const ConfirmarCompraPage = React.lazy(
 const routes = [
   { path: '/', exact: true, name: 'Home', element: HomeLanding },
   { path: '/eco/:id/producto', exact: true, name: 'Producto Detalle', element: ProductDetailPage },
-  { path: '/eco/mis-compras', exact: true, name: 'Mis Compras', element: MisComprasPages },
+  {
+    path: '/eco/puntos-ventas/',
+    exact: true,
+    name: 'Producto Detalle',
+    element: PuntosVentasPages,
+  },
 ]
 
 const AppContentLanding = () => {
@@ -55,6 +62,18 @@ const AppContentLanding = () => {
             element={
               <LoginProtectedClient>
                 <ConfirmarCompraPage />
+              </LoginProtectedClient>
+            }
+          />
+
+          <Route
+            key={'confirmar-compra'}
+            path={'/eco/mis-compras'}
+            exact={true}
+            name={'Mi Perfil'}
+            element={
+              <LoginProtectedClient>
+                <MisComprasPages />
               </LoginProtectedClient>
             }
           />
