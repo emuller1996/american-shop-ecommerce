@@ -205,6 +205,26 @@ ClienteRouters.post(
   }
 );
 
+ClienteRouters.put(
+  "/new/address/:idAddress",
+  validateTokenClientMid,
+  async (req, res) => {
+    try {
+      const r = await updateElasticByType(req.params.idAddress, req.body);
+      if (r.body.result === "updated") {
+        await client.indices.refresh({ index: INDEX_ES_MAIN });
+        return res.json({ message: "Actualizado" });
+      }
+      /* return res
+        .status(200)
+        .json({ message: "test", req: req.params.idAddress }); */
+    } catch (error) {
+      console.log(error);
+      return res.status(500).json({ message: error.message });
+    }
+  }
+);
+
 ClienteRouters.get("/get/address", validateTokenClientMid, async (req, res) => {
   try {
     const decoded = jwtDecode(req.headers.authorization);
@@ -238,7 +258,7 @@ ClienteRouters.get("/get/address", validateTokenClientMid, async (req, res) => {
           },
         },
         sort: [
-          { "createdTime": { order: "desc" } }, // Reemplaza con el campo por el que quieres ordenar
+          { createdTime: { order: "desc" } }, // Reemplaza con el campo por el que quieres ordenar
         ],
       },
     };
@@ -258,82 +278,89 @@ ClienteRouters.get("/get/address", validateTokenClientMid, async (req, res) => {
   }
 });
 
-
-ClienteRouters.get("/get/shopping", validateTokenClientMid, async (req, res) => {
-  try {
-    const decoded = jwtDecode(req.headers.authorization);
-    let perPage = req.query.perPage ?? 10;
-    let page = req.query.page ?? 1;
-    var consulta = {
-      index: INDEX_ES_MAIN,
-      size: perPage,
-      from: (page - 1) * perPage,
-      body: {
-        query: {
-          bool: {
-            must: [
-              {
-                term: {
-                  "cliente.client_id.keyword": {
-                    value: decoded._id,
+ClienteRouters.get(
+  "/get/shopping",
+  validateTokenClientMid,
+  async (req, res) => {
+    try {
+      const decoded = jwtDecode(req.headers.authorization);
+      let perPage = req.query.perPage ?? 10;
+      let page = req.query.page ?? 1;
+      var consulta = {
+        index: INDEX_ES_MAIN,
+        size: perPage,
+        from: (page - 1) * perPage,
+        body: {
+          query: {
+            bool: {
+              must: [
+                {
+                  term: {
+                    "cliente.client_id.keyword": {
+                      value: decoded._id,
+                    },
                   },
                 },
-              },
-            ],
-            filter: [
-              {
-                term: {
-                  type: "orden",
+              ],
+              filter: [
+                {
+                  term: {
+                    type: "orden",
+                  },
                 },
-              },
-            ],
+              ],
+            },
           },
+          sort: [
+            { createdTime: { order: "desc" } }, // Reemplaza con el campo por el que quieres ordenar
+          ],
         },
-        sort: [
-          { "createdTime": { order: "desc" } }, // Reemplaza con el campo por el que quieres ordenar
-        ],
-      },
-    };
-
-    const searchResult = await client.search(consulta);
-
-    var data = searchResult.body.hits.hits.map((c) => {
-      return {
-        ...c._source,
-        _id: c._id,
       };
-    });
 
-    return res.status(200).json(data);
-  } catch (error) {
-    return res.status(500).json({ message: error.message });
-  }
-});
+      const searchResult = await client.search(consulta);
 
-ClienteRouters.get("/get/shopping/:id", validateTokenClientMid, async (req, res) => {
-  try {
-     var orden = await getDocumentById(req.params.id);
-        if (orden.address_id) {
-          let temp = await getDocumentById(orden.address_id);
-          orden.address = temp;
-        }
-        var productosData = orden.products.map(async (c) => {
-          //console.log(await getDocumentById(c.product_id));
-          let image_id = (await getDocumentById(c.product_id)).image_id;
-          return {
-            ...c,
-            producto_data: await getDocumentById(c.product_id),
-            stock_data: await getDocumentById(c.stock_id),
-            image_id,
-            image: (await getDocumentById(image_id)).image,
-          };
-        });
-        productosData = await Promise.all(productosData);
-        orden.products = productosData;
-        return res.status(200).json(orden);
-  } catch (error) {
-    return res.status(500).json({ message: error.message });
+      var data = searchResult.body.hits.hits.map((c) => {
+        return {
+          ...c._source,
+          _id: c._id,
+        };
+      });
+
+      return res.status(200).json(data);
+    } catch (error) {
+      return res.status(500).json({ message: error.message });
+    }
   }
-});
+);
+
+ClienteRouters.get(
+  "/get/shopping/:id",
+  validateTokenClientMid,
+  async (req, res) => {
+    try {
+      var orden = await getDocumentById(req.params.id);
+      if (orden.address_id) {
+        let temp = await getDocumentById(orden.address_id);
+        orden.address = temp;
+      }
+      var productosData = orden.products.map(async (c) => {
+        //console.log(await getDocumentById(c.product_id));
+        let image_id = (await getDocumentById(c.product_id)).image_id;
+        return {
+          ...c,
+          producto_data: await getDocumentById(c.product_id),
+          stock_data: await getDocumentById(c.stock_id),
+          image_id,
+          image: (await getDocumentById(image_id)).image,
+        };
+      });
+      productosData = await Promise.all(productosData);
+      orden.products = productosData;
+      return res.status(200).json(orden);
+    } catch (error) {
+      return res.status(500).json({ message: error.message });
+    }
+  }
+);
 
 export default ClienteRouters;
