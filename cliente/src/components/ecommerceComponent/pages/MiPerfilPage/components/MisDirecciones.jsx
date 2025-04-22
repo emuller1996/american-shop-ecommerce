@@ -7,6 +7,7 @@ import { useClientes } from '../../../../../hooks/useClientes'
 export default function MisDirecciones({}) {
   const [showImport, setShowImport] = useState(false)
   const [Draw, setDraw] = useState(1)
+  const [AddresUpdate, setAddresUpdate] = useState(null)
 
   const { getAllAddressByClientes, dataAddress } = useClientes()
 
@@ -23,6 +24,7 @@ export default function MisDirecciones({}) {
           type="button"
           onClick={() => {
             setShowImport(true)
+            setAddresUpdate(null)
           }}
           className="button-ecomerce"
         >
@@ -35,9 +37,10 @@ export default function MisDirecciones({}) {
             <div key={addres._id} className="col-12">
               <div className="card mb-3">
                 <div className="card-body">
-                  <p className="fw-bold fs-5 mb-1">{addres?.name}</p>
-                  <div className="row g-3">
+                  <div className="row g-3  align-items-end">
                     <div className="col-md-4">
+                      <p className="fw-bold fs-5 mb-1">{addres?.name}</p>
+
                       <div className="d-flex justify-content-between">
                         <span>Departamento</span>
                         <span>{addres?.departament}</span>
@@ -45,11 +48,6 @@ export default function MisDirecciones({}) {
                       <div className="d-flex justify-content-between">
                         <span>Cuidad</span>
                         <span>{addres?.city}</span>
-                      </div>
-
-                      <div className="d-flex justify-content-between">
-                        <span>Referencia</span>
-                        <span>{addres?.reference} </span>
                       </div>
                     </div>
                     <div className="col-md-4">
@@ -60,6 +58,24 @@ export default function MisDirecciones({}) {
                       <div className="d-flex justify-content-between">
                         <span>Barrio</span>
                         <span>{addres?.neighborhood} </span>
+                      </div>
+                      <div className="d-flex justify-content-between">
+                        <span>Referencia</span>
+                        <span>{addres?.reference} </span>
+                      </div>
+                    </div>
+                    <div className="col-md-4">
+                      <div className="d-flex justify-content-center">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setShowImport(true)
+                            setAddresUpdate(addres)
+                          }}
+                          className="button-ecomerce"
+                        >
+                          <i className="fa-solid fa-pen-to-square" style={{ color: '#f1f7ff' }}></i>
+                        </button>
                       </div>
                     </div>
                   </div>
@@ -115,6 +131,7 @@ export default function MisDirecciones({}) {
             AllAddress={() => {
               setDraw((status) => ++status)
             }}
+            Address={AddresUpdate}
           />
         </Modal.Body>
       </Modal>

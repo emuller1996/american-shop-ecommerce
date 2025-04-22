@@ -46,7 +46,7 @@ export default function FormDireccion({ onHide, AllAddress, Address }) {
     data.departament_id_api = DepartamentSelect
     if (Address) {
       try {
-        console.log(data,)
+        console.log(data)
         await putClienteNewAddress(data, Address._id)
         onHide()
         toast.success(`Dirección de Envió Actualizada Correctamente.`)
@@ -103,7 +103,10 @@ export default function FormDireccion({ onHide, AllAddress, Address }) {
   }
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <p className="text-center border-bottom pb-2">Crear Nueva Direcciones de Envio</p>
+      <p className="text-center border-bottom pb-2">
+        {' '}
+        {Address ? `Actualizando Direccio de Envio` : `Crear Nueva Direcciones de Envio`}
+      </p>
       <div className="row g-3">
         <div className="col-md-12">
           <Form.Group className="" controlId="name">
@@ -219,12 +222,13 @@ export default function FormDireccion({ onHide, AllAddress, Address }) {
       </div>
 
       <div className="mt-5 d-flex gap-4 justify-content-center">
-        <button type="button" onClick={onHide} className="btn btn-danger text-white">
-          Cancelar
+        <button type="button" onClick={onHide} className="button-ecomerce-cancel">
+        <i className="fa-solid fa-xmark me-2"></i>Cancelar
         </button>
-        <Button type="submit" className="text-white" variant="success">
-          Guardar Producto
-        </Button>
+
+        <button type="submit" className="button-ecomerce">
+          <i className="fa-solid fa-floppy-disk me-2" style={{ color: '#f1f7ff' }}></i> Guardar
+        </button>
       </div>
     </form>
   )
