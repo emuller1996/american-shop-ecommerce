@@ -21,6 +21,10 @@ export const postNewAddressClientesService = (token, data) => {
   return axios.post(`/clientes/new/address`, data, { headers: { 'Authorization': token } })
 }
 
+export const putNewAddressClientesService = (token, data,id) => {
+  return axios.put(`/clientes/new/address/${id}/`, data, { headers: { 'Authorization': token } })
+}
+
 
 export const getGetAddressClientesService = (token) => {
   return axios.get(`/clientes/get/address`,{ headers: { 'Authorization': token } })

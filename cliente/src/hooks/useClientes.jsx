@@ -7,6 +7,7 @@ import {
   getGetShoppingClientesService,
   getShopByIdService,
   postNewAddressClientesService,
+  putNewAddressClientesService,
   putUpdateClientesService,
 } from '../services/clientes.services'
 import AuthContext from '../context/AuthContext'
@@ -64,6 +65,16 @@ export const useClientes = () => {
   const postClienteNewAddress = async (data) => {
     try {
       const r = await postNewAddressClientesService(TokenClient, data)
+      console.log(r.data)
+      setDataDetalle(r.data)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  const putClienteNewAddress = async (data,id) => {
+    try {
+      const r = await putNewAddressClientesService(TokenClient, data,id)
       console.log(r.data)
       setDataDetalle(r.data)
     } catch (error) {
@@ -143,5 +154,6 @@ export const useClientes = () => {
     dataShopping,
     getShopDetailById,
     dataShopDetail,
+    putClienteNewAddress
   }
 }

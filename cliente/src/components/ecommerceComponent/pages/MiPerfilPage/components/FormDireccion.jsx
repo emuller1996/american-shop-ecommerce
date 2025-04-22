@@ -10,10 +10,11 @@ import { genderOptions, stylesSelect, themeSelect } from '../../../../../utils/o
 import axios from 'axios'
 import { useClientes } from '../../../../../hooks/useClientes'
 
-export default function FormDireccion({ onHide, AllAddress }) {
+export default function FormDireccion({ onHide, AllAddress, Address }) {
   FormDireccion.propTypes = {
     onHide: PropTypes.func,
     AllAddress: PropTypes.func,
+    Address: PropTypes.object,
   }
   const {
     register,
@@ -22,11 +23,13 @@ export default function FormDireccion({ onHide, AllAddress }) {
     formState: { errors },
   } = useForm()
 
-  const { postClienteNewAddress } = useClientes()
+  const { postClienteNewAddress, putClienteNewAddress } = useClientes()
 
   const [optionDepartament, setOptionDepartament] = useState(null)
   const [optionCities, setOptionCities] = useState(null)
-  const [DepartamentSelect, setDepartamentSelect] = useState(null)
+  const [DepartamentSelect, setDepartamentSelect] = useState(
+    Address ? Address.departament_id_api : null,
+  )
 
   useEffect(() => {
     getAllDepartementos()
@@ -40,13 +43,26 @@ export default function FormDireccion({ onHide, AllAddress }) {
 
   const onSubmit = async (data) => {
     console.log(data)
-    try {
-      await postClienteNewAddress(data)
-      onHide()
-      toast.success(`Direccion de Envio Creada Correctamente.`)
-      AllAddress()
-    } catch (error) {
-      console.log(error)
+    data.departament_id_api = DepartamentSelect
+    if (Address) {
+      try {
+        console.log(data,)
+        await putClienteNewAddress(data, Address._id)
+        onHide()
+        toast.success(`Dirección de Envió Actualizada Correctamente.`)
+        AllAddress()
+      } catch (error) {
+        console.log(error)
+      }
+    } else {
+      try {
+        await postClienteNewAddress(data)
+        onHide()
+        toast.success(`Dirección de Envió Creada Correctamente.`)
+        AllAddress()
+      } catch (error) {
+        console.log(error)
+      }
     }
   }
 
@@ -94,6 +110,7 @@ export default function FormDireccion({ onHide, AllAddress }) {
             <Form.Label>Nombre</Form.Label>
             <Form.Control
               {...register('name', { required: true })}
+              defaultValue={Address?.name}
               type="text"
               placeholder="Mi Casa, Trabajo , Oficia"
             />
@@ -101,76 +118,102 @@ export default function FormDireccion({ onHide, AllAddress }) {
         </div>
 
         <div className="col-md-12">
-          <div>
-            <Form.Label htmlFor="departament">Departamento</Form.Label>
-            <Controller
-              name="departament"
-              rules={{ required: true }}
-              control={control}
-              render={({ field: { name, onChange, ref } }) => {
-                return (
-                  <Select
-                    ref={ref}
-                    id={name}
-                    name={name}
-                    placeholder=""
-                    onChange={(e) => {
-                      console.log(e)
-                      onChange(e?.label)
-                      setDepartamentSelect(e.value)
-                    }}
-                    styles={stylesSelect}
-                    theme={themeSelect}
-                    options={optionDepartament}
-                  />
-                )
-              }}
-            />
-          </div>
+          {optionDepartament && (
+            <div>
+              <Form.Label htmlFor="departament">Departamento</Form.Label>
+              <Controller
+                name="departament"
+                rules={{ required: true }}
+                control={control}
+                defaultValue={
+                  optionDepartament.find((de) => de.key === Address?.departament)?.label
+                }
+                render={({ field: { name, onChange, ref } }) => {
+                  return (
+                    <Select
+                      ref={ref}
+                      id={name}
+                      name={name}
+                      placeholder=""
+                      onChange={(e) => {
+                        console.log(e)
+                        onChange(e?.label)
+                        setDepartamentSelect(e.value)
+                      }}
+                      defaultValue={optionDepartament.find((de) => de.key === Address?.departament)}
+                      styles={stylesSelect}
+                      theme={themeSelect}
+                      options={optionDepartament}
+                    />
+                  )
+                }}
+              />
+            </div>
+          )}
         </div>
         <div className="col-md-12">
-          <div>
-            <Form.Label htmlFor="city">Cuidad</Form.Label>
-            <Controller
-              name="city"
-              rules={{ required: true }}
-              control={control}
-              render={({ field: { name, onChange, ref } }) => {
-                return (
-                  <Select
-                    ref={ref}
-                    id={name}
-                    name={name}
-                    placeholder=""
-                    onChange={(e) => {
-                      console.log(e)
-                      onChange(e?.label)
-                    }}
-                    styles={stylesSelect}
-                    theme={themeSelect}
-                    options={optionCities}
-                  />
-                )
-              }}
-            />
-          </div>
+          {optionCities && DepartamentSelect && (
+            <div>
+              <Form.Label htmlFor="city">Cuidad</Form.Label>
+              <Controller
+                name="city"
+                rules={{ required: true }}
+                control={control}
+                defaultValue={optionCities.find((de) => de.key === Address?.city)?.label}
+                render={({ field: { name, onChange, ref } }) => {
+                  return (
+                    <Select
+                      ref={ref}
+                      id={name}
+                      name={name}
+                      placeholder=""
+                      onChange={(e) => {
+                        console.log(e)
+                        onChange(e?.label)
+                      }}
+                      defaultValue={optionCities.find((de) => de.key === Address?.city)}
+                      styles={stylesSelect}
+                      theme={themeSelect}
+                      options={optionCities}
+                    />
+                  )
+                }}
+              />
+            </div>
+          )}
         </div>
         <div className="col-md-12">
           <Form.Group className="" controlId="address">
             <Form.Label>Direccion</Form.Label>
-            <Form.Control {...register('address', { required: true })} type="text" placeholder="" />
+
+            <Form.Control
+              {...register('address', { required: true })}
+              type="text"
+              placeholder=""
+              defaultValue={Address?.address}
+            />
           </Form.Group>
         </div>
         <div className="col-md-12">
           <Form.Group className="" controlId="neighborhood">
             <Form.Label>Barrio</Form.Label>
-            <Form.Control {...register('neighborhood')} type="text" placeholder="" />
+            <Form.Control
+              {...register('neighborhood')}
+              type="text"
+              placeholder=""
+              defaultValue={Address?.neighborhood}
+            />
           </Form.Group>
         </div>
         <div className="col-md-12">
           <Form.Group className="" controlId="reference">
             <Form.Label>Referencia</Form.Label>
-            <Form.Control {...register('reference')} type="text" placeholder="" />
+            <Form.Control
+              {...register('reference')}
+              type="text"
+              placeholder=""
+              defaultValue={Address?.reference}
+            />
           </Form.Group>
         </div>
       </div>

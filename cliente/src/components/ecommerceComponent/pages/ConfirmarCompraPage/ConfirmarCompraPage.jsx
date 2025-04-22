@@ -165,10 +165,10 @@ export default function ConfirmarCompraPage({}) {
   }
 
   return (
-    <div className=" mt-4">
+    <div className="mt-4 mb-5" style={{minHeight:"50vh"}}>
       <p className="text-center">CONFIRMAR MI COMPRA</p>
       <div className="row g-4">
-        <div className="col-md-6">
+        <div className="col-md-6 col-payment">
           <Accordion defaultActiveKey="0" activeKey={pasoActive}>
             <Accordion.Item eventKey="0">
               <Accordion.Header>Direccion de Envio</Accordion.Header>
@@ -181,7 +181,7 @@ export default function ConfirmarCompraPage({}) {
               </Accordion.Body>
             </Accordion.Item>
             <Accordion.Item eventKey="1">
-              <Accordion.Header>Metodo de Pago</Accordion.Header>
+              <Accordion.Header>Método de Pago</Accordion.Header>
               <Accordion.Body>
                 <div>
                   <div className="text-center">
@@ -207,7 +207,7 @@ export default function ConfirmarCompraPage({}) {
               </Accordion.Body>
             </Accordion.Item>
             <Accordion.Item eventKey="2">
-              <Accordion.Header>Comfirmacion de Orden/Pedido</Accordion.Header>
+              <Accordion.Header>Confirmación de Orden/Pedido</Accordion.Header>
               <Accordion.Body>
                 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
                 incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
@@ -219,7 +219,7 @@ export default function ConfirmarCompraPage({}) {
             </Accordion.Item>
           </Accordion>
         </div>
-        <div className="col-md-6">
+        <div className="col-md-6 col-detail">
           <div style={{ overflow: 'hidden', borderRadius: '1em' }}>
             <div className="table-responsive">
               <table className="table ">
