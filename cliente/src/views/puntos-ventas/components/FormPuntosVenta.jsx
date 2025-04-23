@@ -45,8 +45,11 @@ export default function FormPuntosVenta({ onHide, getAllPuntosVenta, puntoVenta 
   } = useForm()
 
   const [coordinates, setCoordinates] = useState(puntoVenta ? puntoVenta.coordinates : null)
+  const [base64Image, setBase64Image] = useState(puntoVenta ? puntoVenta.base64Image : null)
+
   const onSubmit = async (data) => {
     console.log(data)
+    data.base64Image = base64Image
     if (!coordinates) {
       return toast.error('Selecionar la Direccion en el Mapa')
     }
@@ -71,6 +74,17 @@ export default function FormPuntosVenta({ onHide, getAllPuntosVenta, puntoVenta 
       }
     }
   }
+
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setBase64Image(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -153,6 +167,25 @@ export default function FormPuntosVenta({ onHide, getAllPuntosVenta, puntoVenta 
           {coordinates?.lat}
           {coordinates?.lng}
         </div>
+      </div>
+
+      <div className="mb-4">
+        <label htmlFor="img_url" className="block mb-2  text-gray-400 dark:text-white">
+          Imagen Frontal
+        </label>
+        <input
+          /* {...register("img_url", { required: true })} */
+          type="file"
+          onChange={handleFileChange}
+          accept="image/*"
+          className='form-control'
+        />
+
+        {base64Image && (
+          <div className="d-flex justify-content-center  my-4">
+            <img src={base64Image} alt="Selected" style={{maxWidth:"500px", minWidth:"300px"}} className="img-fluid h-52" />
+          </div>
+        )}
       </div>
 
       <div className="mt-5 d-flex gap-4 justify-content-center">
