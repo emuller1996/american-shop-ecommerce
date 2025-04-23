@@ -8,7 +8,7 @@ import { usePuntoVenta } from '../../../../hooks/usePuntoVenta'
 
 // Definir el icono personalizado
 const customIcon = new L.Icon({
-  iconUrl: 'http://localhost:3000/src/assets/Logo.png', // Cambia esto por la ruta de tu imagen
+  iconUrl: 'https://www.esmuller.cloud/assets/Logo-LBxHafXJ.png', // Cambia esto por la ruta de tu imagen
   iconSize: [42, 42], // Tamaño del icono
   iconAnchor: [16, 32], // Punto de anclaje
   popupAnchor: [0, -32], // Punto de anclaje del popup
