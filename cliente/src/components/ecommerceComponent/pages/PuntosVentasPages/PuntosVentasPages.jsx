@@ -64,8 +64,18 @@ export default function PuntosVentasPages({}) {
                     </span>
                   </div>
                 </div>
-                <div className="row">
-                  <div className="col-md-6 col-12">
+                <div className="row align-items-center">
+                  <div className="col-md-4 col-12">
+                    {
+                      punto?.base64Image && (
+                        <div className=' mb-3 d-flex justify-content-center'>
+                          <img src={punto?.base64Image} className='img-fluid rounded overflow-hidden' style={{height:"150px"}} alt="" />
+                        </div>
+                      )
+                    }
+                  </div>
+
+                  <div className="col-md-4 col-12">
                     <div className=" d-flex justify-content-start align-items-center">
                       <i className="fa-solid fa-map-location-dot fa-2x"></i>
                       <div>
@@ -75,7 +85,7 @@ export default function PuntosVentasPages({}) {
                       </div>
                     </div>
                   </div>
-                  <div className="col-md-6 col-12">
+                  <div className="col-md-4 col-12">
                     <div className=" d-flex justify-content-start align-items-center">
                       <div>
                         <p style={{ whiteSpace: 'pre' }}>{punto?.description}</p>

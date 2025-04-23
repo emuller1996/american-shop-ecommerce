@@ -5,6 +5,7 @@ import { useProductos } from '../../../hooks/useProductos'
 import { useCategorias } from '../../../hooks/useCategorias'
 import Pagination from '@mui/material/Pagination'
 import { Carousel } from 'react-bootstrap'
+import envio_img from '../../../assets/images/envio.png'
 
 export default function HomeLanding() {
   const { dataP: Productos, getAllProductosPublished, loading } = useProductos()
@@ -54,24 +55,30 @@ export default function HomeLanding() {
           </Carousel.Item>
           <Carousel.Item>
             <div className="row p-5">
-              <div className="mx-auto col-md-8 col-lg-6">
-                <img
-                  className="img-fluid"
-                  src="https://american-shop-eco.vercel.app/assets/img/banner_1_home.png"
-                  alt=""
-                />
+              <div
+                className="mx-auto col-md-8 col-lg-6 align-self-center"
+                style={{ height: '408px' }}
+              >
+                <div className="d-flex  flex-column " style={{ height: '-webkit-fill-available' }}>
+                  <img
+                    className="img-fluid align-self-center my-auto"
+                    style={{ scale: '1.2' }}
+                    src={envio_img}
+                    alt=""
+                  />
+                </div>
               </div>
               <div className="col-lg-6 mb-0 d-flex align-items-center">
                 <div className="text-align-left align-self-center">
                   <h1 className="h1 text-primary">
-                    <b>Envio a </b> Toda Colombia.
+                    <b>🚚 Envíos nacionales </b> a todo el país.
                   </h1>
-                  <h3 className="h2">Te Viste Real y te Deja de Paker!!</h3>
+                  <h3 className="h2 mb-3">¡No importa en qué parte de Colombia estés! </h3>
                   <p>
-                    La Moda de América, en tu Hogar. Envíos Rápidos en Toda Colombia
-                    <span className="d-block">
-                      Descubre la Colección Exclusiva de Réplicas AAA: Lujo Auténtico a tu Alcance.
-                      Explora Estilo y Calidad en Cada Detalle. ¡Bienvenido
+                    📦 Envíos seguros a todo el territorio colombiano Cobertura nacional garantizada
+                    <span className="d-block mt-2">
+                      Compra con tranquilidad, enviamos cada prenda hasta tu ciudad. Trabajamos con
+                      las mejores transportadoras para que recibas tu pedido en 3 a 5 días hábiles.
                     </span>
                   </p>
                 </div>
