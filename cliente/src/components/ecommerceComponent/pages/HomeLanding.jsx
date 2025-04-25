@@ -16,7 +16,7 @@ export default function HomeLanding() {
     page: 1,
     perPage: 9,
     search: '',
-    gender:null
+    gender: null,
   })
 
   useEffect(() => {
@@ -92,15 +92,16 @@ export default function HomeLanding() {
       </div>
       <div className="container mt-4">
         <div className="border p-2 rounded bg-white">
-          <p className="mb-2 mx-2">Filtra por Categoria</p>
-          <div className="mb-2 mx-2">
-            <div key={'all_category'} className="form-check form-check-inline">
+          <p className="mb-2 mx-2 text-muted">Filtra por Categoria</p>
+          <div className="mb-2 mx-2  d-flex gap-2 flex-wrap">
+            <div key={'all_category'} className="form-check form-check-inline m-0 p-0">
               <input
                 className="form-check-input"
                 type="radio"
                 name="filter_category"
                 id={'all_category'}
                 value={'all_category'}
+                hidden
                 defaultChecked={true}
                 onChange={(e) => {
                   console.log(e.target.value)
@@ -109,17 +110,33 @@ export default function HomeLanding() {
                   })
                 }}
               />
-              <label className="form-check-label" htmlFor={'all_category'}>
+              <label
+                className="form-check-label"
+                htmlFor={'all_category'}
+                style={{
+                  padding: '0.5em 0.7em',
+                  borderStyle: 'solid',
+                  borderColor:  dataFilter?.categoy === null ? '#5b9cff' : '#cccccc',
+                  backgroundColor:  dataFilter?.categoy === null ? '#e9f2ff' : 'transparent',
+                  borderWidth: '1px',
+                  borderRadius: '0.4em',
+                  cursor: 'pointer',
+                  color: dataFilter?.categoy === null ? '#093d8b' : '#c0c0c0',
+                  display: 'flex',
+                  alignItems: 'center',
+                }}
+              >
                 {'Todas'}
               </label>
             </div>
             {Categorias &&
               Categorias.map((cate) => (
-                <div key={cate._id} className="form-check form-check-inline">
+                <div key={cate._id} className="form-check form-check-inline m-0 p-0">
                   <input
                     className="form-check-input"
                     type="radio"
                     name="filter_category"
+                    hidden
                     id={cate._id}
                     value={cate._id}
                     onChange={(e) => {
@@ -129,14 +146,29 @@ export default function HomeLanding() {
                       })
                     }}
                   />
-                  <label className="form-check-label" htmlFor={cate._id}>
+                  <label
+                    className="form-check-label"
+                    htmlFor={cate._id}
+                    style={{
+                      padding: '0.5em 0.7em',
+                      borderStyle: 'solid',
+                      borderColor: cate._id === dataFilter?.categoy ? '#5b9cff' : '#cccccc',
+                      backgroundColor: cate._id === dataFilter?.categoy ? '#e9f2ff' : 'transparent',
+                      borderWidth: '1px',
+                      borderRadius: '0.4em',
+                      cursor: 'pointer',
+                      color: cate._id !== dataFilter?.categoy ? '#cccccc' : '#093d8b',
+                      display: 'flex',
+                      alignItems: 'center',
+                    }}
+                  >
                     {cate.name}
                   </label>
                 </div>
               ))}
           </div>
 
-          <p className="mx-2 mb-2">Filtra por Genero</p>
+          <p className="mx-2 mb-2 text-muted">Filtra por Genero</p>
           <div className="mx-2 d-flex gap-2 flex-wrap">
             <div key={'all'} className="form-check form-check-inline p-0 me-0">
               <input
@@ -167,7 +199,7 @@ export default function HomeLanding() {
               >
                 <i
                   className="fa-solid fa-circle-dot me-2"
-                  style={{ color:dataFilter?.gender === null ? '#5b9cff' : '#cccccc' }}
+                  style={{ color: dataFilter?.gender === null ? '#5b9cff' : '#cccccc' }}
                 ></i>
                 Todas
               </label>
@@ -197,8 +229,8 @@ export default function HomeLanding() {
                     borderRadius: '0.4em',
                     cursor: 'pointer',
                     color: gen === dataFilter?.gender ? '#5b9cff' : '#cccccc',
-                    display:"flex",
-                    alignItems:"center"
+                    display: 'flex',
+                    alignItems: 'center',
                   }}
                   htmlFor={gen}
                 >
