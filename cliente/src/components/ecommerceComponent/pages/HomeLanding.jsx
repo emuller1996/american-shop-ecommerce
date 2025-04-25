@@ -6,6 +6,7 @@ import { useCategorias } from '../../../hooks/useCategorias'
 import Pagination from '@mui/material/Pagination'
 import { Carousel } from 'react-bootstrap'
 import envio_img from '../../../assets/images/envio.png'
+import './HomeLanding.css'
 
 export default function HomeLanding() {
   const { dataP: Productos, getAllProductosPublished, loading } = useProductos()
@@ -14,6 +15,8 @@ export default function HomeLanding() {
   const [dataFilter, setDataFilter] = useState({
     page: 1,
     perPage: 9,
+    search: '',
+    gender: null,
   })
 
   useEffect(() => {
@@ -89,55 +92,90 @@ export default function HomeLanding() {
       </div>
       <div className="container mt-4">
         <div className="border p-2 rounded bg-white">
-          <p className="m-0 mb-2">Filtra por Categoria</p>
-          <div key={'all_category'} className="form-check form-check-inline">
-            <input
-              className="form-check-input"
-              type="radio"
-              name="filter_category"
-              id={'all_category'}
-              value={'all_category'}
-              defaultChecked={true}
-              onChange={(e) => {
-                console.log(e.target.value)
-                setDataFilter((status) => {
-                  return { ...status, categoy: null }
-                })
-              }}
-            />
-            <label className="form-check-label" htmlFor={'all_category'}>
-              {'Todas'}
-            </label>
+          <p className="mb-2 mx-2 text-muted">Filtra por Categoria</p>
+          <div className="mb-2 mx-2  d-flex gap-2 flex-wrap">
+            <div key={'all_category'} className="form-check form-check-inline m-0 p-0">
+              <input
+                className="form-check-input"
+                type="radio"
+                name="filter_category"
+                id={'all_category'}
+                value={'all_category'}
+                hidden
+                defaultChecked={true}
+                onChange={(e) => {
+                  console.log(e.target.value)
+                  setDataFilter((status) => {
+                    return { ...status, categoy: null }
+                  })
+                }}
+              />
+              <label
+                className="form-check-label"
+                htmlFor={'all_category'}
+                style={{
+                  padding: '0.5em 0.7em',
+                  borderStyle: 'solid',
+                  borderColor:  dataFilter?.categoy === null ? '#5b9cff' : '#cccccc',
+                  backgroundColor:  dataFilter?.categoy === null ? '#e9f2ff' : 'transparent',
+                  borderWidth: '1px',
+                  borderRadius: '0.4em',
+                  cursor: 'pointer',
+                  color: dataFilter?.categoy === null ? '#093d8b' : '#c0c0c0',
+                  display: 'flex',
+                  alignItems: 'center',
+                }}
+              >
+                {'Todas'}
+              </label>
+            </div>
+            {Categorias &&
+              Categorias.map((cate) => (
+                <div key={cate._id} className="form-check form-check-inline m-0 p-0">
+                  <input
+                    className="form-check-input"
+                    type="radio"
+                    name="filter_category"
+                    hidden
+                    id={cate._id}
+                    value={cate._id}
+                    onChange={(e) => {
+                      console.log(e.target.value)
+                      setDataFilter((status) => {
+                        return { ...status, categoy: e.target.value }
+                      })
+                    }}
+                  />
+                  <label
+                    className="form-check-label"
+                    htmlFor={cate._id}
+                    style={{
+                      padding: '0.5em 0.7em',
+                      borderStyle: 'solid',
+                      borderColor: cate._id === dataFilter?.categoy ? '#5b9cff' : '#cccccc',
+                      backgroundColor: cate._id === dataFilter?.categoy ? '#e9f2ff' : 'transparent',
+                      borderWidth: '1px',
+                      borderRadius: '0.4em',
+                      cursor: 'pointer',
+                      color: cate._id !== dataFilter?.categoy ? '#cccccc' : '#093d8b',
+                      display: 'flex',
+                      alignItems: 'center',
+                    }}
+                  >
+                    {cate.name}
+                  </label>
+                </div>
+              ))}
           </div>
-          {Categorias &&
-            Categorias.map((cate) => (
-              <div key={cate._id} className="form-check form-check-inline">
-                <input
-                  className="form-check-input"
-                  type="radio"
-                  name="filter_category"
-                  id={cate._id}
-                  value={cate._id}
-                  onChange={(e) => {
-                    console.log(e.target.value)
-                    setDataFilter((status) => {
-                      return { ...status, categoy: e.target.value }
-                    })
-                  }}
-                />
-                <label className="form-check-label" htmlFor={cate._id}>
-                  {cate.name}
-                </label>
-              </div>
-            ))}
 
-          <p className="m-0 mb-2">Filtra por Genero</p>
-          <div>
-            <div key={'all'} className="form-check form-check-inline">
+          <p className="mx-2 mb-2 text-muted">Filtra por Genero</p>
+          <div className="mx-2 d-flex gap-2 flex-wrap">
+            <div key={'all'} className="form-check form-check-inline p-0 me-0">
               <input
                 className="form-check-input"
                 type="radio"
                 name="gender"
+                hidden
                 id={'all'}
                 onChange={(e) => {
                   setDataFilter((sta) => {
@@ -146,16 +184,33 @@ export default function HomeLanding() {
                 }}
                 value="all"
               />
-              <label className="form-check-label" htmlFor={'all'}>
+              <label
+                className="form-check-label"
+                htmlFor={'all'}
+                style={{
+                  padding: '0.7em',
+                  borderStyle: 'solid',
+                  borderColor: dataFilter?.gender === null ? '#5b9cff' : '#cccccc',
+                  borderWidth: '1px',
+                  borderRadius: '0.4em',
+                  color: dataFilter?.gender === null ? '#5b9cff' : '#cccccc',
+                  cursor: 'pointer',
+                }}
+              >
+                <i
+                  className="fa-solid fa-circle-dot me-2"
+                  style={{ color: dataFilter?.gender === null ? '#5b9cff' : '#cccccc' }}
+                ></i>
                 Todas
               </label>
             </div>
             {['men', 'women', 'kid'].map((gen) => (
-              <div key={gen} className="form-check form-check-inline">
+              <div key={gen} className="form-check form-check-inline p-0 me-0">
                 <input
-                  className="form-check-input"
+                  className="form-check-input "
                   type="radio"
                   name="gender"
+                  hidden
                   id={gen}
                   value={gen}
                   onChange={(e) => {
@@ -164,11 +219,64 @@ export default function HomeLanding() {
                     })
                   }}
                 />
-                <label className="form-check-label" htmlFor={gen}>
-                  {gen}
+                <label
+                  className=""
+                  style={{
+                    padding: '0.7em',
+                    borderStyle: 'solid',
+                    borderColor: gen === dataFilter?.gender ? '#5b9cff' : '#cccccc',
+                    borderWidth: '1px',
+                    borderRadius: '0.4em',
+                    cursor: 'pointer',
+                    color: gen === dataFilter?.gender ? '#5b9cff' : '#cccccc',
+                    display: 'flex',
+                    alignItems: 'center',
+                  }}
+                  htmlFor={gen}
+                >
+                  {gen === 'men' && (
+                    <i
+                      style={{ color: gen === dataFilter?.gender ? '#5b9cff' : '#cccccc' }}
+                      className="fa-solid fa-mars me-2 fa-xl"
+                    ></i>
+                  )}
+                  {gen === 'women' && (
+                    <i
+                      style={{ color: gen === dataFilter?.gender ? '#5b9cff' : '#cccccc' }}
+                      className="fa-solid fa-venus me-2 fa-xl"
+                    ></i>
+                  )}
+                  {gen === 'kid' && (
+                    <i
+                      style={{ color: gen === dataFilter?.gender ? '#5b9cff' : '#cccccc' }}
+                      className="fa-solid fa-children me-2 fa-xl"
+                    ></i>
+                  )}
+                  {gen === 'men' && 'Hombre'}
+                  {gen === 'women' && 'Mujer'}
+                  {gen === 'kid' && 'Niños'}
                 </label>
               </div>
             ))}
+          </div>
+          <div className="mt-3 mb-2 mx-2">
+            <div className="input-group ">
+              <span className="input-group-text" id="basic-addon1">
+                <i className="fa-solid fa-magnifying-glass"></i>
+              </span>
+              <input
+                type="text"
+                className="form-control form-search-eco"
+                placeholder="Busca producto por Nombre, Marca, Color ... "
+                aria-label="Username"
+                aria-describedby="basic-addon1"
+                onChange={(e) => {
+                  setDataFilter((status) => {
+                    return { ...status, search: e.target.value }
+                  })
+                }}
+              />
+            </div>
           </div>
         </div>
       </div>
