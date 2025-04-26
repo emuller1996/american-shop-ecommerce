@@ -87,7 +87,7 @@ const ImagesPage = ({ idProduct }) => {
             </div>
           </div>
           <div className="row g-4 mt-4">
-            <div className="col-6 m-0">
+            <div className="col-md-6 ">
               <div className="card card-body">
                 <p className="text-center text-muted">Ingresa imagen para el producto.</p>
                 <Form.Group controlId="formFile" className="mb-3">
@@ -119,7 +119,7 @@ const ImagesPage = ({ idProduct }) => {
                 </div>
               </div>
             </div>
-            <div className="col-6 m-0">
+            <div className="col-md-6 ">
               <div className="row g-2">
                 {ImagesProduct && ImagesProduct.length === 0 && (
                   <div className="col-6 mx-auto">
@@ -130,7 +130,7 @@ const ImagesPage = ({ idProduct }) => {
                 )}
                 {ImagesProduct &&
                   ImagesProduct.map((ima) => (
-                    <div key={ima._id} className="col-md-6">
+                    <div key={ima._id} className="col-4 col-md-6">
                       <div className="rounded-4  overflow-hidden ">
                         <div
                           className={`card position-relative overflow-hidden rounded-4  ${ima._id === dataDetalle?.image_id ? ' border-2 border-primary ' : ''}`}
