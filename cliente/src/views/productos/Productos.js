@@ -15,9 +15,12 @@ import { Link } from 'react-router-dom'
 import FormImportProductos from './components/FormImportProductos'
 import Select from 'react-select'
 import { Chip } from '@mui/material'
+import ImagesPage from './ImagesPage/ImagesPage'
 
 const ProductosPage = () => {
   const [show, setShow] = useState(false)
+  const [showSize, setShowSize] = useState(false)
+
   const [showImport, setShowImport] = useState(false)
   const [Draw, setDraw] = useState(1)
   const [dataFilter, setdataFilter] = useState({
@@ -132,17 +135,17 @@ const ProductosPage = () => {
                       >
                         <i className="fa-solid fa-pen-to-square"></i>
                       </button>
-                      <Link
+                      <button
                         to={`${row._id}/images`}
                         onClick={() => {
                           setProductoSelecionado(row)
-                          handleShow()
+                          setShowSize(true)
                         }}
                         title="Editar Producto."
                         className="btn btn-info btn-sm me-2"
                       >
                         <i className="text-white fa-regular fa-images"></i>
-                      </Link>
+                      </button>
                       <Link
                         to={`${row._id}/gestion-tallas`}
                         onClick={() => {
@@ -266,6 +269,19 @@ const ProductosPage = () => {
               getAllProduct={() => {
                 setDraw((status) => ++status)
               }}
+            />
+          </Modal.Body>
+        </Modal>
+        <Modal size="lg" centered show={showSize} onHide={() => setShowSize(false)}>
+          <Modal.Body>
+            <ImagesPage
+              idProduct={ProductoSelecionado?._id}
+              getAllProduct={() => {
+                setdataFilter((sta) => {
+                  return { ...sta, draw: ++sta.draw }
+                })
+              }}
+              onHide={handleClose}
             />
           </Modal.Body>
         </Modal>
