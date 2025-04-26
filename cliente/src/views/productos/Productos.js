@@ -283,6 +283,18 @@ const ProductosPage = () => {
               }}
               onHide={handleClose}
             />
+            <div className="text-center">
+              <Button
+                variant="danger"
+                className="text-nowrap text-white"
+                onClick={() => {
+                  setProductoSelecionado(null)
+                  setShowSize(false)
+                }}
+              >
+                Cerrar
+              </Button>
+            </div>
           </Modal.Body>
         </Modal>
       </div>
