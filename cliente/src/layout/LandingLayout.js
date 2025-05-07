@@ -41,9 +41,9 @@ const LandingLayout = () => {
                 </li>
 
                 <li className="nav-item mb-2">
-                  <a href="#" className="nav-link p-0 text-muted">
+                  <Link to={`/contactanos`} className="nav-link p-0 text-muted">
                     Contactanos
-                  </a>
+                  </Link>
                 </li>
                 <li className="nav-item mb-2">
                   <Link className="text-decoration-none" to={`/d/`}>
