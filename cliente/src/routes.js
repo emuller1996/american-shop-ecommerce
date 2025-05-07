@@ -14,6 +14,7 @@ const PedidoDetallesPage = React.lazy(
   () => import('./views/pedidos/PedidoDetallesPage/PedidoDetallesPage'),
 )
 
+
 const routes = [
   { path: '/', exact: true, name: 'Home' },
   { path: '/dashboard', name: 'Dashboard', element: Dashboard },

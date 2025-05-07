@@ -4,6 +4,7 @@ import { CContainer, CSpinner } from '@coreui/react'
 import HomeLanding from './pages/HomeLanding'
 import ProductDetailPage from './pages/ProductDetailPage'
 import LoginProtectedClient from '../../utils/LoginProtectedClient'
+import ContactanosPage from '../../views/contactanos/ContactanosPage'
 
 const PuntosVentasPages = React.lazy(() => import('./pages/PuntosVentasPages/PuntosVentasPages'))
 const MiProfilePage = React.lazy(() => import('./pages/MiPerfilPage/MiProfilePage'))
@@ -30,6 +31,13 @@ const AppContentLanding = () => {
     <CContainer className="px-4" lg>
       <Suspense fallback={<CSpinner color="primary" />}>
         <Routes>
+          <Route
+            key={''}
+            path={'/contactanos'}
+            exact={true}
+            name={'Contactanos'}
+            element={<ContactanosPage />}
+          />
           {routes.map((route, idx) => {
             return (
               route.element && (
@@ -65,7 +73,6 @@ const AppContentLanding = () => {
               </LoginProtectedClient>
             }
           />
-
           <Route
             key={'confirmar-compra'}
             path={'/eco/mis-compras'}
@@ -77,6 +84,7 @@ const AppContentLanding = () => {
               </LoginProtectedClient>
             }
           />
+
           <Route path="/*" element={<>404 PAGE</>} />
         </Routes>
       </Suspense>

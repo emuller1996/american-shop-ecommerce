@@ -291,7 +291,7 @@ OrdenesRouters.post("/webhooks", async (req, res) => {
         //Buscar Orden y productos para dar de bajar el inventario 
         //Enviar email del pago 
       }
-      console.log(pago);
+      //console.log(pago);
     } catch (error) {
       console.log(error);
     }
