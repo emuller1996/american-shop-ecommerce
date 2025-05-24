@@ -74,19 +74,13 @@ OrdenesRouters.post("/process_payment", async (req, res) => {
   }
 });
 
-OrdenesRouters.get("/", async (req, res) => {
+/* OrdenesRouters.get("/", async (req, res) => {
   try {
     var ordenes = await buscarElasticByType("orden");
-    /* return res.json(searchResult.body.hits); */
     ordenes = ordenes.map(async (or) => {
       if (or.evento_id) {
-        //await getDocumentById(or.evento_id)
         or.evento = await getDocumentById(or.evento_id);
       }
-      /* if(or.funcion_id){
-        //await getDocumentById(or.funcion_id)
-        or.funcion =  await getDocumentById(or.funcion_id)
-      } */
       if (or.mercadopago_id) {
         const r = await axios.get(
           `https://api.mercadopago.com/v1/payments/${or.mercadopago_id}`,
@@ -98,13 +92,12 @@ OrdenesRouters.get("/", async (req, res) => {
       }
       return or;
     });
-
     ordenes = await Promise.all(ordenes);
     return res.status(200).json(ordenes);
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
-});
+}); */
 
 OrdenesRouters.put("/:id", async (req, res) => {
   try {
@@ -220,6 +213,15 @@ OrdenesRouters.get("/:id", async (req, res) => {
       orden.address = temp;
     }
     console.log(orden.products);
+    if (orden.mercadopago_id) {
+        const r = await axios.get(
+          `https://api.mercadopago.com/v1/payments/${orden.mercadopago_id}`,
+          {
+            headers: { Authorization: `Bearer ${process.env.ACCESS_TOKEN}` },
+          }
+        );
+        orden.mercadopago_data = r.data;
+      }
     var productosData = orden.products.map(async (c) => {
       //console.log(await getDocumentById(c.product_id));
       let image_id = (await getDocumentById(c.product_id)).image_id;
@@ -274,18 +276,6 @@ OrdenesRouters.post("/webhooks", async (req, res) => {
         status_detail: payment_mercado?.status_detail,
       };
       const response = await crearElasticByType(pagoDatos, "pago");
-      /* const pago = await Payment.update(
-        {
-          status: payment_mercado.status,
-          net_received_amount:
-            payment_mercado?.transaction_details?.net_received_amount,
-          net_amount: payment_mercado.transaction_amount,
-          fee_details_amount: payment_mercado?.fee_details?.[0]?.amount,
-          net_amount: payment_mercado?.net_amount,
-          status_detail: payment_mercado?.status_detail,
-        },
-        { where: { id_pago_merca: data.data.id } }
-      ); */
 
       if(payment_mercado.status==="approved"){
         //Buscar Orden y productos para dar de bajar el inventario 

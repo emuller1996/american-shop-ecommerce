@@ -7,11 +7,12 @@ import PropTypes from 'prop-types'
 import { useParams } from 'react-router-dom'
 import { useProductos } from '../../../../hooks/useProductos'
 import toast from 'react-hot-toast'
-const FormStock = ({ StockProduct, allStock, cancel }) => {
+const FormStock = ({ StockProduct, allStock, cancel, idProduct }) => {
   FormStock.propTypes = {
     StockProduct: PropTypes.object,
     allStock: PropTypes.func,
     cancel: PropTypes.func,
+    idProduct: PropTypes.string,
   }
   const {
     register,
@@ -20,7 +21,7 @@ const FormStock = ({ StockProduct, allStock, cancel }) => {
     reset,
   } = useForm()
 
-  const { idProduct } = useParams()
+  /* const { idProduct } = useParams() */
   const { createStockProducto, updateStockProducto } = useProductos()
 
   const onSubmit = async (data) => {
@@ -58,7 +59,7 @@ const FormStock = ({ StockProduct, allStock, cancel }) => {
   return (
     <div className="card border">
       <form onSubmit={handleSubmit(onSubmit)} className="card-body">
-        <span className="text-center">{StockProduct ? 'EDITAR' : ' CREAR'}Agregar Nueva Talla</span>
+        <span className="text-center">{StockProduct ? 'EDITAR' : ' CREAR'} Talla</span>
         <hr />
         <Form.Group className="mb-3" controlId="name">
           <Form.Label>Talla</Form.Label>
