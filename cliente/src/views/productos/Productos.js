@@ -16,10 +16,12 @@ import FormImportProductos from './components/FormImportProductos'
 import Select from 'react-select'
 import { Chip } from '@mui/material'
 import ImagesPage from './ImagesPage/ImagesPage'
+import TallasPage from './TallasPage/TallasPage'
 
 const ProductosPage = () => {
   const [show, setShow] = useState(false)
   const [showSize, setShowSize] = useState(false)
+  const [showSizeTallas, setShowSizeTallas] = useState(false)
 
   const [showImport, setShowImport] = useState(false)
   const [Draw, setDraw] = useState(1)
@@ -136,7 +138,6 @@ const ProductosPage = () => {
                         <i className="fa-solid fa-pen-to-square"></i>
                       </button>
                       <button
-                        to={`${row._id}/images`}
                         onClick={() => {
                           setProductoSelecionado(row)
                           setShowSize(true)
@@ -146,17 +147,18 @@ const ProductosPage = () => {
                       >
                         <i className="text-white fa-regular fa-images"></i>
                       </button>
-                      <Link
+                      <button
                         to={`${row._id}/gestion-tallas`}
                         onClick={() => {
                           setProductoSelecionado(row)
-                          handleShow()
+                          setShowSizeTallas(true)
+                          //handleShow()
                         }}
                         title="Gestion de Tallas del Producto."
                         className="btn btn-secondary btn-sm"
                       >
                         <i className="fa-solid fa-tags"></i>
-                      </Link>
+                      </button>
                     </>
                   )
                 },
@@ -290,6 +292,23 @@ const ProductosPage = () => {
                 onClick={() => {
                   setProductoSelecionado(null)
                   setShowSize(false)
+                }}
+              >
+                Cerrar
+              </Button>
+            </div>
+          </Modal.Body>
+        </Modal>
+        <Modal size="lg" centered show={showSizeTallas} onHide={() => setShowSizeTallas(false)}>
+          <Modal.Body>
+            <TallasPage idProduct={ProductoSelecionado?._id} />
+            <div className="text-center">
+              <Button
+                variant="danger"
+                className="text-nowrap text-white"
+                onClick={() => {
+                  setProductoSelecionado(null)
+                  setShowSizeTallas(false)
                 }}
               >
                 Cerrar

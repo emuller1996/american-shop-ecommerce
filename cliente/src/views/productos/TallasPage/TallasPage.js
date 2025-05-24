@@ -3,12 +3,16 @@ import { Form } from 'react-bootstrap'
 import FormStock from './components/FormStock'
 import { useProductos } from '../../../hooks/useProductos'
 import { useParams } from 'react-router-dom'
+import PropTypes from 'prop-types'
 
-const TallasPage = () => {
+const TallasPage = ({ idProduct }) => {
+  TallasPage.propTypes = {
+    idProduct: PropTypes.string,
+  }
   const [draw, setDraw] = useState(0)
   const [StockSelected, setStockSelected] = useState(null)
   const { getStockByProductId, StockProduct } = useProductos()
-  const { idProduct } = useParams()
+  //const { idProduct } = useParams()
 
   useEffect(() => {
     getStockByProductId(idProduct)
@@ -24,6 +28,7 @@ const TallasPage = () => {
             <div className="col-md-5">
               {StockSelected ? (
                 <FormStock
+                  idProduct={idProduct}
                   StockProduct={StockSelected}
                   allStock={() => {
                     setDraw((status) => ++status)
@@ -34,6 +39,7 @@ const TallasPage = () => {
                 />
               ) : (
                 <FormStock
+                  idProduct={idProduct}
                   allStock={() => {
                     setDraw((status) => ++status)
                   }}

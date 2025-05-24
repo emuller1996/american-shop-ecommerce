@@ -40,27 +40,35 @@ export default function PedidoDetallesPage() {
       {dataDetalle && (
         <>
           <div className="card p-3 mb-3">
-            <div className="col-md-3 mx-auto">
-              <Form.Label htmlFor="status">Cambiar de Estado</Form.Label>
-              {dataDetalle && (
-                <Select
-                  name={'status'}
-                  id="status"
-                  placeholder=""
-                  defaultValue={StatusOrderOptions.find((sta) => sta.value === dataDetalle?.status)}
-                  onChange={async (e) => {
-                    try {
-                      await changeStatusOrder(idOrder, { status: e?.value })
-                      toast.success(`Se ha cambiado de estado la Orden.`)
-                    } catch (error) {
-                      console.log(error)
-                    }
-                  }}
-                  styles={stylesSelect}
-                  theme={themeSelect}
-                  options={StatusOrderOptions}
-                />
-              )}
+            <div className="row">
+              <div className="col-md-6">
+                <p className='m-0 '>Total Orden</p>
+                <p className='m-0 fs-4 fw-semibold'> {ViewDollar(dataDetalle.total_order)}</p>
+              </div>
+              <div className="col-md-6">
+                <Form.Label htmlFor="status">Cambiar de Estado</Form.Label>
+                {dataDetalle && (
+                  <Select
+                    name={'status'}
+                    id="status"
+                    placeholder=""
+                    defaultValue={StatusOrderOptions.find(
+                      (sta) => sta.value === dataDetalle?.status,
+                    )}
+                    onChange={async (e) => {
+                      try {
+                        await changeStatusOrder(idOrder, { status: e?.value })
+                        toast.success(`Se ha cambiado de estado la Orden.`)
+                      } catch (error) {
+                        console.log(error)
+                      }
+                    }}
+                    styles={stylesSelect}
+                    theme={themeSelect}
+                    options={StatusOrderOptions}
+                  />
+                )}
+              </div>
             </div>
           </div>
           <div className="row g-3">
@@ -85,7 +93,10 @@ export default function PedidoDetallesPage() {
                     <span className="">{dataDetalle?.cliente?.number_document_client}</span>
                   </div>
                   <div className="d-flex justify-content-between">
-                    <span className=""> <br /></span>
+                    <span className="">
+                      {' '}
+                      <br />
+                    </span>
                     <span className=""></span>
                   </div>
                 </div>
@@ -128,19 +139,23 @@ export default function PedidoDetallesPage() {
                   </div>
                   <div className="d-flex justify-content-between">
                     <span className="">Estado</span>
-                    <span className="">PAGADO</span>
+                    <span className="text-uppercase ">{dataDetalle?.mercadopago_data?.status}</span>
                   </div>
                   <div className="d-flex justify-content-between">
                     <span className="">Fecha</span>
-                    <span className="">TEst</span>
+                    <span className="">{dataDetalle?.mercadopago_data?.date_created }</span>
                   </div>
                   <div className="d-flex justify-content-between">
                     <span className="">Ultimos 4 Digitos de la Tarjeta</span>
-                    <span className="">Inde</span>
+                    <span className="">{dataDetalle?.mercadopago_data?.card?.first_six_digits } *********** {dataDetalle?.mercadopago_data?.card?.last_four_digits }</span>
                   </div>
                   <div className="d-flex justify-content-between">
-                    <span className="">Valor Pagado</span>
-                    <span className="">11213</span>
+                    <span className="">Monto Transaction {`(MercadoPago)`}</span>
+                    <span className="text-success fw-semibold">{ViewDollar(dataDetalle?.mercadopago_data?.transaction_amount)}</span>
+                  </div>
+                  <div className="d-flex justify-content-between">
+                    <span className="">Monto Tarifa. {`(MercadoPago)`}</span>
+                    <span className="text-warning fw-semibold">{ViewDollar(dataDetalle?.mercadopago_data?.fee_details?.[0]?.amount)}</span>
                   </div>
                 </div>
               </div>
