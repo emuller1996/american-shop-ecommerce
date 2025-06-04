@@ -17,12 +17,19 @@ const FormStock = ({ StockProduct, allStock, cancel, idProduct }) => {
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors },
     reset,
   } = useForm()
 
-  /* const { idProduct } = useParams() */
   const { createStockProducto, updateStockProducto } = useProductos()
+
+  useEffect(() => {
+    if (StockProduct) {
+      setValue('size', StockProduct?.size)
+      setValue('stock', StockProduct?.stock)
+    }
+  }, [StockProduct])
 
   const onSubmit = async (data) => {
     data.product_id = idProduct
@@ -67,6 +74,7 @@ const FormStock = ({ StockProduct, allStock, cancel, idProduct }) => {
             {...register('size', { required: true })}
             defaultValue={StockProduct?.size}
             type="text"
+            disabled={StockProduct?.size ? true : false}
             placeholder=""
           />
         </Form.Group>
@@ -83,7 +91,11 @@ const FormStock = ({ StockProduct, allStock, cancel, idProduct }) => {
           {StockProduct && (
             <button
               type="button"
-              onClick={cancel}
+              onClick={() => {
+                cancel()
+                setValue('size', "")
+                setValue('stock', "")
+              }}
               className="btn btn-danger text-white text-center me-3"
             >
               Cancelar

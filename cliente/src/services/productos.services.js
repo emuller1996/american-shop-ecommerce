@@ -41,6 +41,10 @@ export const getAllProductoStockService = (product_id, signal) => {
   return axios.get(`/productos/${product_id}/stock`, { signal: signal })
 }
 
+export const getAllProductoLogsStockService = (product_id, signal) => {
+  return axios.get(`/productos/${product_id}/stock/logs`, { signal: signal })
+}
+
 export const getAllProductoConsultaService = (product_id, signal) => {
   return axios.get(`/productos/${product_id}/consultas`, { signal: signal })
 }

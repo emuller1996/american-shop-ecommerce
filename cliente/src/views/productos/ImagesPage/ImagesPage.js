@@ -15,7 +15,7 @@ const ImagesPage = ({ idProduct }) => {
     idProduct: PropTypes.string,
   }
   const [selectedImage, setSelectedImage] = useState(null)
-  const [isLoading, setisLoading] = useState(false)
+  const [isLoading, setisLoading] = useState(true)
   const [base64Image, setBase64Image] = useState(null)
 
   const { getImagesByProductId, ImagesProduct, getProductById, dataDetalle } = useProductos()
@@ -23,7 +23,9 @@ const ImagesPage = ({ idProduct }) => {
   //const { idProduct } = useParams()
 
   useEffect(() => {
-    getAllDataFetch()
+    if (idProduct) {
+      getAllDataFetch()
+    }
   }, [idProduct])
 
   const getAllDataFetch = async () => {
