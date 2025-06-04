@@ -10,7 +10,10 @@ import {
 import { INDEX_ES_MAIN } from "../config.js";
 import { client } from "../db.js";
 import xlsx from "xlsx";
-import { validateTokenClient, validateTokenClientMid } from "../utils/authjws.js";
+import {
+  validateTokenClient,
+  validateTokenClientMid,
+} from "../utils/authjws.js";
 import { jwtDecode } from "jwt-decode";
 const ProductosRouters = Router();
 
@@ -312,6 +315,19 @@ ProductosRouters.post("/:id/stock", async (req, res) => {
     }
 
     const resElasCreateStock = await crearElasticByType(dataStock, "stock");
+
+    let user_id = jwtDecode(req.headers["access-token"])._id;
+    let product_id = req.params.id;
+    let cantidad = req.body.stock;
+    const dataCreateLog = {
+      user_id,
+      product_id,
+      cantidad,
+      descripcion: "Se Agrego una Talla",
+      size: req.body.size,
+      stock_id: resElasCreateStock.body._id,
+    };
+    await crearElasticByType(dataCreateLog, "product_log");
     return res
       .status(201)
       .json({ message: "Stock del producto creada.", dataStock });
@@ -385,34 +401,39 @@ ProductosRouters.get("/:id/images", async (req, res) => {
   }
 });
 
+ProductosRouters.post(
+  "/:id/consultas",
+  validateTokenClientMid,
+  async (req, res) => {
+    try {
+      const dataImage = req.body;
 
-ProductosRouters.post("/:id/consultas",validateTokenClientMid, async (req, res) => {
-  try {
-    const dataImage = req.body;
-
-    const accessToken = req.headers["authorization"];
-    const decoded = jwtDecode(accessToken);
-    const ImageCreate = {
-      ...dataImage,
-      product_id: req.params.id,
-      status: "pending",
-      client_id: decoded._id,
-
-    };
-    const resElasCreateFun = await crearElasticByType(ImageCreate, "consulta");
-    //recinto = response.body;
-    crearLogsElastic(
-      JSON.stringify(req.headers),
-      JSON.stringify(req.body),
-      "Se ha cargado nueva consulta a un producto."
-    );
-    return res
-      .status(201)
-      .json({ message: "Consulta Creada.", /* resElasCreateFun */ });
-  } catch (error) {
-    return res.status(500).json({ message: error.message });
+      const accessToken = req.headers["authorization"];
+      const decoded = jwtDecode(accessToken);
+      const ImageCreate = {
+        ...dataImage,
+        product_id: req.params.id,
+        status: "pending",
+        client_id: decoded._id,
+      };
+      const resElasCreateFun = await crearElasticByType(
+        ImageCreate,
+        "consulta"
+      );
+      //recinto = response.body;
+      crearLogsElastic(
+        JSON.stringify(req.headers),
+        JSON.stringify(req.body),
+        "Se ha cargado nueva consulta a un producto."
+      );
+      return res
+        .status(201)
+        .json({ message: "Consulta Creada." /* resElasCreateFun */ });
+    } catch (error) {
+      return res.status(500).json({ message: error.message });
+    }
   }
-});
+);
 
 ProductosRouters.get("/:id/consultas", async (req, res) => {
   try {
@@ -439,7 +460,7 @@ ProductosRouters.get("/:id/consultas", async (req, res) => {
               },
               {
                 terms: {
-                  status: ['pending','completed'],
+                  status: ["pending", "completed"],
                 },
               },
             ],
@@ -456,28 +477,29 @@ ProductosRouters.get("/:id/consultas", async (req, res) => {
         _id: c._id,
       };
     });
-    dataImages = dataImages.map( async c =>{
-      let cliente =  await getDocumentById(c.client_id)
-      let respuestas =  await getAllRespuestasByConsulta(c._id)
+    dataImages = dataImages.map(async (c) => {
+      let cliente = await getDocumentById(c.client_id);
+      let respuestas = await getAllRespuestasByConsulta(c._id);
 
-      return {...c, 
-        cliente : {
-          name_client:cliente.name_client,
-          email_client:cliente.email_client,
-          phone_client:cliente.phone_client,
+      return {
+        ...c,
+        cliente: {
+          name_client: cliente.name_client,
+          email_client: cliente.email_client,
+          phone_client: cliente.phone_client,
         },
-        respuestas
-      }
-    })
+        respuestas,
+      };
+    });
 
-    dataImages =  await Promise.all(dataImages);
+    dataImages = await Promise.all(dataImages);
     return res.status(200).json(dataImages);
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
 });
 
-const getAllRespuestasByConsulta = async (consulta_id) =>{
+const getAllRespuestasByConsulta = async (consulta_id) => {
   try {
     var consulta = {
       index: INDEX_ES_MAIN,
@@ -509,13 +531,13 @@ const getAllRespuestasByConsulta = async (consulta_id) =>{
     };
     const searchResult = await client.search(consulta);
 
-    var data = searchResult.body.hits.hits.map( async(c) => {
-      let user =await getDocumentById(c._source.user_id);
+    var data = searchResult.body.hits.hits.map(async (c) => {
+      let user = await getDocumentById(c._source.user_id);
       console.log(user);
       return {
         ...c._source,
         _id: c._id,
-        user: { name: user.name , role :user.role}
+        user: { name: user.name, role: user.role },
       };
     });
     data = await Promise.all(data);
@@ -523,7 +545,7 @@ const getAllRespuestasByConsulta = async (consulta_id) =>{
   } catch (error) {
     console.log(error);
   }
-}
+};
 
 ProductosRouters.get("/:id/stock", async (req, res) => {
   try {
@@ -568,12 +590,80 @@ ProductosRouters.get("/:id/stock", async (req, res) => {
   }
 });
 
+ProductosRouters.get("/:id/stock/logs", async (req, res) => {
+  try {
+    const searchResult = await client.search({
+      index: INDEX_ES_MAIN,
+      size: 1000,
+      body: {
+        query: {
+          bool: {
+            must: [
+              {
+                term: {
+                  type: {
+                    value: "product_log",
+                  },
+                },
+              },
+              {
+                term: {
+                  product_id: {
+                    value: req.params.id,
+                  },
+                },
+              },
+            ],
+          },
+        },
+        sort: [
+          { createdTime: { order: "desc" } }, // Reemplaza con el campo por el que quieres ordenar
+        ],
+      },
+    });
+    let dataImages = searchResult.body.hits.hits.map((c) => {
+      return {
+        ...c._source,
+        _id: c._id,
+      };
+    });
+    dataImages = dataImages.map(async (product) => {
+      return {
+        ...product,
+        user: product.user_id
+          ? (await getDocumentById(product?.user_id))['name']
+          : "",
+      };
+    });
+    dataImages = await Promise.all(dataImages);
+    return res.status(200).json(dataImages);
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+});
+
 ProductosRouters.put("/stock/:idStock", async (req, res) => {
   try {
+    console.log(req.headers);
+    let dataTest = await getDocumentById(req.params.idStock);
+
+    let user_id = jwtDecode(req.headers["access-token"])._id;
+    let product_id = dataTest.product_id;
+    let cantidad = req.body.stock - dataTest.stock;
+    const dataCreateLog = {
+      user_id,
+      product_id,
+      cantidad,
+      descripcion: "Se Actualizo la Talla",
+      size: req.body.size,
+      stock_id: req.params.idStock,
+    };
+    console.log(req.body.stock - dataTest.stock);
     const r = await updateElasticByType(req.params.idStock, req.body);
+    const result2 = await crearElasticByType(dataCreateLog, "product_log");
     if (r.body.result === "updated") {
       await client.indices.refresh({ index: INDEX_ES_MAIN });
-      return res.json({ message: "Stock Actualizado" });
+      return res.json({ message: "Stock Actualizado", result2 });
     }
   } catch (error) {
     return res.status(500).json({ message: error.message });

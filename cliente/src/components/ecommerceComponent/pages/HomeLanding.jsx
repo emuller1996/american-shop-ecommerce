@@ -6,6 +6,8 @@ import { useCategorias } from '../../../hooks/useCategorias'
 import Pagination from '@mui/material/Pagination'
 import { Carousel } from 'react-bootstrap'
 import envio_img from '../../../assets/images/envio.png'
+import app_img from '../../../assets/images/banner_img_01.jpg'
+
 import './HomeLanding.css'
 
 export default function HomeLanding() {
@@ -33,11 +35,7 @@ export default function HomeLanding() {
           <Carousel.Item>
             <div className="row p-5">
               <div className="mx-auto col-md-8 col-lg-6 order-lg-last">
-                <img
-                  className="img-fluid"
-                  src="https://american-shop-eco.vercel.app/assets/img/banner_1_home.png"
-                  alt=""
-                />
+                <img className="img-fluid" src="/banner_1_home.png" alt="" />
               </div>
               <div className="col-lg-6 mb-0 d-flex align-items-center">
                 <div className="text-align-left align-self-center">
@@ -116,8 +114,8 @@ export default function HomeLanding() {
                 style={{
                   padding: '0.5em 0.7em',
                   borderStyle: 'solid',
-                  borderColor:  dataFilter?.categoy === null ? '#5b9cff' : '#cccccc',
-                  backgroundColor:  dataFilter?.categoy === null ? '#e9f2ff' : 'transparent',
+                  borderColor: dataFilter?.categoy === null ? '#5b9cff' : '#cccccc',
+                  backgroundColor: dataFilter?.categoy === null ? '#e9f2ff' : 'transparent',
                   borderWidth: '1px',
                   borderRadius: '0.4em',
                   cursor: 'pointer',

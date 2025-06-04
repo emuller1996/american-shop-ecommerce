@@ -7,6 +7,7 @@ import { Alert } from 'react-bootstrap'
 import AuthContext from '../../context/AuthContext'
 import { jwtDecode } from 'jwt-decode'
 import PropTypes from 'prop-types'
+import { useNavigate } from 'react-router-dom'
 // routes config
 
 const FormLogin = ({ onHide }) => {
@@ -25,6 +26,9 @@ const FormLogin = ({ onHide }) => {
     formState: { errors },
     reset,
   } = useForm()
+
+  const navigate = useNavigate()
+
   const onSubmit = async (data) => {
     console.log(data)
     try {
@@ -40,6 +44,7 @@ const FormLogin = ({ onHide }) => {
       setTokenAccessCliente(result.data.token)
       setClient(jwtDecode(result.data.token))
       onHide()
+      navigate('/eco/mi-perfil')
     } catch (error) {
       console.log(error)
       if (error.response.status == 404) {

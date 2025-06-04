@@ -6,6 +6,7 @@ import {
   getAllProductoByIdService,
   getAllProductoConsultaService,
   getAllProductoImageService,
+  getAllProductoLogsStockService,
   getAllProductoService,
   getAllProductoStockService,
   getProductoSearchPaginationServices,
@@ -26,6 +27,7 @@ export const useProductos = () => {
   const [dataDetalle, setDataDetalle] = useState(null)
   const [ImagesProduct, setImagesProduct] = useState(null)
   const [StockProduct, setStockProduct] = useState(null)
+  const [StockProductLogs, setStockProductLogs] = useState(null)
   const [ConsultasProduct, setConsultasProduct] = useState(null)
 
 
@@ -140,6 +142,15 @@ export const useProductos = () => {
       console.log(error)
     }
   }
+   const getStocLogsByProductId = async (id) => {
+    try {
+      const r = await getAllProductoLogsStockService(id, signal)
+      console.log(r.data)
+      setStockProductLogs(r.data)
+    } catch (error) {
+      console.log(error)
+    }
+  }
 
   const getConsultakByProductId = async (id) => {
     try {
@@ -206,6 +217,8 @@ export const useProductos = () => {
     validateProductoCart,
     getConsultakByProductId,
     ConsultasProduct,
-    createConsultaProducto
+    createConsultaProducto,
+    getStocLogsByProductId,
+    StockProductLogs
   }
 }
