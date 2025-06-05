@@ -41,10 +41,31 @@ const ImagesPage = ({ idProduct }) => {
   }
 
   const handleImageChange = (e) => {
-    const file = e.target.files[0]
-    if (file) {
-      setSelectedImage(file)
-      convertToBase64(file)
+    try {
+      const file = e.target.files[0]
+      if (!file) return
+
+      // Validaciones
+      const validTypes = ['image/jpeg', 'image/jpg', 'image/png']
+      const maxSize = 3 * 1024 * 1024 // 3MB
+
+      if (!validTypes.includes(file.type.toLowerCase())) {
+        throw new Error('Formato no válido. Solo se aceptan JPG/PNG')
+      }
+
+      if (file.size > maxSize) {
+        throw new Error('El archivo excede el límite de 3MB')
+      }
+      if (file) {
+        setSelectedImage(file)
+        convertToBase64(file)
+      }
+    } catch (error) {
+      console.error('Error al procesar imagen:', error.message)
+      e.target.value = '' // Limpiar input
+      // Puedes usar un estado para mostrar el error en la UI
+      // setError(error.message);
+      alert(error.message)
     }
   }
   const convertToBase64 = (file) => {
