@@ -5,7 +5,7 @@ import { useClientes } from '../../../../hooks/useClientes'
 import ReactTimeAgo from 'react-time-ago'
 import { ViewDollar } from '../../../../utils'
 import { IconButton, Step, StepLabel, Stepper } from '@mui/material'
-import { Modal } from 'react-bootstrap'
+import { Button, Modal } from 'react-bootstrap'
 import './MisComprasPages.css'
 import StepperStatus from './components/StepperStatus'
 export default function MisComprasPages() {
@@ -20,8 +20,6 @@ export default function MisComprasPages() {
 
     getAllShoppingByClientes()
   }, [])
-
-  
 
   return (
     <div className="container mt-5 mb-5">
@@ -200,6 +198,18 @@ export default function MisComprasPages() {
               </div>
             </>
           )}
+
+          <div className="text-center">
+            <Button
+              onClick={() => {
+                setShow(false)
+              }}
+              variant="danger"
+              className="text-white"
+            >
+              <i className="fa-solid fa-xmark me-2"></i>Cerrar
+            </Button>
+          </div>
         </Modal.Body>
       </Modal>
     </div>
