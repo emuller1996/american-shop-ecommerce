@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Button, Form } from 'react-bootstrap'
+import { Alert, Button, Form } from 'react-bootstrap'
 
 import { useProductos } from '../../../hooks/useProductos'
 import { useParams } from 'react-router-dom'
@@ -17,6 +17,7 @@ const ImagesPage = ({ idProduct }) => {
   const [selectedImage, setSelectedImage] = useState(null)
   const [isLoading, setisLoading] = useState(true)
   const [base64Image, setBase64Image] = useState(null)
+  const [ErrorFile, setErrorFile] = useState(null)
 
   const { getImagesByProductId, ImagesProduct, getProductById, dataDetalle } = useProductos()
 
@@ -42,6 +43,8 @@ const ImagesPage = ({ idProduct }) => {
 
   const handleImageChange = (e) => {
     try {
+      setSelectedImage(null)
+      setErrorFile(null)
       const file = e.target.files[0]
       if (!file) return
 
@@ -65,7 +68,8 @@ const ImagesPage = ({ idProduct }) => {
       e.target.value = '' // Limpiar input
       // Puedes usar un estado para mostrar el error en la UI
       // setError(error.message);
-      alert(error.message)
+      //alert(error.message)
+      setErrorFile(error.message)
     }
   }
   const convertToBase64 = (file) => {
@@ -114,7 +118,7 @@ const ImagesPage = ({ idProduct }) => {
               <div className="card card-body">
                 <p className="text-center text-muted">Ingresa imagen para el producto.</p>
                 <Form.Group controlId="formFile" className="mb-3">
-                  <Form.Label>Imagen de la Funcion</Form.Label>
+                  <Form.Label>Imagen del Producto.</Form.Label>
                   <Form.Control type="file" accept="image/*" onChange={handleImageChange} />
                 </Form.Group>
 
@@ -125,6 +129,7 @@ const ImagesPage = ({ idProduct }) => {
                     </div>
                   </div>
                 )}
+                {ErrorFile && <Alert variant="warning"> {ErrorFile}</Alert>}
 
                 <div className="text-center mt-3">
                   <Button
@@ -154,10 +159,15 @@ const ImagesPage = ({ idProduct }) => {
                 {ImagesProduct &&
                   ImagesProduct.map((ima) => (
                     <div key={ima._id} className="col-4 col-md-6">
-                      <div className="rounded-4  overflow-hidden ">
+                      <div className="rounded-4   ">
                         <div
-                          className={`card position-relative overflow-hidden rounded-4  ${ima._id === dataDetalle?.image_id ? ' border-2 border-primary ' : ''}`}
+                          className={`card position-relative overflow-hidden  rounded-4  ${ima._id === dataDetalle?.image_id ? ' border-2 border-primary ' : ''}`}
                         >
+                          <div className="position-absolute top-0 end-0">
+                            <Button variant={'danger'} className="mt-1 me-1 text-white" size="sm">
+                              <i className="fa-regular fa-trash-can"></i>
+                            </Button>
+                          </div>
                           <div className="position-absolute top-50 start-50 translate-middle">
                             <Button
                               style={{ opacity: '0.4' }}
@@ -178,7 +188,9 @@ const ImagesPage = ({ idProduct }) => {
                               Definir Imagen Principal
                             </Button>
                           </div>
-                          <img alt="test" src={ima.image} />
+                          <div className="overflow-hidden">
+                            <img className="img-fluid" alt="test" src={ima.image} />
+                          </div>
                         </div>
                       </div>
                     </div>
