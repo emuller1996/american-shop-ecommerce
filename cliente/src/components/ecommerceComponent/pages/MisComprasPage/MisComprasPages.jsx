@@ -194,7 +194,7 @@ export default function MisComprasPages() {
               </div>
               <div className="text-center">
                 Valor Total
-                <p>{ShopDetail?.total_order ? ViewDollar(ShopDetail?.total_order) : ''}</p>
+                <p className='fw-bold fs-5'>{ShopDetail?.total_order ? ViewDollar(ShopDetail?.total_order) : ''}</p>
               </div>
             </>
           )}
