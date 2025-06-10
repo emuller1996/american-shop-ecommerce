@@ -44,6 +44,8 @@ ProductosRouters.get("/pagination", async (req, res) => {
   let page = req.query.page ?? 1;
   let search = req.query.search ?? "";
   let gender = req.query.gender ?? "";
+  let category = req.query.category ?? "";
+  let published = req.query.published ?? "";
 
   try {
     var consulta = {
@@ -74,6 +76,20 @@ ProductosRouters.get("/pagination", async (req, res) => {
       consulta.body.query.bool.filter.push({
         term: {
           "gender.keyword": gender,
+        },
+      });
+    }
+    if (category !== "" && category) {
+      consulta.body.query.bool.filter.push({
+        term: {
+          "category_id.keyword": category,
+        },
+      });
+    }
+    if (published !== "" && published) {
+      consulta.body.query.bool.filter.push({
+        term: {
+          "published": published,
         },
       });
     }
