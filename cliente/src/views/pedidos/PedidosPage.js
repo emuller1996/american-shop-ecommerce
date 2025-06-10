@@ -37,7 +37,6 @@ const PedidosPage = () => {
   return (
     <div className="container-fluid">
       <div>
-        <p>Page Pedidos</p>
         <div className="card card-body mt-3">
           <span className="d-block text-muted">Filtros Avanzados</span>
           <div className="row g-3 align-items-end">
@@ -94,16 +93,6 @@ const PedidosPage = () => {
                 cell: (row) => {
                   return (
                     <>
-                      {/* <button
-                        onClick={() => {
-                          setProductoSelecionado(row)
-                          handleShow()
-                        }}
-                        title="Editar Producto."
-                        className="btn btn-primary btn-sm me-2"
-                      >
-                        <i className="fa-solid fa-eye"></i>
-                      </button> */}
                       <Link
                         to={`${row._id}/detalle`}
                         onClick={() => {
@@ -115,17 +104,6 @@ const PedidosPage = () => {
                       >
                         <i className="fa-solid fa-eye"></i>
                       </Link>
-                      {/*<Link
-                        to={`${row._id}/gestion-tallas`}
-                        onClick={() => {
-                          setProductoSelecionado(row)
-                          handleShow()
-                        }}
-                        title="Gestion de Tallas del Producto."
-                        className="btn btn-secondary btn-sm"
-                      >
-                        <i className="fa-solid fa-tags"></i>
-                      </Link> */}
                     </>
                   )
                 },

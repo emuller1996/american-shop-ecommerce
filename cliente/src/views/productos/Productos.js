@@ -17,6 +17,7 @@ import Select from 'react-select'
 import { Chip } from '@mui/material'
 import ImagesPage from './ImagesPage/ImagesPage'
 import TallasPage from './TallasPage/TallasPage'
+import { useCategorias } from '../../hooks/useCategorias'
 
 const ProductosPage = () => {
   const [show, setShow] = useState(false)
@@ -43,10 +44,16 @@ const ProductosPage = () => {
     loading,
   } = useProductos()
   const [ProductoSelecionado, setProductoSelecionado] = useState(null)
+  const { getAllCategorias, data: ListCategorias } = useCategorias()
 
   useEffect(() => {
     getAllProductosPagination(dataFilter)
   }, [dataFilter])
+
+  useEffect(() => {
+    getAllCategorias()
+  }, [])
+
   return (
     <div className="container-fluid">
       <div>
@@ -75,7 +82,7 @@ const ProductosPage = () => {
         <div className="card card-body mt-3">
           <span className="d-block text-muted">Filtros Avanzados</span>
           <div className="row g-3 align-items-end">
-            <div className="col-md-4">
+            <div className="col-md-3">
               <div>
                 <Form.Label htmlFor="gender">Genero</Form.Label>
                 <Select
@@ -93,6 +100,52 @@ const ProductosPage = () => {
                   isClearable
                 />
               </div>
+            </div>
+            <div className="col-md-3">
+              <div>
+                <Form.Label htmlFor="category">Categoria</Form.Label>
+                <Select
+                  name={'category'}
+                  placeholder=""
+                  onChange={(e) => {
+                    console.log(e)
+                    setdataFilter((status) => {
+                      return { ...status, category: e?.value ?? '' }
+                    })
+                  }}
+                  styles={stylesSelect}
+                  theme={themeSelect}
+                  options={
+                    ListCategorias &&
+                    ListCategorias.map((cat) => {
+                      return {
+                        label: cat?.name,
+                        value: cat?._id,
+                      }
+                    })
+                  }
+                  isClearable
+                />
+              </div>
+            </div>
+            <div className="col-md-3">
+              <Form.Label htmlFor="status">Estado</Form.Label>
+              <Select
+                name={'status'}
+                placeholder=""
+                onChange={(e) => {
+                  setdataFilter((status) => {
+                    return { ...status, published: e?.value ?? '' }
+                  })
+                }}
+                styles={stylesSelect}
+                theme={themeSelect}
+                options={[
+                  { label: 'Publicado', value: true },
+                  { label: 'No Publicado', value: false },
+                ]}
+                isClearable
+              />
             </div>
             <div className="col-md-12">
               <div className="w-100">
@@ -232,7 +285,9 @@ const ProductosPage = () => {
             }
             paginationTotalRows={dataP?.total}
             paginationComponentOptions={paginationComponentOptions}
-            noDataComponent="No hay datos para mostrar"
+            noDataComponent={
+              <div className="d-flex justify-content-center my-5">No hay productos.</div>
+            }
             onChangeRowsPerPage={(perPage, page) => {
               console.log(perPage, page)
               setdataFilter((status) => {

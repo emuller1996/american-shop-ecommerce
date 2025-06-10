@@ -38,3 +38,19 @@ export const getGetShoppingClientesService = (token) => {
 export const getShopByIdService = (token, id) => {
   return axios.get(`/clientes/get/shopping/${id}`,{ headers: { 'Authorization': token } })
 }
+
+export const getClientesSearchPaginationServices = async (token, ...params) => {
+  const searchs = new URLSearchParams();
+
+  Object.entries(params[0]).forEach(([key, value]) => {
+    if (value !== undefined && value !== null && value !== "") {
+      searchs.append(key, value);
+    }
+  });
+
+  return await axios.get(`/clientes/pagination/?${searchs.toString()}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+};

@@ -6,24 +6,51 @@ import DataTable from 'react-data-table-component'
 import { paginationComponentOptions } from '../../utils/optionsConfig'
 
 const ClientePage = () => {
-  const [show, setShow] = useState(false)
+  const [dataFilter, setdataFilter] = useState({
+    perPage: 10,
+    search: '',
+    page: 1,
+    draw: 1,
+  })
 
-  const handleClose = () => setShow(false)
-  const handleShow = () => setShow(true)
-
-  const [CategoriaSelec, setCategoriaSelec] = useState(null)
-
-  const { getAllClientes, data } = useClientes()
+  const { getAllClientes, data, getAllClientesPagination, dataP, loading } = useClientes()
 
   useEffect(() => {
     getAllClientes()
   }, [])
 
+  useEffect(() => {
+    getAllClientesPagination(dataFilter)
+  }, [dataFilter])
+
   return (
     <div className="">
       <CContainer fluid>
-        <Button variant="primary">EXPORTAR CLIENTS</Button>
-        <div className="row g-3 my-3"></div>
+        <div className="card card-body mt-3">
+          <span className="d-block text-muted">Buscar clientes.</span>
+          <div className="row g-3 align-items-end">
+            <div className="col-md-12">
+              <div className="w-100">
+                <div className="input-group">
+                  <span className="input-group-text">
+                    <i className="fa-solid fa-magnifying-glass"></i>
+                  </span>
+                  <input
+                    placeholder="Busca Cliente por nombre, correo y telefono."
+                    type="text"
+                    className="form-control"
+                    onChange={(e) => {
+                      setdataFilter((status) => {
+                        return { ...status, search: e.target.value }
+                      })
+                    }}
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <div className="rounded overflow-hidden border border-ligth shadow-sm mt-3">
           <DataTable
             className="MyDataTableEvent"
@@ -47,15 +74,35 @@ const ClientePage = () => {
 
               { name: '', selector: (row) => row?.city ?? '' },
             ]}
-            data={data ?? []}
+            data={dataP?.data ?? []}
             pagination
             paginationComponentOptions={paginationComponentOptions}
+            paginationServer
+            progressPending={loading}
+            progressComponent={
+              <div className="d-flex justify-content-center my-5">
+                <div
+                  className="spinner-border text-primary"
+                  style={{ width: '3em', height: '3em' }}
+                  role="status"
+                >
+                  <span className="visually-hidden">Loading...</span>
+                </div>
+              </div>
+            }
             noDataComponent="No hay datos para mostrar"
+            onChangeRowsPerPage={(perPage, page) => {
+              setdataFilter((status) => {
+                return { ...status, perPage }
+              })
+            }}
+            onChangePage={(page) => {
+              setdataFilter((status) => {
+                return { ...status, page }
+              })
+            }}
           />
         </div>
-        <Modal backdrop={'static'} size="md" centered show={show} onHide={handleClose}>
-          <Modal.Body></Modal.Body>
-        </Modal>
       </CContainer>
     </div>
   )

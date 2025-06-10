@@ -3,6 +3,7 @@
 import { useContext, useState } from 'react'
 import {
   getAllClientesService,
+  getClientesSearchPaginationServices,
   getGetAddressClientesService,
   getGetShoppingClientesService,
   getShopByIdService,
@@ -15,6 +16,7 @@ import AuthContext from '../context/AuthContext'
 export const useClientes = () => {
   const [data, setData] = useState(null)
   const [dataDetalle, setDataDetalle] = useState(null)
+  const [dataP, setDataP] = useState(undefined)
   const [dataAddress, setDataAddress] = useState(null)
   const [dataShopping, setDataShopping] = useState(null)
   const [dataShopDetail, setDataShopDetail] = useState(null)
@@ -51,6 +53,34 @@ export const useClientes = () => {
       }
     }
   }
+
+  const getAllClientesPagination = async (data) => {
+      setLoading(true)
+      setDataP(undefined)
+      try {
+        const res = await getClientesSearchPaginationServices(Token, data)
+        if (res.status !== 200) {
+          let err = new Error('Error en la petición Fetch')
+          err.status = res.status || '00'
+          err.statusText = res.statusText || 'Ocurrió un error'
+          throw err
+        }
+        console.log(res)
+        if (!signal.aborted) {
+          setDataP(res.data)
+          setError(null)
+        }
+      } catch (error) {
+        if (!signal.aborted) {
+          setData(null)
+          setError(error)
+        }
+      } finally {
+        if (!signal.aborted) {
+          setLoading(false)
+        }
+      }
+    }
 
   const putClienteById = async (id, data) => {
     try {
@@ -154,6 +184,8 @@ export const useClientes = () => {
     dataShopping,
     getShopDetailById,
     dataShopDetail,
-    putClienteNewAddress
+    putClienteNewAddress,
+    getAllClientesPagination,
+    dataP
   }
 }
