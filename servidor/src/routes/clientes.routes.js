@@ -27,7 +27,7 @@ const ClienteRouters = Router();
 ClienteRouters.get("/", validateTokenMid, async (req, res) => {
   try {
     var clientes = await buscarElasticByType("cliente");
-    clientes = clientes.map(async (c) => {
+    /* clientes = clientes.map(async (c) => {
       if (c.ruta_id && c.ruta_id !== "") {
         try {
           const re = await getDocumentById(c.ruta_id);
@@ -41,10 +41,87 @@ ClienteRouters.get("/", validateTokenMid, async (req, res) => {
       } else {
         return c;
       }
-    });
+    }); */
     clientes = await Promise.all(clientes);
     /* return res.json(searchResult.body.hits); */
     return res.status(200).json(clientes);
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+});
+
+ClienteRouters.get("/pagination", async (req, res) => {
+  let perPage = req.query.perPage ?? 10;
+  let page = req.query.page ?? 1;
+  let search = req.query.search ?? "";
+  let gender = req.query.gender ?? "";
+
+  try {
+    var consulta = {
+      index: INDEX_ES_MAIN,
+      size: perPage,
+      from: (page - 1) * perPage,
+      body: {
+        query: {
+          bool: {
+            must: [
+              /* { match_phrase_prefix: { name: nameQuery } } */
+            ],
+            filter: [
+              {
+                term: {
+                  type: "cliente",
+                },
+              },
+            ],
+          },
+        },
+        sort: [
+          { "createdTime": { order: "desc" } }, // Reemplaza con el campo por el que quieres ordenar
+        ],
+      },
+    };
+    if (gender !== "" && gender) {
+      consulta.body.query.bool.filter.push({
+        term: {
+          "gender.keyword": gender,
+        },
+      });
+    }
+    if (search !== "" && search) {
+      consulta.body.query.bool.must.push({
+        query_string: { query: `*${search}*`, fields: ["name_client", "email_client", "phone_client", "123458477"] },
+      });
+    }
+    const searchResult = await client.search(consulta);
+
+    var data = searchResult.body.hits.hits.map((c) => {
+      return {
+        ...c._source,
+        _id: c._id,
+      };
+    });
+
+    data = data.map(async (product) => {
+      return {
+        ...product,
+        categoria: product.category_id
+          ? await getDocumentById(product?.category_id)
+          : "",
+      };
+    });
+    data = await Promise.all(data);
+    /* return {
+      data: data,
+      total: searchResult.body.hits.total.value,
+      total_pages: Math.ceil(searchResult.body.hits.total.value / perPage),
+    }; */
+
+    return res.status(200).json({
+      data: data,
+      total: searchResult.body.hits.total.value,
+      total_pages: Math.ceil(searchResult.body.hits.total.value / perPage),
+    });
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
