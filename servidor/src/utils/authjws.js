@@ -1,5 +1,6 @@
 import jsonwebtoken from "jsonwebtoken";
 import { SECRECT_CLIENT, SECRECT_CLIENT_CLIENT } from "../config.js";
+import { getDocumentById } from "./index.js";
 
 const validateToken = (req, res) => {
   const accessToken = req.headers["access-token"];
@@ -24,13 +25,15 @@ const validateTokenClient = (req, res) => {
     return res
       .status(403)
       .json({ message: "ACCES DENIED: TOKEN NO SUMINISTRADO." });
-  jsonwebtoken.verify(accessToken,SECRECT_CLIENT_CLIENT, (err, user) => {
+  jsonwebtoken.verify(accessToken,SECRECT_CLIENT_CLIENT, async (err, user) => {
     if (err) {
       return res
         .status(405)
         .json({ message: "ERROR-> TOKEN EXPIRED OR INCORRECT" });
     } else {
-      return res.status(200).json({ message: "ALL FINE" ,user});
+      const clienteData = await getDocumentById(user._id);
+      delete clienteData.hash;
+      return res.status(200).json({ message: "ALL FINE" ,user:clienteData});
     }
   });
 };
