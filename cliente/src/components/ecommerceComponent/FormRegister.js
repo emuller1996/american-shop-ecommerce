@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { CContainer, CSpinner } from '@coreui/react'
 import { Controller, useForm } from 'react-hook-form'
 import { postCreateClienteService } from '../../services/cliente.services'
@@ -9,6 +9,8 @@ import { useClientes } from '../../hooks/useClientes'
 import Select from 'react-select'
 import axios from 'axios'
 import { stylesSelect, themeSelect } from '../../utils/optionsConfig'
+import AuthContext from '../../context/AuthContext'
+import { jwtDecode } from 'jwt-decode'
 
 // routes config
 
@@ -22,6 +24,7 @@ const FormRegister = ({ client }) => {
   const [isLoadingForm, setisLoadingForm] = useState(false)
   const [optionCities, setOptionCities] = useState(null)
   const { putClienteById } = useClientes()
+  const { setClient } = useContext(AuthContext)
   const {
     register,
     handleSubmit,
@@ -31,11 +34,32 @@ const FormRegister = ({ client }) => {
   } = useForm()
   const onSubmit = async (data) => {
     console.log(data)
-    return
-
     if (client) {
       console.log(data)
-      await putClienteById(client._id, data)
+      setErrorText({
+        status: false,
+        message: '',
+        detail: '',
+      })
+      try {
+        const result = await putClienteById(client._id, data)
+        toast.success(result.data.message)
+        setSuccessText({
+          status: true,
+          message: result.data.message,
+          detail: result.data.detail,
+        })
+        setClient(result.data.clienteData)
+        setTimeout(() => {
+          setSuccessText({
+            status: false,
+            message: '',
+            detail: '',
+          })
+        }, 5000)
+      } catch (error) {
+        console.log(error)
+      }
     } else {
       try {
         setisLoadingForm(true)
@@ -176,6 +200,7 @@ const FormRegister = ({ client }) => {
                 name="city"
                 rules={{ required: true }}
                 control={control}
+                defaultValue={optionCities.find((de) => de.key === client?.city)?.label}
                 render={({ field: { name, onChange, ref } }) => {
                   return (
                     <Select
@@ -187,7 +212,7 @@ const FormRegister = ({ client }) => {
                         console.log(e)
                         onChange(e?.label)
                       }}
-                      //defaultValue={optionCities.find((de) => de.key === Address?.departament)}
+                      defaultValue={optionCities.find((de) => de.key === client?.city)}
                       styles={stylesSelect}
                       theme={themeSelect}
                       options={optionCities}
@@ -210,6 +235,7 @@ const FormRegister = ({ client }) => {
             id={`inline-radio-1`}
             value={'Masculino'}
             {...register('gender', { required: false })}
+            defaultChecked={client?.gender === 'Masculino' ? true : false}
           />
           <Form.Check
             inline
@@ -219,6 +245,7 @@ const FormRegister = ({ client }) => {
             id={`inline-radio-2`}
             value={'Femenino'}
             {...register('gender', { required: false })}
+            defaultChecked={client?.gender === 'Femenino' ? true : false}
           />
           <Form.Check
             inline
@@ -228,6 +255,7 @@ const FormRegister = ({ client }) => {
             id={`inline-radio-3`}
             value={'None'}
             {...register('gender', { required: false })}
+            defaultChecked={client?.gender === 'None' ? true : false}
           />
         </div>
         {!client && (

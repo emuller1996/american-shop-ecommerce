@@ -30,6 +30,8 @@ export const stylesSelect = {
       ? '  rgba(0, 0, 0, 0.16) 0px 1px 4px, #4b49b642 0px 0px 0px 3px;'
       : '',
     borderRadius: '0.4em',
+    backgroundColor: 'white',
+
   }),
   menu: (baseStyles, state) => ({
     ...baseStyles,

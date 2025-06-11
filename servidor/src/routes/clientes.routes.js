@@ -77,7 +77,7 @@ ClienteRouters.get("/pagination", async (req, res) => {
           },
         },
         sort: [
-          { "createdTime": { order: "desc" } }, // Reemplaza con el campo por el que quieres ordenar
+          { createdTime: { order: "desc" } }, // Reemplaza con el campo por el que quieres ordenar
         ],
       },
     };
@@ -90,7 +90,10 @@ ClienteRouters.get("/pagination", async (req, res) => {
     }
     if (search !== "" && search) {
       consulta.body.query.bool.must.push({
-        query_string: { query: `*${search}*`, fields: ["name_client", "email_client", "phone_client", "123458477"] },
+        query_string: {
+          query: `*${search}*`,
+          fields: ["name_client", "email_client", "phone_client", "123458477"],
+        },
       });
     }
     const searchResult = await client.search(consulta);
@@ -190,7 +193,13 @@ ClienteRouters.put("/:id", validateTokenClientMid, async (req, res) => {
     const r = await updateElasticByType(req.params.id, req.body);
     if (r.body.result === "updated") {
       await client.indices.refresh({ index: INDEX_ES_MAIN });
-      return res.json({ message: "Cliente Actualizado" });
+      const clienteData = await getDocumentById(req.params.id);
+      delete clienteData.hash;
+      return res.json({
+        message: "Cliente Actualizado",
+        detail: "Se ha Actualizado tu informacion basica correctamente. Los cambios seran visibles cuando inicias seccion nuevamente.",
+        clienteData,
+      });
     }
   } catch (error) {
     return res.status(500).json({ message: error.message });
