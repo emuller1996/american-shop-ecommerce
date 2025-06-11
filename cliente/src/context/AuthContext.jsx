@@ -35,6 +35,13 @@ export const AuthProvider = ({ children }) => {
     cartEcommerceAmerican ? cartEcommerceAmerican : null,
   )
 
+  const cerrarSessionAdmin = () => {
+    setTokenAccess(null)
+    setToken(null)
+    setClient(null)
+    localStorage.removeItem("tokenAccessAmericanShop")
+  }
+
   let contextData = {
     user,
     setUser,
@@ -47,7 +54,8 @@ export const AuthProvider = ({ children }) => {
     setClient,
     client,
     cartEcommerceAmericanState,
-    setCartEcommerceAmericanState
+    setCartEcommerceAmericanState,
+    cerrarSessionAdmin
   }
 
   return <AuthContext.Provider value={contextData}>{children}</AuthContext.Provider>

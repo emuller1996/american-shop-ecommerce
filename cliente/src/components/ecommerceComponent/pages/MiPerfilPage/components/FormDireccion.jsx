@@ -188,7 +188,6 @@ export default function FormDireccion({ onHide, AllAddress, Address }) {
         <div className="col-md-12">
           <Form.Group className="" controlId="address">
             <Form.Label>Direccion</Form.Label>
-
             <Form.Control
               {...register('address', { required: true })}
               type="text"

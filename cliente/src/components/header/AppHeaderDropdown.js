@@ -26,7 +26,7 @@ import avatar8 from './../../assets/images/avatars/8.jpg'
 import AuthContext from '../../context/AuthContext'
 
 const AppHeaderDropdown = () => {
-  const { user } = useContext(AuthContext)
+  const { user, cerrarSessionAdmin } = useContext(AuthContext)
 
   return (
     <CDropdown variant="nav-item">
@@ -91,9 +91,9 @@ const AppHeaderDropdown = () => {
           </CBadge>
         </CDropdownItem> */}
         <CDropdownDivider />
-        <CDropdownItem href="#">
+        <CDropdownItem href="#" onClick={cerrarSessionAdmin}>
           <CIcon icon={cilLockLocked} className="me-2" />
-          Lock Account
+          Cerrar Session.
         </CDropdownItem>
       </CDropdownMenu>
     </CDropdown>

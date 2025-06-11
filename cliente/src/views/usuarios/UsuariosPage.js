@@ -27,7 +27,6 @@ const UsuariosPage = () => {
           Crear Usuarios
         </Button>
       </div>
-      <p>UsuariosPage </p>
       <div className="rounded overflow-hidden border border-ligth shadow-sm mt-3">
         <DataTable
           className="MyDataTableEvent"

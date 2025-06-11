@@ -55,41 +55,35 @@ export const useClientes = () => {
   }
 
   const getAllClientesPagination = async (data) => {
-      setLoading(true)
-      setDataP(undefined)
-      try {
-        const res = await getClientesSearchPaginationServices(Token, data)
-        if (res.status !== 200) {
-          let err = new Error('Error en la petición Fetch')
-          err.status = res.status || '00'
-          err.statusText = res.statusText || 'Ocurrió un error'
-          throw err
-        }
-        console.log(res)
-        if (!signal.aborted) {
-          setDataP(res.data)
-          setError(null)
-        }
-      } catch (error) {
-        if (!signal.aborted) {
-          setData(null)
-          setError(error)
-        }
-      } finally {
-        if (!signal.aborted) {
-          setLoading(false)
-        }
+    setLoading(true)
+    setDataP(undefined)
+    try {
+      const res = await getClientesSearchPaginationServices(Token, data)
+      if (res.status !== 200) {
+        let err = new Error('Error en la petición Fetch')
+        err.status = res.status || '00'
+        err.statusText = res.statusText || 'Ocurrió un error'
+        throw err
+      }
+      console.log(res)
+      if (!signal.aborted) {
+        setDataP(res.data)
+        setError(null)
+      }
+    } catch (error) {
+      if (!signal.aborted) {
+        setData(null)
+        setError(error)
+      }
+    } finally {
+      if (!signal.aborted) {
+        setLoading(false)
       }
     }
+  }
 
   const putClienteById = async (id, data) => {
-    try {
-      const r = await putUpdateClientesService(TokenClient, id, data)
-      console.log(r.data)
-      setDataDetalle(r.data)
-    } catch (error) {
-      console.log(error)
-    }
+    return putUpdateClientesService(TokenClient, id, data)
   }
 
   const postClienteNewAddress = async (data) => {
@@ -102,9 +96,9 @@ export const useClientes = () => {
     }
   }
 
-  const putClienteNewAddress = async (data,id) => {
+  const putClienteNewAddress = async (data, id) => {
     try {
-      const r = await putNewAddressClientesService(TokenClient, data,id)
+      const r = await putNewAddressClientesService(TokenClient, data, id)
       console.log(r.data)
       setDataDetalle(r.data)
     } catch (error) {
@@ -186,6 +180,6 @@ export const useClientes = () => {
     dataShopDetail,
     putClienteNewAddress,
     getAllClientesPagination,
-    dataP
+    dataP,
   }
 }
