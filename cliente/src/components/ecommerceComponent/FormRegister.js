@@ -1,11 +1,15 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { CContainer, CSpinner } from '@coreui/react'
-import { useForm } from 'react-hook-form'
+import { Controller, useForm } from 'react-hook-form'
 import { postCreateClienteService } from '../../services/cliente.services'
 import toast from 'react-hot-toast'
-import { Alert, Spinner } from 'react-bootstrap'
+import { Alert, Form, Spinner } from 'react-bootstrap'
 import PropTypes from 'prop-types'
 import { useClientes } from '../../hooks/useClientes'
+import Select from 'react-select'
+import axios from 'axios'
+import { stylesSelect, themeSelect } from '../../utils/optionsConfig'
+
 // routes config
 
 const FormRegister = ({ client }) => {
@@ -16,6 +20,7 @@ const FormRegister = ({ client }) => {
   const [ErrorText, setErrorText] = useState({ status: false, message: '', detail: '' })
   const [SuccessText, setSuccessText] = useState({ status: false, message: '', detail: '' })
   const [isLoadingForm, setisLoadingForm] = useState(false)
+  const [optionCities, setOptionCities] = useState(null)
   const { putClienteById } = useClientes()
   const {
     register,
@@ -25,6 +30,9 @@ const FormRegister = ({ client }) => {
     reset,
   } = useForm()
   const onSubmit = async (data) => {
+    console.log(data)
+    return
+
     if (client) {
       console.log(data)
       await putClienteById(client._id, data)
@@ -59,11 +67,35 @@ const FormRegister = ({ client }) => {
       }
     }
   }
+  const getAllCity = async () => {
+    try {
+      const result = await axios.get(`https://api-colombia.com/api/v1/City`)
+      console.log(result.data)
+      setOptionCities(
+        result.data.map((c) => {
+          return {
+            label: c.name,
+            value: c.id,
+            key: c.name,
+          }
+        }),
+      )
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  useEffect(() => {
+    getAllCity()
+  }, [])
   return (
     <CContainer className="px-4" lg>
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <form onSubmit={handleSubmit(onSubmit)} autoComplete="off">
         <p className="text-center">{client ? 'Actualizando mis Datos' : 'Registrame'}</p>
-        <div className="form-floating mb-3">
+        <div className="mb-3">
+          <label className="form-label" htmlFor="name_client">
+            Nombre Completo <span className="fw-bold text-primary">*</span>
+          </label>
           <input
             {...register('name_client', { required: true })}
             defaultValue={client?.name_client}
@@ -72,11 +104,13 @@ const FormRegister = ({ client }) => {
             id="name_client"
             placeholder=""
           />
-          <label htmlFor="name_client">Nombre Completo</label>
         </div>
-        <div className="form-floating mb-3">
+        <div className=" mb-3">
+          <label className="form-label" htmlFor="email_client">
+            Correo Electronico <span className="fw-bold text-primary">*</span>
+          </label>
           <input
-            {...register('email_client', { required: false })}
+            {...register('email_client', { required: true })}
             type="email"
             className="form-control "
             defaultValue={client?.email_client}
@@ -84,9 +118,12 @@ const FormRegister = ({ client }) => {
             id="email_client"
             placeholder=""
           />
-          <label htmlFor="email_client">Correo Electronico</label>
         </div>
-        <div className="form-floating mb-3">
+        <div className="  mb-3">
+          <label className="form-label" htmlFor="phone_client">
+            Numero Telefonico <span className="fw-bold text-primary">*</span>
+          </label>
+
           <input
             {...register('phone_client', { required: true })}
             defaultValue={client?.phone_client}
@@ -95,9 +132,11 @@ const FormRegister = ({ client }) => {
             id="phone_client"
             placeholder=""
           />
-          <label htmlFor="phone_client">Numero Telefonico</label>
         </div>
-        <div className="form-floating mb-3">
+        <div className="  mb-3">
+          <label className="form-label" htmlFor="type_document_client">
+            Tipo de Documento <span className="fw-bold text-primary">*</span>
+          </label>
           <select
             className="form-select"
             id="type_document_client"
@@ -113,9 +152,11 @@ const FormRegister = ({ client }) => {
             <option value="TI">TI</option>
             <option value="PASAPORTE">PASAPORTE</option>
           </select>
-          <label htmlFor="type_document_client">Tipo de Documento</label>
         </div>
-        <div className="form-floating mb-3">
+        <div className="  mb-3">
+          <label className="form-label" htmlFor="number_document_client">
+            Numero Documento <span className="fw-bold text-primary">*</span>
+          </label>
           <input
             {...register('number_document_client', { required: true })}
             type="text"
@@ -124,11 +165,77 @@ const FormRegister = ({ client }) => {
             placeholder=""
             defaultValue={client?.number_document_client}
           />
-          <label htmlFor="number_document_client">Numero Documento</label>
+        </div>
+        <div className="col-md-12 mb-3">
+          {optionCities && (
+            <div>
+              <Form.Label htmlFor="city">
+                Cuidad <span className="fw-bold text-primary">*</span>
+              </Form.Label>
+              <Controller
+                name="city"
+                rules={{ required: true }}
+                control={control}
+                render={({ field: { name, onChange, ref } }) => {
+                  return (
+                    <Select
+                      ref={ref}
+                      id={name}
+                      name={name}
+                      placeholder=""
+                      onChange={(e) => {
+                        console.log(e)
+                        onChange(e?.label)
+                      }}
+                      //defaultValue={optionCities.find((de) => de.key === Address?.departament)}
+                      styles={stylesSelect}
+                      theme={themeSelect}
+                      options={optionCities}
+                    />
+                  )
+                }}
+              />
+            </div>
+          )}
+        </div>
+        <label className="form-label" htmlFor="inline-radio-1">
+          Genero
+        </label>
+        <div key={`inline-radio`} className="col-md-12 mb-3">
+          <Form.Check
+            inline
+            label="Masculino"
+            name="gender"
+            type="radio"
+            id={`inline-radio-1`}
+            value={'Masculino'}
+            {...register('gender', { required: false })}
+          />
+          <Form.Check
+            inline
+            label="Femenino"
+            name="gender"
+            type="radio"
+            id={`inline-radio-2`}
+            value={'Femenino'}
+            {...register('gender', { required: false })}
+          />
+          <Form.Check
+            inline
+            label="Sin Definir"
+            name="gender"
+            type="radio"
+            id={`inline-radio-3`}
+            value={'None'}
+            {...register('gender', { required: false })}
+          />
         </div>
         {!client && (
           <>
-            <div className="form-floating mb-3">
+            <div className="  mb-3">
+              <label className="form-label" htmlFor="password_client">
+                Contraseña <span className="fw-bold text-primary">*</span>
+              </label>
               <input
                 {...register('password_client', { required: true })}
                 type="password"
@@ -136,7 +243,6 @@ const FormRegister = ({ client }) => {
                 id="password_client"
                 placeholder=""
               />
-              <label htmlFor="password_client">Contraseña</label>
             </div>
             <div className="form-check">
               <input
@@ -147,7 +253,7 @@ const FormRegister = ({ client }) => {
                 id="is_tc"
               />
               <label className="form-check-label" htmlFor="is_tc">
-                Acepto los terminos y condiciones
+                Acepto los terminos y condiciones <span className="fw-bold text-primary">*</span>
               </label>
             </div>
           </>

@@ -55,7 +55,7 @@ const LandingLayout = () => {
             <div className="col-md-6 align-self-center">
               <div className="d-flex justify-content-end">
                 <img
-                  width={'300px'}
+                  width={'220px'}
                   src="https://mercadoroyal.com/assets/images/footer/lpago.png"
                 />
               </div>
