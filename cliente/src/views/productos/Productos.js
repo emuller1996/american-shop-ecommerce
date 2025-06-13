@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { CContainer } from '@coreui/react'
-import { Button, Form, Modal, Tooltip } from 'react-bootstrap'
+import { Button, Form, Modal, OverlayTrigger, Tooltip } from 'react-bootstrap'
 import DataTable from 'react-data-table-component'
 import {
   genderOptions,
@@ -235,7 +235,7 @@ const ProductosPage = () => {
                     <>
                       <Chip
                         style={{
-                          backgroundColor: row?.published ? '#23b866' : '#F78181',
+                          backgroundColor: row?.published ? '#218340' : '#a92525',
                           color: 'white',
                         }}
                         label={row?.published ? 'Publicado' : 'No Publicado'}
@@ -251,8 +251,40 @@ const ProductosPage = () => {
                 selector: (row) => row?.categoria?.name ?? '',
                 width: '150px',
               },
-              { name: 'Marca', selector: (row) => row?.brand ?? '', width: '100px' },
-              { name: 'Genero', selector: (row) => row?.gender ?? '', width: '100px' },
+              { name: 'Marca', selector: (row) => row?.brand ?? '', width: '120px' },
+              {
+                name: 'Genero',
+                selector: (row) => row?.gender ?? '',
+                width: '100px',
+                cell: (row) => {
+                  let html = ``
+                  let htmlText = ``
+
+                  if (row?.gender === 'men') {
+                    html += `<i class="fa-solid fa-mars me-2 fa-xl" style="color: #2a95ff;"></i>`
+                    htmlText += `Hombre`
+                  }
+                  if (row?.gender === 'women') {
+                    html += `<i class="fa-solid fa-venus me-2 fa-xl" style="color: #ff2a8b;"></i>`
+                    htmlText += `Mujer / Dama`
+                  }
+                  if (row?.gender === 'kid') {
+                    html += `<i class="fa-solid fa-children me-2 fa-xl" style="color:#a869e4;"></i>`
+                    htmlText += `Niño / Niña`
+                  }
+                  return (
+                    <>
+                      <OverlayTrigger
+                        key={'top'}
+                        placement={'top'}
+                        overlay={<Tooltip id={`tooltip`}>{htmlText}</Tooltip>}
+                      >
+                        <div dangerouslySetInnerHTML={{ __html: html }} />
+                      </OverlayTrigger>
+                    </>
+                  )
+                },
+              },
               {
                 name: 'Fecha de Creacion.',
                 selector: (row) =>

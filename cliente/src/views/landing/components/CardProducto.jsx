@@ -20,6 +20,21 @@ const CardProducto = ({ producto }) => {
   }, [])
   console.log(producto.image_id)
 
+  let html = ``
+  let htmlText = ``
+  if (producto?.gender === 'men') {
+    html += `<i class="fa-solid fa-mars me-2 fa-xl" style="color: #2a95ff;"></i>`
+    htmlText += `Hombre`
+  }
+  if (producto?.gender === 'women') {
+    html += `<i class="fa-solid fa-venus me-2 fa-xl" style="color: #ff2a8b;"></i>`
+    htmlText += `Mujer / Dama`
+  }
+  if (producto?.gender === 'kid') {
+    html += `<i class="fa-solid fa-children me-2 fa-xl" style="color:#a869e4;"></i>`
+    htmlText += `Niño / Niña`
+  }
+
   const getImage = async () => {
     try {
       setisLoading(true)
@@ -35,7 +50,7 @@ const CardProducto = ({ producto }) => {
 
   return (
     <div key={producto._id} className="col-sm-6 col-md-4">
-      <div className="card text-dark h-100">
+      <div className="card text-dark h-100 card-product">
         {producto.image_id && !isLoading && (
           <img
             className="card-img-top"
@@ -54,11 +69,14 @@ const CardProducto = ({ producto }) => {
             />
           </div>
         )}
-        <div className="card-body">
-          <h4 className="card-title">{producto?.name}</h4>
-          <p className="card-text m-0">{ViewDollar(producto?.price)}</p>
-          <p className="card-text  m-0 text-muted">{producto?.categoria?.name}</p>
-          <p className="card-text text-muted">{producto?.gender}</p>
+        <div className="card-body mt-2">
+          <h4 className="card-title fs-4">{producto?.name}</h4>
+          <p className="card-text m-0 fs-5 fw-semibold">{ViewDollar(producto?.price)}</p>
+          <p className="card-text text-center  m-0 text-muted">{producto?.categoria?.name}</p>
+          <div className="d-flex justify-content-between">
+            <span className="card-text text-muted">{htmlText}</span>
+            <div dangerouslySetInnerHTML={{ __html: html }} />
+          </div>
           <div className="text-center">
             <Link to={`/eco/${producto._id}/producto`}>
               <button className="button-ecomerce">
