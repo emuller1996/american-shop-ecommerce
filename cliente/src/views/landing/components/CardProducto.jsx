@@ -69,7 +69,7 @@ const CardProducto = ({ producto }) => {
             />
           </div>
         )}
-        <div className="card-body">
+        <div className="card-body mt-2">
           <h4 className="card-title fs-4">{producto?.name}</h4>
           <p className="card-text m-0 fs-5 fw-semibold">{ViewDollar(producto?.price)}</p>
           <p className="card-text text-center  m-0 text-muted">{producto?.categoria?.name}</p>
