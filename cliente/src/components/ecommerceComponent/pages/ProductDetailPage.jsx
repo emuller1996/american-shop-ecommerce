@@ -38,9 +38,16 @@ export default function ProductDetailPage() {
             <div className="row g-4">
               <div className="col-lg-7">
                 <Carousel interval={1500}>
-                  <Carousel.Item key={2123}>
+                  {/* <Carousel.Item key={2123}>
                     <img className="d-block w-100" src={dataDetalle?.imageBase64} alt={`Slidess`} />
-                  </Carousel.Item>
+                  </Carousel.Item> */}
+                  {dataDetalle?.Imagenes &&
+                    Array.isArray(dataDetalle?.Imagenes) &&
+                    dataDetalle?.Imagenes.length === 0 && (
+                      <div className='d-flex justify-content-center align-items-center' style={{minHeight:"350px"}}>
+                        <p className="text-center text-muted mt-4">NO HAY IMAGENES PARA ESTE PRODUCTO</p>
+                      </div>
+                    )}
                   {dataDetalle?.Imagenes &&
                     dataDetalle?.Imagenes.map((im) => (
                       <Carousel.Item key={im._id}>
@@ -81,6 +88,9 @@ export default function ProductDetailPage() {
                           toast.error('Elige una Talla')
                           return
                         }
+                         if (!sizeSelected.cantidad) {
+                            sizeSelected.cantidad=1;
+                        }
                         sizeSelected.name_producto = dataDetalle.name
                         sizeSelected.price_producto = dataDetalle.price
                         console.log(
@@ -92,7 +102,10 @@ export default function ProductDetailPage() {
                         } else {
                           setCartEcommerceAmerican([...cartEcommerceAmerican, sizeSelected])
                           setCartEcommerceAmericanState([...cartEcommerceAmerican, sizeSelected])
-                          toast.success(`Producto se agrego al carrito correctamente.`,{duration:2000})
+                          toast.success(`Producto se agrego al carrito correctamente.`, {
+                            duration: 2000,
+                          })
+                          setSizeSelected(null)
                         }
                       }}
                       className="button-ecomerce"
