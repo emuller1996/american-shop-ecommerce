@@ -28,14 +28,14 @@ export default function StockComponent({ setSizeSelected, stock, sizeSelected })
         <div className="d-flex mi_input_group ">
           <button
             className="button-29 "
-            onClick={() => {
+            onClick={(e) => {
+              e.stopPropagation();
               if (cantidad > 1) {
-                setCantidad((status) => --status)
-
-                setSizeSelected((prev) => ({
-                  ...prev,
-                  cantidad: prev.cantidad + 1,
-                }))
+                const newCantidad = cantidad - 1;
+                setCantidad(newCantidad);
+                if (sizeSelected?._id === stock._id) {
+                  setSizeSelected({...stock, cantidad: newCantidad});
+                }
               }
             }}
           >
@@ -51,9 +51,14 @@ export default function StockComponent({ setSizeSelected, stock, sizeSelected })
           />
           <button
             className="button-29 "
-            onClick={() => {
+            onClick={(e) => {
+              e.stopPropagation();
               if (cantidad < stock?.stock) {
-                setCantidad((status) => ++status)
+                const newCantidad = cantidad + 1;
+                setCantidad(newCantidad);
+                if (sizeSelected?._id === stock._id) {
+                  setSizeSelected({...stock, cantidad: newCantidad});
+                }
               }
             }}
           >
