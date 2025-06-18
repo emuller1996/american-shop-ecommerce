@@ -88,6 +88,9 @@ export default function ProductDetailPage() {
                           toast.error('Elige una Talla')
                           return
                         }
+                         if (!sizeSelected.cantidad) {
+                            sizeSelected.cantidad=1;
+                        }
                         sizeSelected.name_producto = dataDetalle.name
                         sizeSelected.price_producto = dataDetalle.price
                         console.log(
