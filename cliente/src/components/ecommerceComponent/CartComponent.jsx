@@ -43,10 +43,7 @@ export default function CartComponent({ onHide }) {
       console.log(rest)
       const res2 = await Promise.all(rest)
       console.log(res2)
-      res2.forEach((c) => {
-        if (c === null) {
-        }
-      })
+
       console.log(res2.filter((c) => c !== null).map((c) => c))
       setData(res2.filter((c) => c !== null).map((c) => c))
     } catch (error) {
@@ -58,7 +55,7 @@ export default function CartComponent({ onHide }) {
 
   return (
     <>
-      <p>Mi Carrito</p>
+      <p className="text-center">Mi Carrito</p>
       <div className="table-responsive">
         <table className="table ">
           <thead>
@@ -66,7 +63,9 @@ export default function CartComponent({ onHide }) {
               <th scope="col">Producto</th>
               <th scope="col">Unidades</th>
               <th scope="col">Tallta</th>
-              <th scope="col">Precio</th>
+              <th scope="col">Precio U.</th>
+              <th scope="col">Total U.</th>
+
               <th scope="col"></th>
             </tr>
           </thead>
@@ -97,6 +96,7 @@ export default function CartComponent({ onHide }) {
                   <td>{st?.cantidad}</td>
                   <td>{st?.size}</td>
                   <td>{ViewDollar(st?.product?.price)}</td>
+                  <td>{ViewDollar(st?.product?.price * st?.cantidad)}</td>
                   <td>
                     <button
                       onClick={() => {
@@ -119,6 +119,14 @@ export default function CartComponent({ onHide }) {
                   </td>
                 </tr>
               ))}
+
+            {Data && Array.isArray(Data) && Data.length === 0 && (
+              <tr>
+                <td colSpan={5}>
+                  <p className="text-center text-muted mt-4">NO HAY PRODUCTO EN EL CARRITO</p>
+                </td>
+              </tr>
+            )}
             <tr>
               <td colSpan={3} align="right">
                 <span className="fw-bold fs-5">Total</span>
@@ -149,12 +157,18 @@ export default function CartComponent({ onHide }) {
         </p> */}
       </div>
       <div className="mt-3 mb-2 text-center">
-        <Link to={`/eco/confirmar-compra`} onClick={onHide}>
-          <button disabled={client ? false : true} className="button-ecomerce">
-            <i className="fa-solid fa-money-bill me-3"></i> Ir a Pagar
-          </button>
-        </Link>
+        {Data && Array.isArray(Data) && Data.length !== 0 && (
+          <Link to={`/eco/confirmar-compra`} onClick={onHide}>
+            <button disabled={client ? false : true} className="button-ecomerce">
+              <i className="fa-solid fa-money-bill me-3"></i> Ir a Pagar
+            </button>
+          </Link>
+        )}
         {/*    <button disabled={client ? false : true} className="button-ecomerce"></button> */}
+
+        <p className='mt-5 text-muted'>
+          Lorem ipsum dolor sit amet consectetur adipisicing elit. Cumque, necessitatibus. Pariatur dolorum dolore minima totam. Aliquam deserunt facere vel. Laboriosam molestias voluptates ipsum sequi, quidem rem praesentium eveniet eum at?
+        </p>
       </div>
     </>
   )
