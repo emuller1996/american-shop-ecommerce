@@ -119,10 +119,13 @@ ConsultasRouters.post("/respuesta", async (req, res) => {
     const data = req.body;
     const user_token = jwtDecode(req.headers.authorization);
     data.user_id = user_token._id;
-    const response = await crearElasticByType(data, "respuesta");
+    await crearElasticByType(data, "respuesta");
+    await updateElasticByType(data.consulta_id, {
+      status:"completed"
+    });
     return res
       .status(201)
-      .json({ message: "Usuario Creado.", /* response, */ data });
+      .json({ message: "Usuario Creado.", data });
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
