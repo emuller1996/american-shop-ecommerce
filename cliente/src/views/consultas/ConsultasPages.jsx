@@ -9,7 +9,7 @@ import { ViewDollar } from '../../utils'
 import toast from 'react-hot-toast'
 import { Chip } from '@mui/material'
 import FormConsultaRespuesta from './components/FormConsultaRespuesta'
-
+import './ConsultasPages.css'
 const ConsultasPages = () => {
   const [show, setShow] = useState(false)
   const [showHide, setShowHide] = useState(false)
@@ -28,6 +28,12 @@ const ConsultasPages = () => {
   const translateStatus = {
     pending: 'Pendientes',
     completed: 'Completados',
+    hide: 'Ocultos',
+  }
+
+  const translateStatusClass = {
+    pending: 'chip-pending',
+    completed: 'chip-completed',
     hide: 'Ocultos',
   }
 
@@ -93,7 +99,11 @@ const ConsultasPages = () => {
                   </div>
                   <div className="d-flex justify-content-between border-bottom pb-2 mb-2">
                     <span>Estado</span>
-                    <Chip label={translateStatus[consul.status]} variant="outlined" />
+                    <Chip
+                      label={translateStatus[consul.status]}
+                      className={`${translateStatusClass[consul.status]}`}
+                      variant="outlined"
+                    />
                   </div>
                   <div className="d-flex justify-content-between align-items-center border-bottom pb-2 mb-2">
                     <span>Producto</span>
