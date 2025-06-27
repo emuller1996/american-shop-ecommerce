@@ -6,9 +6,10 @@ import { useConsultas } from '../../../hooks/useConsultas'
 import toast from 'react-hot-toast'
 import ReactTimeAgo from 'react-time-ago'
 
-export default function FormConsultaRespuesta({ consultaSelecionada }) {
+export default function FormConsultaRespuesta({ consultaSelecionada,onHide }) {
   FormConsultaRespuesta.propTypes = {
     consultaSelecionada: PropTypes.object.isRequired,
+    onHide: PropTypes.object.isRequired,
   }
   const [Respuesta, setRespuesta] = useState('')
   const { postCreateRespuesta, getRespuestaByConsulta } = useConsultas()
@@ -128,6 +129,7 @@ export default function FormConsultaRespuesta({ consultaSelecionada }) {
                   toast.success(`Respuesta ha sido creada exitosamente.`)
                   setRespuesta('')
                   setDraw((status) => ++status)
+                  onHide()
                   console.log(res.data)
                 } catch (error) {
                   console.log(error)

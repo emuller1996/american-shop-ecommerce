@@ -167,7 +167,13 @@ const ConsultasPages = () => {
         }}
       >
         <Modal.Body>
-          <FormConsultaRespuesta consultaSelecionada={consultaSelecionada} />
+          <FormConsultaRespuesta
+            consultaSelecionada={consultaSelecionada}
+            onHide={() => {
+              setShow(false)
+              setDraw((status) => ++status)
+            }}
+          />
         </Modal.Body>
       </Modal>
 
