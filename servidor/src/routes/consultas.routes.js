@@ -11,6 +11,7 @@ import { jwtDecode } from "jwt-decode";
 import md5 from "md5";
 import { INDEX_ES_MAIN } from "../config.js";
 import { client } from "../db.js";
+import { sendRespuestaConsultaEmail } from "../services/mailService.js";
 
 const ConsultasRouters = Router();
 
@@ -119,10 +120,20 @@ ConsultasRouters.post("/respuesta", async (req, res) => {
     const data = req.body;
     const user_token = jwtDecode(req.headers.authorization);
     data.user_id = user_token._id;
-    await crearElasticByType(data, "respuesta");
+    const result = await crearElasticByType(data, "respuesta");
     await updateElasticByType(data.consulta_id, {
       status:"completed"
     });
+    var dataRespuesta = await getDocumentById(result.body._id);
+    var dataConsulta = await getDocumentById(data.consulta_id);
+    var Cliente = await getDocumentById(dataConsulta.client_id);
+    var User = await getDocumentById(dataRespuesta.user_id);
+
+    dataRespuesta.cliente = Cliente
+    dataRespuesta.user = User
+    dataRespuesta.consulta = dataConsulta.consulta
+    console.log(dataRespuesta);
+    await sendRespuestaConsultaEmail(dataRespuesta)
     return res
       .status(201)
       .json({ message: "Usuario Creado.", data });
@@ -162,10 +173,8 @@ ConsultasRouters.get("/:id/respuesta", async (req, res) => {
       },
     };
     const searchResult = await client.search(consulta);
-
     var data = searchResult.body.hits.hits.map( async(c) => {
       let user =await getDocumentById(c._source.user_id);
-      console.log(user);
       return {
         ...c._source,
         _id: c._id,

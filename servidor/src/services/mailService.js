@@ -1,6 +1,6 @@
 import { createTransport } from "nodemailer";
 import "dotenv/config";
-import { getHTMLOrderDetail } from "./MailUtils.js";
+import { getHTMLOrderDetail, getHTMLRespuestaEmailDetail } from "./MailUtils.js";
 // Configurar el transporte SMTP de IONOS
 const transporter = createTransport({
   host: "smtp.ionos.com", // Servidor SMTP de IONOS
@@ -126,6 +126,24 @@ export const sendOrdenDetail = async (data) => {
     };
     await transporter.sendMail(mailOptions);
     console.log(`Correo de verificación enviado a ${data?.cliente?.email_client}`);
+  } catch (error) {
+    console.error("Error enviando el correo:", error);
+  }
+};
+
+
+export const sendRespuestaConsultaEmail = async (data) => {
+  try {
+    let html = getHTMLRespuestaEmailDetail(data);
+    console.log(html);
+    const mailOptions = {
+      from: '"ECOMMERCE AMERICAN SHOP (RESPUESTA A CONSULTA)" <ecommerce-dev@esmuller.cloud>', // Remitente
+      to: data?.cliente?.email_client, // Destinatario
+      subject: "RESPUESTA A CONSULTA",
+      html: html,
+    };
+    await transporter.sendMail(mailOptions);
+    console.log(`Correo Respuesta se ha enviado a ${data?.cliente?.email_client}`);
   } catch (error) {
     console.error("Error enviando el correo:", error);
   }
