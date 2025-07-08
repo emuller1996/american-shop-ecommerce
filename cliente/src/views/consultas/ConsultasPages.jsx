@@ -48,6 +48,7 @@ const ConsultasPages = () => {
                 <label htmlFor="gender">Estado</label>
                 <Select
                   name={'gender'}
+                  inputId="gender"
                   placeholder=""
                   onChange={(e) => {
                     console.log(e)

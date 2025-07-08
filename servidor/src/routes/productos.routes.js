@@ -549,7 +549,6 @@ const getAllRespuestasByConsulta = async (consulta_id) => {
 
     var data = searchResult.body.hits.hits.map(async (c) => {
       let user = await getDocumentById(c._source.user_id);
-      console.log(user);
       return {
         ...c._source,
         _id: c._id,
@@ -660,7 +659,6 @@ ProductosRouters.get("/:id/stock/logs", async (req, res) => {
 
 ProductosRouters.put("/stock/:idStock", async (req, res) => {
   try {
-    console.log(req.headers);
     let dataTest = await getDocumentById(req.params.idStock);
 
     let user_id = jwtDecode(req.headers["access-token"])._id;

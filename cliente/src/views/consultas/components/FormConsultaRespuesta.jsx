@@ -6,10 +6,10 @@ import { useConsultas } from '../../../hooks/useConsultas'
 import toast from 'react-hot-toast'
 import ReactTimeAgo from 'react-time-ago'
 
-export default function FormConsultaRespuesta({ consultaSelecionada,onHide }) {
+export default function FormConsultaRespuesta({ consultaSelecionada, onHide }) {
   FormConsultaRespuesta.propTypes = {
     consultaSelecionada: PropTypes.object.isRequired,
-    onHide: PropTypes.object.isRequired,
+    onHide: PropTypes.func.isRequired,
   }
   const [Respuesta, setRespuesta] = useState('')
   const { postCreateRespuesta, getRespuestaByConsulta } = useConsultas()
@@ -71,7 +71,7 @@ export default function FormConsultaRespuesta({ consultaSelecionada,onHide }) {
         )}
         {Data &&
           Data.map((consulta) => (
-            <>
+            <div key={consulta._id}>
               <div className="card p-2 mb-2 position-relative">
                 <div className="position-absolute top-0 end-0 me-2">
                   <span className="badge text-bg-light">
@@ -81,7 +81,14 @@ export default function FormConsultaRespuesta({ consultaSelecionada,onHide }) {
 
                 <div className="d-flex">
                   <div className="flex-shrink-1">
-                    <div className="" style={{borderRight:"1px solid #d4d4d4" , marginRight:"0.5em", paddingRight:"0.5em"}}>
+                    <div
+                      className=""
+                      style={{
+                        borderRight: '1px solid #d4d4d4',
+                        marginRight: '0.5em',
+                        paddingRight: '0.5em',
+                      }}
+                    >
                       <span style={{ fontSize: '0.8em' }} className="d-block text-nowrap">
                         {consulta?.user?.name}
                       </span>
@@ -95,7 +102,7 @@ export default function FormConsultaRespuesta({ consultaSelecionada,onHide }) {
                   </div>
                 </div>
               </div>
-            </>
+            </div>
           ))}
       </div>
       <div>
