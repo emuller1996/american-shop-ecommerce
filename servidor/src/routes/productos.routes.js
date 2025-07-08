@@ -138,7 +138,7 @@ ProductosRouters.get("/published", async (req, res) => {
   let page = req.query.page ?? 1;
   let search = req.query.search ?? "";
   let gender = req.query.gender ?? "";
-  let categoy = req.query.categoy ?? "";
+  let categoy = req.query.category ?? "";
 
   try {
     var consulta = {

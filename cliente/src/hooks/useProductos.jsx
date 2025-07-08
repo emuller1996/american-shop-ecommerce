@@ -19,6 +19,8 @@ import {
   putUpdateStockProductoService,
 } from '../services/productos.services'
 import AuthContext from '../context/AuthContext'
+import { setProductsP, setTotalProducts } from '../redux/slices/ProductsSlice'
+import { useDispatch } from 'react-redux'
 
 export const useProductos = () => {
   const [data, setData] = useState([])
@@ -30,8 +32,9 @@ export const useProductos = () => {
   const [StockProductLogs, setStockProductLogs] = useState(null)
   const [ConsultasProduct, setConsultasProduct] = useState(null)
 
+  const dispatch = useDispatch()
 
-  const { Token, TokenClient} = useContext(AuthContext)
+  const { Token, TokenClient } = useContext(AuthContext)
   const [error, setError] = useState(null)
   const [loading, setLoading] = useState(false)
   const abortController = new AbortController()
@@ -106,7 +109,9 @@ export const useProductos = () => {
       }
       console.log(res)
       if (!signal.aborted) {
-        setDataP(res.data)
+        //setDataP(res.data)
+        dispatch(setProductsP(res.data.data))
+        dispatch(setTotalProducts({ total: res.data.total, page: res.data.total_pages }))
         setError(null)
       }
     } catch (error) {
@@ -120,8 +125,6 @@ export const useProductos = () => {
       }
     }
   }
-
-  
 
   const getImagesByProductId = async (id) => {
     try {
@@ -142,7 +145,7 @@ export const useProductos = () => {
       console.log(error)
     }
   }
-   const getStocLogsByProductId = async (id) => {
+  const getStocLogsByProductId = async (id) => {
     try {
       const r = await getAllProductoLogsStockService(id, signal)
       console.log(r.data)
@@ -184,15 +187,15 @@ export const useProductos = () => {
     return postCreateConsultaProductoService(data, data.product_id, TokenClient)
   }
 
-  const updateStockProducto = async (data,id) => {
+  const updateStockProducto = async (data, id) => {
     return putUpdateStockProductoService(data, id, Token)
   }
 
   const importProductos = async (data) => {
-    return postImportProductoService(data,Token)
+    return postImportProductoService(data, Token)
   }
 
-  const validateProductoCart = async (id,data) => {
+  const validateProductoCart = async (id, data) => {
     return postValidateStockProductoService(data, id, Token)
   }
   return {
@@ -219,6 +222,6 @@ export const useProductos = () => {
     ConsultasProduct,
     createConsultaProducto,
     getStocLogsByProductId,
-    StockProductLogs
+    StockProductLogs,
   }
 }

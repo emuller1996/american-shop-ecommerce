@@ -5,18 +5,27 @@ import { createSlice } from '@reduxjs/toolkit'
 const ProductsSlice = createSlice({
   name: 'products',
   initialState: {
-    deliveries: null,
-    accountId: null,
+    products: null,
+    total: null,
+    filterData: {
+      page: 1,
+      perPage: 9,
+      search: '',
+      gender: null,
+    },
   },
   reducers: {
-    setData: (state, action) => {
-      state.deliveries = action.payload
+    seFiltertData: (state, action) => {
+      state.filterData = { ...state.filterData, ...action.payload }
     },
-    setId: (state, action) => {
-      state.accountId = action.payload
+    setProductsP: (state, action) => {
+      state.products = action.payload
+    },
+    setTotalProducts: (state, action) => {
+      state.total = action.payload
     },
   },
 })
 
-export const { setData, setId } = ProductsSlice.actions
+export const { seFiltertData, setProductsP, setTotalProducts } = ProductsSlice.actions
 export default ProductsSlice.reducer
