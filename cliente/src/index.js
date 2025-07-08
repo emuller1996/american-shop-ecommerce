@@ -5,12 +5,13 @@ import 'core-js'
 import { createTheme, ThemeProvider } from '@mui/material/styles'
 
 import App from './App'
-import store from './store'
+//import store from './store'
 
 import TimeAgo from 'javascript-time-ago'
 
 import en from 'javascript-time-ago/locale/en'
 import es from 'javascript-time-ago/locale/es'
+import { store } from './redux/store'
 
 TimeAgo.addDefaultLocale(es)
 TimeAgo.addLocale(es)
