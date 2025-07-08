@@ -7,27 +7,35 @@ import Pagination from '@mui/material/Pagination'
 import { Carousel } from 'react-bootstrap'
 import envio_img from '../../../assets/images/envio.png'
 import app_img from '../../../assets/images/banner_img_01.jpg'
+import { useSelector, useDispatch } from 'react-redux'
 
 import './HomeLanding.css'
+import { seFiltertData } from '../../../redux/slices/ProductsSlice'
+import CardProductoHolderTest from '../../../views/landing/components/CardProductoHolderTest'
 
 export default function HomeLanding() {
   const { dataP: Productos, getAllProductosPublished, loading } = useProductos()
   const { getAllCategorias, data: Categorias } = useCategorias()
 
-  const [dataFilter, setDataFilter] = useState({
+  const { products, total, filterData } = useSelector((state) => state.productosPublished)
+  const dispatch = useDispatch()
+
+  console.log('filterData', filterData)
+
+  /* const [filterData, setDataFilter] = useState({
     page: 1,
     perPage: 9,
     search: '',
     gender: null,
-  })
+  }) */
 
   useEffect(() => {
     getAllCategorias()
   }, [])
 
   useEffect(() => {
-    getAllProductosPublished(dataFilter)
-  }, [dataFilter])
+    getAllProductosPublished(filterData)
+  }, [filterData])
   return (
     <>
       <div className="container">
@@ -103,9 +111,7 @@ export default function HomeLanding() {
                 defaultChecked={true}
                 onChange={(e) => {
                   console.log(e.target.value)
-                  setDataFilter((status) => {
-                    return { ...status, categoy: null }
-                  })
+                  dispatch(seFiltertData({ category: null }))
                 }}
               />
               <label
@@ -114,12 +120,12 @@ export default function HomeLanding() {
                 style={{
                   padding: '0.5em 0.7em',
                   borderStyle: 'solid',
-                  borderColor: dataFilter?.categoy === null ? '#5b9cff' : '#cccccc',
-                  backgroundColor: dataFilter?.categoy === null ? '#e9f2ff' : 'transparent',
+                  borderColor: filterData?.category === null ? '#5b9cff' : '#cccccc',
+                  backgroundColor: filterData?.category === null ? '#e9f2ff' : 'transparent',
                   borderWidth: '1px',
                   borderRadius: '0.4em',
                   cursor: 'pointer',
-                  color: dataFilter?.categoy === null ? '#093d8b' : '#c0c0c0',
+                  color: filterData?.category === null ? '#093d8b' : '#c0c0c0',
                   display: 'flex',
                   alignItems: 'center',
                 }}
@@ -138,10 +144,7 @@ export default function HomeLanding() {
                     id={cate._id}
                     value={cate._id}
                     onChange={(e) => {
-                      console.log(e.target.value)
-                      setDataFilter((status) => {
-                        return { ...status, categoy: e.target.value }
-                      })
+                      dispatch(seFiltertData({ category: e.target.value, page: 1 }))
                     }}
                   />
                   <label
@@ -150,12 +153,13 @@ export default function HomeLanding() {
                     style={{
                       padding: '0.5em 0.7em',
                       borderStyle: 'solid',
-                      borderColor: cate._id === dataFilter?.categoy ? '#5b9cff' : '#cccccc',
-                      backgroundColor: cate._id === dataFilter?.categoy ? '#e9f2ff' : 'transparent',
+                      borderColor: cate._id === filterData?.category ? '#5b9cff' : '#cccccc',
+                      backgroundColor:
+                        cate._id === filterData?.category ? '#e9f2ff' : 'transparent',
                       borderWidth: '1px',
                       borderRadius: '0.4em',
                       cursor: 'pointer',
-                      color: cate._id !== dataFilter?.categoy ? '#cccccc' : '#093d8b',
+                      color: cate._id !== filterData?.category ? '#cccccc' : '#093d8b',
                       display: 'flex',
                       alignItems: 'center',
                     }}
@@ -176,9 +180,7 @@ export default function HomeLanding() {
                 hidden
                 id={'all'}
                 onChange={(e) => {
-                  setDataFilter((sta) => {
-                    return { ...sta, gender: null }
-                  })
+                  dispatch(seFiltertData({ gender: null, page: 1 }))
                 }}
                 value="all"
               />
@@ -188,16 +190,16 @@ export default function HomeLanding() {
                 style={{
                   padding: '0.7em',
                   borderStyle: 'solid',
-                  borderColor: dataFilter?.gender === null ? '#5b9cff' : '#cccccc',
+                  borderColor: filterData?.gender === null ? '#5b9cff' : '#cccccc',
                   borderWidth: '1px',
                   borderRadius: '0.4em',
-                  color: dataFilter?.gender === null ? '#5b9cff' : '#cccccc',
+                  color: filterData?.gender === null ? '#5b9cff' : '#cccccc',
                   cursor: 'pointer',
                 }}
               >
                 <i
                   className="fa-solid fa-circle-dot me-2"
-                  style={{ color: dataFilter?.gender === null ? '#5b9cff' : '#cccccc' }}
+                  style={{ color: filterData?.gender === null ? '#5b9cff' : '#cccccc' }}
                 ></i>
                 Todas
               </label>
@@ -212,9 +214,10 @@ export default function HomeLanding() {
                   id={gen}
                   value={gen}
                   onChange={(e) => {
-                    setDataFilter((sta) => {
-                      return { ...sta, gender: e.target.value }
-                    })
+                    /* seFiltertData((sta) => {
+                      return { ...sta, gender: e.target.value, page: 1 }
+                    }) */
+                    dispatch(seFiltertData({ gender: e.target.value, page: 1 }))
                   }}
                 />
                 <label
@@ -222,11 +225,11 @@ export default function HomeLanding() {
                   style={{
                     padding: '0.7em',
                     borderStyle: 'solid',
-                    borderColor: gen === dataFilter?.gender ? '#5b9cff' : '#cccccc',
+                    borderColor: gen === filterData?.gender ? '#5b9cff' : '#cccccc',
                     borderWidth: '1px',
                     borderRadius: '0.4em',
                     cursor: 'pointer',
-                    color: gen === dataFilter?.gender ? '#5b9cff' : '#cccccc',
+                    color: gen === filterData?.gender ? '#5b9cff' : '#cccccc',
                     display: 'flex',
                     alignItems: 'center',
                   }}
@@ -234,19 +237,19 @@ export default function HomeLanding() {
                 >
                   {gen === 'men' && (
                     <i
-                      style={{ color: gen === dataFilter?.gender ? '#5b9cff' : '#cccccc' }}
+                      style={{ color: gen === filterData?.gender ? '#5b9cff' : '#cccccc' }}
                       className="fa-solid fa-mars me-2 fa-xl"
                     ></i>
                   )}
                   {gen === 'women' && (
                     <i
-                      style={{ color: gen === dataFilter?.gender ? '#5b9cff' : '#cccccc' }}
+                      style={{ color: gen === filterData?.gender ? '#5b9cff' : '#cccccc' }}
                       className="fa-solid fa-venus me-2 fa-xl"
                     ></i>
                   )}
                   {gen === 'kid' && (
                     <i
-                      style={{ color: gen === dataFilter?.gender ? '#5b9cff' : '#cccccc' }}
+                      style={{ color: gen === filterData?.gender ? '#5b9cff' : '#cccccc' }}
                       className="fa-solid fa-children me-2 fa-xl"
                     ></i>
                   )}
@@ -269,9 +272,10 @@ export default function HomeLanding() {
                 aria-label="Username"
                 aria-describedby="basic-addon1"
                 onChange={(e) => {
-                  setDataFilter((status) => {
+                  /* seFiltertData((status) => {
                     return { ...status, search: e.target.value }
-                  })
+                  }) */
+                  dispatch(seFiltertData({ search: e.target.value, page: 1 }))
                 }}
               />
             </div>
@@ -280,27 +284,26 @@ export default function HomeLanding() {
       </div>
       <div className="container mt-3">
         <div className="row g-4">
+          {loading && [1, 2, 3, 4, 5, 6, 7, 8, 9].map((lo) => <CardProductoHolderTest key={lo} />)}
           {!loading &&
-            Productos &&
-            Productos.data.map((pro) => <CardProducto key={pro._id} producto={pro} />)}
+            products &&
+            products.map((pro) => <CardProducto key={pro._id} producto={pro} />)}
         </div>
-        {!loading && Productos && Array.isArray(Productos.data) && Productos.data.length === 0 && (
+        {!loading && products && Array.isArray(products) && products.length === 0 && (
           <div className="card  card-body mt-4">
             <p className="mt-3 text-center">NO SE ENCONTRARON PRODUCTOS</p>
           </div>
         )}
-        {!loading && Productos && (
+        {!loading && total && (
           <div className="card  card-body mt-4">
-            <span>Total de Registros : {Productos.total} </span>
+            <span>Total de Registros : {total.total} </span>
             <div className="d-flex justify-content-center">
               <Pagination
-                page={dataFilter.page}
+                page={filterData.page}
                 onChange={(e, page) => {
-                  setDataFilter((status) => {
-                    return { ...status, page: page }
-                  })
+                  dispatch(seFiltertData({ page: page }))
                 }}
-                count={Productos.total_pages}
+                count={total.page}
                 variant="outlined"
                 shape="rounded"
               />
