@@ -180,9 +180,7 @@ export default function HomeLanding() {
                 hidden
                 id={'all'}
                 onChange={(e) => {
-                  seFiltertData((sta) => {
-                    return { ...sta, gender: null }
-                  })
+                  dispatch(seFiltertData({ gender: null, page: 1 }))
                 }}
                 value="all"
               />
@@ -216,9 +214,10 @@ export default function HomeLanding() {
                   id={gen}
                   value={gen}
                   onChange={(e) => {
-                    seFiltertData((sta) => {
+                    /* seFiltertData((sta) => {
                       return { ...sta, gender: e.target.value, page: 1 }
-                    })
+                    }) */
+                    dispatch(seFiltertData({ gender: e.target.value, page: 1 }))
                   }}
                 />
                 <label
@@ -273,9 +272,10 @@ export default function HomeLanding() {
                 aria-label="Username"
                 aria-describedby="basic-addon1"
                 onChange={(e) => {
-                  seFiltertData((status) => {
+                  /* seFiltertData((status) => {
                     return { ...status, search: e.target.value }
-                  })
+                  }) */
+                  dispatch(seFiltertData({ search: e.target.value, page: 1 }))
                 }}
               />
             </div>
