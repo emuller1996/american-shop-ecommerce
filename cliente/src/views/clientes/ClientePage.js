@@ -74,9 +74,8 @@ const ClientePage = () => {
 
               { name: '', selector: (row) => row?.city ?? '' },
             ]}
-            data={dataP?.data ?? []}
+            data={dataP?.data}
             pagination
-            paginationComponentOptions={paginationComponentOptions}
             paginationServer
             progressPending={loading}
             progressComponent={
@@ -90,8 +89,13 @@ const ClientePage = () => {
                 </div>
               </div>
             }
-            noDataComponent="No hay datos para mostrar"
+            paginationTotalRows={dataP?.total}
+            paginationComponentOptions={paginationComponentOptions}
+            noDataComponent={
+              <div className="d-flex justify-content-center my-5">No hay productos.</div>
+            }
             onChangeRowsPerPage={(perPage, page) => {
+              console.log(perPage, page)
               setdataFilter((status) => {
                 return { ...status, perPage }
               })
