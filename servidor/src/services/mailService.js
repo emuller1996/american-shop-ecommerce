@@ -21,80 +21,89 @@ export const sendVerificationEmail = async (email) => {
     from: '"ECOMMERCE AMERICAN SHOP" <ecommerce-dev@esmuller.cloud>', // Remitente
     to: email, // Destinatario
     subject: "Bienvenido",
-    html: `
-<html>
+    html: `<!DOCTYPE html>
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>CORREO TEST</title>
-      <style>
-        * {
-          font-family: Tahoma, sans-serif;
-        }
-        .container {
-          margin: auto;
-          width: 70%;
-        }
-        .text-center {
-          text-align: center;
-        }
-        .card-img-top {
-          padding: 2em 0;
-        }
-        .card {
-          border: 1px solid red;
-          border-radius: 1em;
-          overflow: hidden;
-          box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
-        }
-        .card-body {
-          padding: 2em;
-        }
-        hr {
-          margin: 0;
-          border-color: rgb(255, 204, 204);
-        }
-        .btn {
-          margin-top: 3em;
-          background-color: rgb(230, 149, 149);
-          box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
-          padding: 1em;
-          text-decoration: none;
-        }
-        p {
-          margin-bottom: 1em;
-        }
-      </style>
+    <style>
+      * {
+        font-family: "Trebuchet MS", Haettenschweiler, "Arial Narrow Bold",
+          sans-serif;
+      }
+      .container {
+        margin: auto;
+        width: 500px;
+      }
+      .text-center {
+        text-align: center;
+      }
+      .card-img-top {
+        padding: 2em 0 0 0;
+          filter: sepia(30%);
+  transition: filter 1s;
+      }
+      .card {
+        border: 1px solid red;
+        border-radius: 0.5em;
+        overflow: hidden;
+        box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
+      }
+      .card-body {
+        padding: 2em;
+      }
+      hr {
+        margin: 0;
+      }
+      .btn {
+        margin-top: 3em;
+        background-color: rgba(59, 120, 233, 0.856);
+        box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+        padding: 1em;
+        color: white;
+        border-radius: 0.3em;
+        text-decoration: none;
+      }
+      p {
+        margin-bottom: 1em;
+      }
+    </style>
   </head>
-
   <body>
     <div class="container mt-5">
-      <div class="card shadow" style="border-color: rgb(255, 207, 207)">
+      <div class="card shadow" style="border-color: rgb(108, 117, 194)">
         <div
-          class="text-center pt-4 m-0 pb-2"
-          style="background-color: rgb(255, 180, 180)"
+          class="text-center pt-2 m-0 pb-2"
+          style="background-color: rgba(59, 120, 233, 0.486)"
         >
           <img
             class="card-img-top"
             src="https://esmuller.cloud/assets/Logo-LBxHafXJ.png"
             alt="Title"
-            style="width: 110px"
+            style="width: 120px"
           />
-        </div>
-        <hr class="m-0" />
-        <div class="card-body text-center">
-          <h3>Bienenido a AmericanShop Ecommerce</h3>
-          <p>
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Maxime
-            minima suscipit provident repudiandae porro id rerum quasi quos?
-            Voluptate consequuntur fugit quia sequi aspernatur voluptas nisi
-            iusto? Similique, aut minima.
+          <p style="font-weight: 600; color: #03174e; font-size: large">
+           AMERICAN SHOP VIP
           </p>
-          <div style="margin-top: 10px;">
+          <hr class="m-0" />
+        </div>
+        <div class="card-body text-center">
+          <p style="white-space: pretty; margin-bottom: 40px; color: #292929;">
+            ¡Bienvenido/a  AMERICAN SHOP VIP Ecommerce tu destino definitivo de moda
+            online! Sumérgete en nuestra exclusiva colección donde encontrarás
+            las últimas tendencias en ropa, los zapatos más cómodos y con
+            estilo, jeans que se ajustan a tu personalidad, gorras para coronar
+            tu look, camisetas con diseños únicos y accesorios que son el toque
+            final perfecto. Aquí no solo compras prendas, sino que expresas
+            quién eres. Estamos emocionados de acompañarte en cada paso de tu
+            estilo. ¡Explora, elige y deja que tu outfit hable por ti!
+          </p>
+          <div style="margin-top: 10px">
             <a
-              href="https://ecommerce.esmuller.cloud/"
-              class="button-9 btn btn-danger"
-              >Explorar Tienda</a
+              href="https://esmuller.cloud/"
+              class="btn btn-danger"
+              >Explorar</a
             >
           </div>
         </div>
@@ -102,7 +111,7 @@ export const sendVerificationEmail = async (email) => {
     </div>
   </body>
 </html>
-    `,
+`,
   };
 
   try {

@@ -175,118 +175,115 @@ ${HTMLTBODY}
 
 export function getHTMLRespuestaEmailDetail(data) {
   let HTML = `
- <!DOCTYPE html>
-<html lang="es">
+
+  <!DOCTYPE html>
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>CORREO TEST</title>
-    <style>
-      * {
-        font-family: Cambria, Verdana, Geneva, Tahoma, sans-serif, sans-serif;
-      }
-      .container {
-        margin: auto;
-        width: 80%;
-      }
-      .text-center {
-        text-align: center;
-      }
-      .card-img-top {
-        padding: 2em 0;
-      }
-      .card {
-        border: 2px solid #b4b4b4;
-        border-radius: 0.5em;
-        overflow: hidden;
-        box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
-      }
-      .card-body {
-        padding: 2em;
-        background-color: rgb(246, 249, 255);
-        color: #3f3f3f;
-      }
-      hr {
-        margin: 0;
-        border-color: rgb(179, 206, 245);;
-      }
-      .btn {
-        margin-top: 3em;
-        background-color: rgb(179, 206, 245);
-        box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
-        padding: 1em;
-        text-decoration: none;
-      }
-      p {
-        margin-bottom: 1em;
-      }
-      .text-muted {
-        color: #646464;
-      }
-      .text-content {
-        width: 70%;
-        margin: auto;
-        margin-top: 30px;
-        margin-bottom: 50px;
-        font-weight: 600;
-      }
-  
-      .d-flex {
-        width: 50%;
-        margin: auto;
-        display: flex;
-        justify-content: space-between;
-      }
-  
-      .card-header {
-        background: #8a9fff;
-        background-color: rgb(179, 206, 245);
-      }
-  
-      /* CSS */
-      .button-29 {
-        align-items: center;
-        appearance: none;
-        background-color: rgb(179, 206, 245);
-        padding: 1em;
-        border: 0;
-        border-radius: 6px;
-        box-shadow: rgba(45, 35, 66, 0.4) 0 2px 4px,
-          rgba(45, 35, 66, 0.3) 0 7px 13px -3px,
-          rgba(58, 65, 111, 0.5) 0 -3px 0 inset;
-        box-sizing: border-box;
-        color: #fff;
-        cursor: pointer;
-        display: inline-flex;
-        height: 48px;
-        font-family: "JetBrains Mono", monospace;
-  
-        font-size: 18px;
-      }
-    </style>
+  <style>
+    * {
+      font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    }
+    .container {
+      margin: auto;
+      width: 500px;
+    }
+    .text-center {
+      text-align: center;
+    }
+    .card-img-top {
+      padding: 2em 0 0 0 ;
+    }
+    .card {
+      border: 2px solid #b4b4b4;
+      border-radius: 0.5em;
+      overflow: hidden;
+      box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
+    }
+    .card-body {
+      padding: 2em;
+      background-color: rgb(255, 244, 244);
+      color: #3f3f3f;
+    }
+    hr {
+      margin: 0;
+      border-color: rgb(245, 179, 179);;
+    }
+    .btn {
+      margin-top: 3em;
+      background-color: rgb(245, 179, 182);
+      box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+      padding: 1em;
+      text-decoration: none;
+    }
+    p {
+      margin-bottom: 1em;
+    }
+    .text-muted {
+      color: #646464;
+    }
+    .text-content {
+      margin: auto;
+      margin-top: 20px;
+      margin-bottom: 30px;
+      font-weight: 600;
+      font-size: 1.1em;
+    }
+
+    .d-flex {
+      width: 50%;
+      margin: auto;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .card-header {
+      background-color: rgba(255, 209, 209, 0.527);
+    }
+
+    /* CSS */
+    .button-29 {
+      align-items: center;
+      appearance: none;
+      background-color: rgb(255, 156, 156);
+      padding: 1em;
+      border: 0;
+      text-decoration: none;
+      border-radius: 6px;
+      box-shadow: rgba(45, 35, 66, 0.4) 0 2px 4px,
+        rgba(45, 35, 66, 0.3) 0 7px 13px -3px,
+        rgba(58, 65, 111, 0.5) 0 -3px 0 inset;
+      box-sizing: border-box;
+      color: #494949;
+      cursor: pointer;
+      display: inline-flex;
+      height: 48px;
+      font-family: "JetBrains Mono", monospace;
+
+      font-size: 18px;
+    }
+  </style>
   </head>
-
-
   <body>
     <div class="container mt-5">
       <div class="card shadow">
-        <div class="text-center pt-4 m-0 pb-2 card-header">
+        <div class="text-center pt-4 m-0 pb-2 card-header" style="padding-bottom: 30px;">
           <img
             class="card-img-top"
             src="https://www.esmuller.cloud/assets/Logo-LBxHafXJ.png"
             alt="Title"
-            style="width: 110px"
+            style="width: 100px"
           />
-          <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; padding-bottom: 1.5em;">
-            <span style="font-size: 1.5em; color: #c93333;">Tienda Electronica.</span>
-            <span style="font-size: 0.9em; color: #525252;">American Shop Sport</span>
-            <span style="font-size: 0.7em; color: #525252;">www.esmuller.cloud</span>
-          </div>
+            <p style="font-size: 1.5em; color: #c93333; margin: 0;">Tienda Electronica.</p>
+            <p style="font-size: 0.9em; color: #525252; margin: 0;">American Shop Sport</p>
+            <p style="font-size: 0.7em; color: #525252; margin: 0;">www.esmuller.cloud</p>
         </div>
         <hr class="m-0" />
         <div class="card-body text-center">
           <h2 class="text-header-card">
-           Hola ${data?.cliente?.name_client??''}, se ha respondido tu consulta de un producto.
+            Hola ${data?.cliente?.name_client??''}, se ha respondido tu consulta de un producto.
           </h2>
           <p class="text-muted text-content">
             ${data?.consulta ?? ""}
@@ -296,12 +293,12 @@ export function getHTMLRespuestaEmailDetail(data) {
             ${data?.respuesta ?? ""}
           </p>
 
-          <div class="d-flex">
-            <span> Fecha: ${new Date(
+          <div class="">
+            <p> Fecha: ${new Date(
               data?.createdTime
-            ).toLocaleDateString()}</span>
+            ).toLocaleDateString()}</p>
 
-            <div>Respondido por <b> ${data?.user?.name ?? ""}</b></div>
+            <p>Respondido por <b>${data?.user?.name ?? ""}</b></p>
           </div>
           <div style="margin-top: 30px">
             <a href="https://esmuller.cloud/" class="button-29"
@@ -310,7 +307,7 @@ export function getHTMLRespuestaEmailDetail(data) {
           </div>
           
         </div>
-        <div style="background-color:  rgb(179, 206, 245); padding: 0.5em;">
+        <div style="background-color:  rgb(245, 179, 179); padding: 0.5em;">
           <span style="color: rgb(77, 77, 77);">
             Power By © MullerDev 2025
           </span>
@@ -319,8 +316,6 @@ export function getHTMLRespuestaEmailDetail(data) {
     </div>
   </body>
 </html>
-
-
 `;
 
   return HTML;
