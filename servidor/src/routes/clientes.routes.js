@@ -50,7 +50,7 @@ ClienteRouters.get("/", validateTokenMid, async (req, res) => {
   }
 });
 
-ClienteRouters.get("/pagination", async (req, res) => {
+ClienteRouters.get("/pagination",validateTokenMid, async (req, res) => {
   let perPage = req.query.perPage ?? 10;
   let page = req.query.page ?? 1;
   let search = req.query.search ?? "";
@@ -129,6 +129,59 @@ ClienteRouters.get("/pagination", async (req, res) => {
     return res.status(500).json({ message: error.message });
   }
 });
+
+ClienteRouters.get("/:id/shopping", validateTokenMid, async (req, res) => {
+  try {
+    let perPage = req.query.perPage ?? 10;
+    let page = req.query.page ?? 1;
+    let id_cliente = req.params.id;
+
+    var consulta = {
+      index: INDEX_ES_MAIN,
+      size: perPage,
+      from: (page - 1) * perPage,
+      body: {
+        query: {
+          bool: {
+            must: [
+              {
+                term: {
+                  "cliente.client_id.keyword": {
+                    value: id_cliente,
+                  },
+                },
+              },
+            ],
+            filter: [
+              {
+                term: {
+                  type: "orden",
+                },
+              },
+            ],
+          },
+        },
+        sort: [
+          { createdTime: { order: "desc" } }, // Reemplaza con el campo por el que quieres ordenar
+        ],
+      },
+    };
+
+    const searchResult = await client.search(consulta);
+
+    var data = searchResult.body.hits.hits.map((c) => {
+      return {
+        ...c._source,
+        _id: c._id,
+      };
+    });
+
+    return res.status(200).json(data);
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+});
+
 
 ClienteRouters.post("/", async (req, res) => {
   try {

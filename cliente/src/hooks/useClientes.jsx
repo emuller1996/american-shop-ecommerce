@@ -7,6 +7,7 @@ import {
   getGetAddressClientesService,
   getGetShoppingClientesService,
   getShopByIdService,
+  getShoppingByClientIdService,
   postNewAddressClientesService,
   putNewAddressClientesService,
   putUpdateClientesService,
@@ -57,6 +58,8 @@ export const useClientes = () => {
   const getAllClientesPagination = async (data) => {
     setLoading(true)
     setDataP(undefined)
+    console.log(Token);
+    
     try {
       const res = await getClientesSearchPaginationServices(Token, data)
       if (res.status !== 200) {
@@ -133,6 +136,34 @@ export const useClientes = () => {
     }
   }
 
+  const getShoppingByClientId = async (id) => {
+    setLoading(true)
+    try {
+      const res = await getShoppingByClientIdService(Token, id)
+      if (res.status !== 200) {
+        let err = new Error('Error en la petición Fetch')
+        err.status = res.status || '00'
+        err.statusText = res.statusText || 'Ocurrió un error'
+        throw err
+      }
+      console.log(res)
+      if (!signal.aborted) {
+        setDataShopping(res.data)
+        setError(null)
+      }
+    } catch (error) {
+      if (!signal.aborted) {
+        setDataShopping(null)
+        setError(error)
+      }
+    } finally {
+      if (!signal.aborted) {
+        setLoading(false)
+      }
+    }
+  }
+  
+
   const getShopDetailById = async (id, data) => {
     return await getShopByIdService(TokenClient, id)
   }
@@ -181,5 +212,6 @@ export const useClientes = () => {
     putClienteNewAddress,
     getAllClientesPagination,
     dataP,
+    getShoppingByClientId
   }
 }
