@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { CContainer } from '@coreui/react'
-import { Button, Form, Modal, OverlayTrigger, Tooltip } from 'react-bootstrap'
+import { Accordion, Button, Form, Modal, OverlayTrigger, Tooltip } from 'react-bootstrap'
 import DataTable from 'react-data-table-component'
 import {
   genderOptions,
@@ -80,94 +80,100 @@ const ProductosPage = () => {
           </Button>
         </div>
         <div className="card card-body mt-3">
-          <span className="d-block text-muted">Filtros Avanzados</span>
-          <div className="row g-3 align-items-end">
-            <div className="col-md-3">
-              <div>
-                <Form.Label htmlFor="gender">Genero</Form.Label>
-                <Select
-                  name={'gender'}
-                  placeholder=""
-                  onChange={(e) => {
-                    console.log(e)
-                    setdataFilter((status) => {
-                      return { ...status, gender: e?.value ?? '' }
-                    })
-                  }}
-                  styles={stylesSelect}
-                  theme={themeSelect}
-                  options={genderOptions}
-                  isClearable
-                />
-              </div>
-            </div>
-            <div className="col-md-3">
-              <div>
-                <Form.Label htmlFor="category">Categoria</Form.Label>
-                <Select
-                  name={'category'}
-                  placeholder=""
-                  onChange={(e) => {
-                    console.log(e)
-                    setdataFilter((status) => {
-                      return { ...status, category: e?.value ?? '' }
-                    })
-                  }}
-                  styles={stylesSelect}
-                  theme={themeSelect}
-                  options={
-                    ListCategorias &&
-                    ListCategorias.map((cat) => {
-                      return {
-                        label: cat?.name,
-                        value: cat?._id,
-                      }
-                    })
-                  }
-                  isClearable
-                />
-              </div>
-            </div>
-            <div className="col-md-3">
-              <Form.Label htmlFor="status">Estado</Form.Label>
-              <Select
-                name={'status'}
-                placeholder=""
-                onChange={(e) => {
-                  setdataFilter((status) => {
-                    return { ...status, published: e?.value ?? '' }
-                  })
-                }}
-                styles={stylesSelect}
-                theme={themeSelect}
-                options={[
-                  { label: 'Publicado', value: true },
-                  { label: 'No Publicado', value: false },
-                ]}
-                isClearable
-              />
-            </div>
-            <div className="col-md-12">
-              <div className="w-100">
-                <div className="input-group">
-                  <span className="input-group-text">
-                    <i className="fa-solid fa-magnifying-glass"></i>
-                  </span>
-                  <input
-                    placeholder="Busque Producto por Nombre, Categoria y Marca"
-                    type="text"
-                    aria-label="First name"
-                    className="form-control"
-                    onChange={(e) => {
-                      setdataFilter((status) => {
-                        return { ...status, search: e.target.value }
-                      })
-                    }}
-                  />
+          <Accordion>
+            <Accordion.Item eventKey="0">
+              <Accordion.Header className="text-muted">Filtros Avanzados</Accordion.Header>
+              <Accordion.Body>
+                <div className="row g-3 align-items-end">
+                  <div className="col-md-3">
+                    <div>
+                      <Form.Label htmlFor="gender">Genero</Form.Label>
+                      <Select
+                        name={'gender'}
+                        placeholder=""
+                        onChange={(e) => {
+                          console.log(e)
+                          setdataFilter((status) => {
+                            return { ...status, gender: e?.value ?? '' }
+                          })
+                        }}
+                        styles={stylesSelect}
+                        theme={themeSelect}
+                        options={genderOptions}
+                        isClearable
+                      />
+                    </div>
+                  </div>
+                  <div className="col-md-3">
+                    <div>
+                      <Form.Label htmlFor="category">Categoria</Form.Label>
+                      <Select
+                        name={'category'}
+                        placeholder=""
+                        onChange={(e) => {
+                          console.log(e)
+                          setdataFilter((status) => {
+                            return { ...status, category: e?.value ?? '' }
+                          })
+                        }}
+                        styles={stylesSelect}
+                        theme={themeSelect}
+                        options={
+                          ListCategorias &&
+                          ListCategorias.map((cat) => {
+                            return {
+                              label: cat?.name,
+                              value: cat?._id,
+                            }
+                          })
+                        }
+                        isClearable
+                      />
+                    </div>
+                  </div>
+                  <div className="col-md-3">
+                    <Form.Label htmlFor="status">Estado</Form.Label>
+                    <Select
+                      name={'status'}
+                      placeholder=""
+                      onChange={(e) => {
+                        setdataFilter((status) => {
+                          return { ...status, published: e?.value ?? '' }
+                        })
+                      }}
+                      styles={stylesSelect}
+                      theme={themeSelect}
+                      options={[
+                        { label: 'Publicado', value: true },
+                        { label: 'No Publicado', value: false },
+                      ]}
+                      isClearable
+                    />
+                  </div>
+                  <div className="col-md-12">
+                    <div className="w-100">
+                      <div className="input-group">
+                        <span className="input-group-text">
+                          <i className="fa-solid fa-magnifying-glass"></i>
+                        </span>
+                        <input
+                          placeholder="Busque Producto por Nombre, Categoria y Marca"
+                          type="text"
+                          aria-label="First name"
+                          className="form-control"
+                          onChange={(e) => {
+                            setdataFilter((status) => {
+                              return { ...status, search: e.target.value }
+                            })
+                          }}
+                        />
+                      </div>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
-          </div>
+              </Accordion.Body>
+            </Accordion.Item>
+          </Accordion>
         </div>
 
         <div className="rounded overflow-hidden border border-ligth shadow-sm mt-3">
