@@ -59,6 +59,8 @@ const validateTokenClientMid = (req, res, next) => {
 
 const validateTokenMid = (req, res, next) => {
   const accessToken = req.headers["access-token"];
+  console.log(accessToken);
+  
   if (!accessToken)
     return res
       .status(403)

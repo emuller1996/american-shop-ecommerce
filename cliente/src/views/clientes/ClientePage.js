@@ -4,6 +4,7 @@ import { Button, Modal } from 'react-bootstrap'
 import { useClientes } from '../../hooks/useClientes'
 import DataTable from 'react-data-table-component'
 import { paginationComponentOptions } from '../../utils/optionsConfig'
+import ClienteComprasDetalle from './components/ClienteComprasDetalle'
 
 const ClientePage = () => {
   const [dataFilter, setdataFilter] = useState({
@@ -12,6 +13,8 @@ const ClientePage = () => {
     page: 1,
     draw: 1,
   })
+  const [show, setShow] = useState(false)
+  const [ClienteSelected, setClienteSelected] = useState(undefined)
 
   const { getAllClientes, data, getAllClientesPagination, dataP, loading } = useClientes()
 
@@ -56,6 +59,24 @@ const ClientePage = () => {
             className="MyDataTableEvent"
             striped
             columns={[
+              {
+                name: 'Acciones',
+                width: '100px',
+                cell: (row) => {
+                  return (
+                    <button
+                      type="button"
+                      className="btn-sm btn btn-info text-white"
+                      onClick={() => {
+                        setClienteSelected(row._id)
+                        setShow(true)
+                      }}
+                    >
+                      <i className="fa-solid fa-bag-shopping"></i>
+                    </button>
+                  )
+                },
+              },
               { name: 'Nombre', selector: (row) => row?.name_client ?? '', width: '200px' },
               { name: 'Correo', selector: (row) => row?.email_client ?? '', width: '200px' },
               { name: 'Telefono', selector: (row) => row?.phone_client ?? '', width: '150px' },
@@ -108,6 +129,20 @@ const ClientePage = () => {
           />
         </div>
       </CContainer>
+
+      <Modal centered size="xl" show={show} onHide={() => setShow(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>Compras de Cliente</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <ClienteComprasDetalle idClient={ClienteSelected} />
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShow(false)}>
+            Close
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </div>
   )
 }
