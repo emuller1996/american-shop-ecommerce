@@ -41,7 +41,7 @@ export const getShopByIdService = (token, id) => {
 
 
 export const getShoppingByClientIdService = (token, id) => {
-  return axios.get(`/clientes/${id}/shopping/`,{ headers: { "access-token": `${token}` } })
+  return axios.get(`/clientes/${id}/shoppings/`,{ headers: { "access-token": `${token}` } })
 }
 
 export const getClientesSearchPaginationServices = async (token, ...params) => {
