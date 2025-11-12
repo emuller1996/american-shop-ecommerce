@@ -130,7 +130,7 @@ ClienteRouters.get("/pagination",validateTokenMid, async (req, res) => {
   }
 });
 
-ClienteRouters.get("/:id/shopping", validateTokenMid, async (req, res) => {
+ClienteRouters.get("/:id/shoppings", validateTokenMid, async (req, res) => {
   try {
     let perPage = req.query.perPage ?? 10;
     let page = req.query.page ?? 1;

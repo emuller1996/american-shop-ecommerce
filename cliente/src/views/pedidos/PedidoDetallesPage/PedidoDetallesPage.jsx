@@ -21,11 +21,6 @@ export default function PedidoDetallesPage() {
 
   return (
     <div>
-      <p>
-        Lorem ipsum dolor sit, amet consectetur adipisicing elit. Facere voluptate debitis laborum
-        accusantium obcaecati saepe sit facilis! Nemo minima sint totam placeat maiores, laboriosam
-        provident sed quas ipsum ipsam est.
-      </p>
       {loading && (
         <div className="d-flex justify-content-center my-5">
           <div
@@ -42,8 +37,9 @@ export default function PedidoDetallesPage() {
           <div className="card p-3 mb-3">
             <div className="row">
               <div className="col-md-6">
+                <p className="m-0 text-center fw-bold fs-5">ID # {dataDetalle._id}</p>
                 <p className='m-0 '>Total Orden</p>
-                <p className='m-0 fs-4 fw-semibold'> {ViewDollar(dataDetalle.total_order)}</p>
+                <p className='m-0 fs-5 fw-semibold'> {ViewDollar(dataDetalle.total_order)}</p>
               </div>
               <div className="col-md-6">
                 <Form.Label htmlFor="status">Cambiar de Estado</Form.Label>

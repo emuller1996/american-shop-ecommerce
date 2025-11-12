@@ -166,8 +166,14 @@ export default function CartComponent({ onHide }) {
         )}
         {/*    <button disabled={client ? false : true} className="button-ecomerce"></button> */}
 
-        <p className='mt-5 text-muted'>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Cumque, necessitatibus. Pariatur dolorum dolore minima totam. Aliquam deserunt facere vel. Laboriosam molestias voluptates ipsum sequi, quidem rem praesentium eveniet eum at?
+        <p className="mt-5 text-muted">
+          En <b> AMERICANSHOP</b>, nos complace informarte que ofrecemos servicios de envío a nivel
+          nacional. Sea cual sea tu ubicación dentro del país, ¡podemos enviarte nuestros productos
+          directamente a tu puerta!
+        </p>
+        <p className=" text-muted">
+          Si tienes alguna pregunta adicional sobre nuestros servicios de envío o necesitas
+          asistencia con tu pedido, no dudes en contactarnos. Estamos aquí para ayudarte.
         </p>
       </div>
     </>

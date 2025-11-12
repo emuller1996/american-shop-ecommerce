@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { CContainer } from '@coreui/react'
-import { Button, Form, Modal, Tooltip } from 'react-bootstrap'
+import { Accordion, Button, Form, Modal, Tooltip } from 'react-bootstrap'
 import DataTable from 'react-data-table-component'
 import {
   paginationComponentOptions,
@@ -38,48 +38,54 @@ const PedidosPage = () => {
     <div className="container-fluid">
       <div>
         <div className="card card-body mt-3">
-          <span className="d-block text-muted">Filtros Avanzados</span>
-          <div className="row g-3 align-items-end">
-            <div className="col-md-4">
-              <div>
-                <Form.Label htmlFor="gender">Estado</Form.Label>
-                <Select
-                  name={'status'}
-                  placeholder=""
-                  onChange={(e) => {
-                    console.log(e)
-                    setdataFilter((status) => {
-                      return { ...status, status: e?.value ?? '' }
-                    })
-                  }}
-                  styles={stylesSelect}
-                  theme={themeSelect}
-                  options={StatusOrderOptions}
-                  isClearable
-                />
-              </div>
-            </div>
-            <div className="col-md-12">
-              <div className="w-100">
-                <div className="input-group">
-                  <span className="input-group-text">
-                    <i className="fa-solid fa-magnifying-glass"></i>
-                  </span>
-                  <input
-                    placeholder="Busque por Nombre Cliente o Correo"
-                    type="text"
-                    aria-label="First name"
-                    className="form-control"
-                    onChange={(e) => {
-                      setdataFilter((status) => {
-                        return { ...status, search: e.target.value }
-                      })
-                    }}
-                  />
+          <Accordion>
+            <Accordion.Item eventKey="0">
+              <Accordion.Header className="text-muted">Filtros Avanzados</Accordion.Header>
+              <Accordion.Body>
+                <div className="row g-3 align-items-end">
+                  <div className="col-md-4">
+                    <div>
+                      <Form.Label htmlFor="gender">Estado</Form.Label>
+                      <Select
+                        name={'status'}
+                        placeholder=""
+                        onChange={(e) => {
+                          console.log(e)
+                          setdataFilter((status) => {
+                            return { ...status, status: e?.value ?? '' }
+                          })
+                        }}
+                        styles={stylesSelect}
+                        theme={themeSelect}
+                        options={StatusOrderOptions}
+                        isClearable
+                      />
+                    </div>
+                  </div>
+                  <div className="col-md-12">
+                    <div className="w-100">
+                      <div className="input-group">
+                        <span className="input-group-text">
+                          <i className="fa-solid fa-magnifying-glass"></i>
+                        </span>
+                        <input
+                          placeholder="Busque por Nombre Cliente o Correo"
+                          type="text"
+                          aria-label="First name"
+                          className="form-control"
+                          onChange={(e) => {
+                            setdataFilter((status) => {
+                              return { ...status, search: e.target.value }
+                            })
+                          }}
+                        />
+                      </div>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
-          </div>
+              </Accordion.Body>
+            </Accordion.Item>
+          </Accordion>
         </div>
 
         <div className="rounded overflow-hidden border border-ligth shadow-sm mt-3">
