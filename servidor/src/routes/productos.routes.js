@@ -61,7 +61,7 @@ ProductosRouters.get("/pagination", async (req, res) => {
             filter: [
               {
                 term: {
-                  type: "producto",
+                  "type.keyword": "producto",
                 },
               },
             ],
@@ -160,7 +160,7 @@ ProductosRouters.get("/published", async (req, res) => {
             filter: [
               {
                 term: {
-                  type: "producto",
+                  "type.keyword": "producto",
                 },
               },
             ],
@@ -296,7 +296,7 @@ ProductosRouters.post("/:id/stock", async (req, res) => {
             must: [
               {
                 term: {
-                  type: {
+                  "type.keyword": {
                     value: "stock",
                   },
                 },
@@ -385,14 +385,14 @@ ProductosRouters.get("/:id/images", async (req, res) => {
             must: [
               {
                 term: {
-                  type: {
+                  "type.keyword": {
                     value: "imagen",
                   },
                 },
               },
               {
                 term: {
-                  product_id: {
+                  "product_id.keyword": {
                     value: req.params.id,
                   },
                 },
@@ -462,7 +462,7 @@ ProductosRouters.get("/:id/consultas", async (req, res) => {
             must: [
               {
                 term: {
-                  type: {
+                  "type.keyword": {
                     value: "consulta",
                   },
                 },
@@ -529,7 +529,7 @@ const getAllRespuestasByConsulta = async (consulta_id) => {
             filter: [
               {
                 term: {
-                  type: "respuesta",
+                  "type.keyword": "respuesta",
                 },
               },
               {
@@ -573,14 +573,14 @@ ProductosRouters.get("/:id/stock", async (req, res) => {
             must: [
               {
                 term: {
-                  type: {
+                  "type.keyword": {
                     value: "stock",
                   },
                 },
               },
               {
                 term: {
-                  product_id: {
+                  "product_id.keyword": {
                     value: req.params.id,
                   },
                 },
@@ -616,14 +616,14 @@ ProductosRouters.get("/:id/stock/logs", async (req, res) => {
             must: [
               {
                 term: {
-                  type: {
+                  "type.keyword": {
                     value: "product_log",
                   },
                 },
               },
               {
                 term: {
-                  product_id: {
+                  "product_id.keyword": {
                     value: req.params.id,
                   },
                 },
@@ -736,14 +736,14 @@ const getAllImages = async (idProduc) => {
             must: [
               {
                 term: {
-                  type: {
+                  "type.keyword": {
                     value: "imagen",
                   },
                 },
               },
               {
                 term: {
-                  product_id: {
+                  "product_id.keyword": {
                     value: idProduc,
                   },
                 },
@@ -779,18 +779,18 @@ const getAllStock = async (idProduc) => {
             must: [
               {
                 term: {
-                  type: {
+                  "type": {
                     value: "stock",
                   },
                 },
               },
-              {
+              /* {
                 term: {
-                  product_id: {
+                  "product_id.keyword": {
                     value: idProduc,
                   },
                 },
-              },
+              }, */
             ],
           },
         },
