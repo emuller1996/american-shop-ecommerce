@@ -56,6 +56,7 @@ export default function CartComponent({ onHide }) {
   return (
     <>
       <p className="text-center">Mi Carrito</p>
+      <hr/>
       <div className="table-responsive">
         <table className="table ">
           <thead>

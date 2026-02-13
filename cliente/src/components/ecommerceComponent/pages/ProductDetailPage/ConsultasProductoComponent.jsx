@@ -39,7 +39,8 @@ export default function ConsultasProductoComponent({ productId }) {
     <>
       <div className="card">
         <div className="card-body">
-          <p className="m-0 mb-3 text-center text-capitalize">Consultas acerca del producto.</p>
+          <p className="m-0 mb-3 text-center text-capitalize fs-5"> <i className="fa-solid fa-comment-dots  me-2"></i>Consultas acerca del producto.</p>
+          <hr/>
           <div className="row g-3 mb-3">
             {ConsultasProduct &&
               ConsultasProduct.map((consul) => (
@@ -76,7 +77,7 @@ export default function ConsultasProductoComponent({ productId }) {
                     <div key={res._id} className="col-12 ">
                       <div className="d-flex">
                         <div className="col-2 col-md-1 align-self-center">
-                          <div className='text-center text-muted' style={{rotate:"180deg"}}>
+                          <div className="text-center text-muted" style={{ rotate: '180deg' }}>
                             <i className="fa-solid fa-reply fa-xl"></i>
                           </div>
                         </div>
@@ -115,7 +116,11 @@ export default function ConsultasProductoComponent({ productId }) {
               ))}
             {ConsultasProduct && ConsultasProduct.length === 0 && (
               <>
-                <p>No hay consulta para este producto.</p>
+                <div className='px-3 text-center'>
+                  <div className="alert alert-light " role="alert">
+                     <i className="fa-solid fa-comment-slash me-2"></i> No hay consulta para este producto
+                  </div>
+                </div>
               </>
             )}
             {/*  <div className="col-12">
