@@ -784,13 +784,13 @@ const getAllStock = async (idProduc) => {
                   },
                 },
               },
-              /* {
+              {
                 term: {
                   "product_id.keyword": {
                     value: idProduc,
                   },
                 },
-              }, */
+              },
             ],
           },
         },

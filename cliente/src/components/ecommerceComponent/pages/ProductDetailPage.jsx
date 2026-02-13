@@ -44,8 +44,13 @@ export default function ProductDetailPage() {
                   {dataDetalle?.Imagenes &&
                     Array.isArray(dataDetalle?.Imagenes) &&
                     dataDetalle?.Imagenes.length === 0 && (
-                      <div className='d-flex justify-content-center align-items-center' style={{minHeight:"350px"}}>
-                        <p className="text-center text-muted mt-4">NO HAY IMAGENES PARA ESTE PRODUCTO</p>
+                      <div
+                        className="d-flex justify-content-center align-items-center"
+                        style={{ minHeight: '350px' }}
+                      >
+                        <p className="text-center text-muted mt-4">
+                          NO HAY IMAGENES PARA ESTE PRODUCTO
+                        </p>
                       </div>
                     )}
                   {dataDetalle?.Imagenes &&
@@ -68,6 +73,7 @@ export default function ProductDetailPage() {
                   <div className="quote">
                     <p style={{ whiteSpace: 'pre-line' }}>{dataDetalle?.description}</p>
                   </div>
+                  <hr />
                   <div className="row g-3">
                     {dataDetalle &&
                       dataDetalle?.Stock.map((stock) => (
@@ -78,6 +84,12 @@ export default function ProductDetailPage() {
                           sizeSelected={sizeSelected}
                         />
                       ))}
+
+                    {dataDetalle && dataDetalle?.Stock?.length === 0 && (
+                      <div className="alert alert-warning text-center" role="alert">
+                        No hay stock del producto
+                      </div>
+                    )}
                   </div>
                   <div className="mt-4 text-center">
                     <button
@@ -88,8 +100,8 @@ export default function ProductDetailPage() {
                           toast.error('Elige una Talla')
                           return
                         }
-                         if (!sizeSelected.cantidad) {
-                            sizeSelected.cantidad=1;
+                        if (!sizeSelected.cantidad) {
+                          sizeSelected.cantidad = 1
                         }
                         sizeSelected.name_producto = dataDetalle.name
                         sizeSelected.price_producto = dataDetalle.price
