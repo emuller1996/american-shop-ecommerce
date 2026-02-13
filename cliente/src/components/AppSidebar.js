@@ -21,6 +21,7 @@ import logo2 from '../assets/Logo.png'
 // sidebar nav config
 import navigation from '../_nav'
 import { setState } from '../redux/slices/MenuSlice'
+import { Link } from 'react-router-dom'
 
 const AppSidebar = () => {
   const dispatch = useDispatch()
@@ -40,11 +41,12 @@ const AppSidebar = () => {
       }}
     >
       <CSidebarHeader className="border-bottom">
-        <CSidebarBrand to="/">
-          {/* <CIcon customClassName="sidebar-brand-full" icon={logo2} height={32} width={32} /> */}
-          <img className="sidebar-brand-full" src={logo2} height={38} width={64} />
-          <img className="sidebar-brand-narrow" src={logo2} height={32} width={32} />
-
+        <CSidebarBrand>
+          <Link to="/">
+            {/* <CIcon customClassName="sidebar-brand-full" icon={logo2} height={32} width={32} /> */}
+            <img className="sidebar-brand-full" src={logo2} height={64} width={64} />
+            <img className="sidebar-brand-narrow" src={logo2} height={32} width={32} />
+          </Link>
           {/* <CIcon customClassName="sidebar-brand-narrow" icon={sygnet} height={32} /> */}
         </CSidebarBrand>
         <CCloseButton
