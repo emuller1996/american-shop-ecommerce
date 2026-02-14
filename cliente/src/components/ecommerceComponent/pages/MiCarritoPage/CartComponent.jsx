@@ -58,8 +58,8 @@ export default function CartComponent() {
 
   return (
     <div className="mt-5">
-      <div className="card card-body position-relative ">
-        <button onClick={() => navigate(-1)} className='btn  position-absolute start-0"'>
+      <div className="card card-body position-relative card-cart">
+        <button onClick={() => navigate(-1)} className='btn  position-absolute start-0"' style={{zIndex:10}}>
           <i className="fa-solid fa-chevron-left me-2"></i>Atras
         </button>
         <h5 className="text-center">

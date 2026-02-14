@@ -1,0 +1,24 @@
+.card-cart {
+  position: relative;
+  overflow: hidden;
+  border-color: #4d4d4d98 !important;
+  box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
+}
+
+/* Imagen */
+.card-cart::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: url('/images/negocio_1.jpg');
+  background-size: auto;
+  background-position: center;
+  opacity: 0.25; /* 👈 controla la intensidad */
+  z-index: 0;
+}
+
+/* Contenido por encima */
+.card-cart > * {
+  position: relative;
+  z-index: 1;
+}

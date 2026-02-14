@@ -70,7 +70,7 @@ const AppNavBarEcomerce = () => {
         </Modal.Body>
       </Modal> */}
 
-      <div className="header-top border-bottom py-2" style={{ backgroundColor: '#b3cef5' }}>
+      <div className="header-top border-bottom py-2">
         <div className="container-lg">
           <div className="row justify-content-evenly">
             <div className="col">

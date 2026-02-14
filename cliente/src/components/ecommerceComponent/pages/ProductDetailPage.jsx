@@ -1,7 +1,7 @@
 /* eslint-disable prettier/prettier */
 import React, { useContext, useEffect, useState } from 'react'
 import { useProductos } from '../../../hooks/useProductos'
-import { useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { ViewDollar } from '../../../utils'
 import { Carousel } from 'react-bootstrap'
 import './ProductDetailPage.css'
@@ -22,6 +22,8 @@ export default function ProductDetailPage() {
     [],
   )
 
+  const navigate = useNavigate()
+
   useEffect(() => {
     getProductById(id)
   }, [id])
@@ -29,7 +31,18 @@ export default function ProductDetailPage() {
   return (
     <>
       <div className="mt-4" style={{ minHeight: '10vh' }}>
-        <p className="text-center text-muted ">Detalle del Producto</p>
+        <div className="card card-body position-relative card-cart">
+          <button
+            onClick={() => navigate(-1)}
+            className='btn  position-absolute start-0"'
+            style={{ zIndex: 10 }}
+          >
+            <i className="fa-solid fa-chevron-left me-2"></i>Atras
+          </button>
+          <h5 className="text-center">
+            <i className="fa-regular fa-eye fa-xl me-2"></i>Detalle del Producto
+          </h5>
+        </div>
         <hr />
       </div>
       {dataDetalle && (
