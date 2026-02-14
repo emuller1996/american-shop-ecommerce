@@ -5,6 +5,7 @@ import HomeLanding from './pages/HomeLanding'
 import ProductDetailPage from './pages/ProductDetailPage'
 import LoginProtectedClient from '../../utils/LoginProtectedClient'
 import ContactanosPage from '../../views/contactanos/ContactanosPage'
+import CartComponent from './pages/MiCarritoPage/CartComponent'
 
 const PuntosVentasPages = React.lazy(() => import('./pages/PuntosVentasPages/PuntosVentasPages'))
 const MiProfilePage = React.lazy(() => import('./pages/MiPerfilPage/MiProfilePage'))
@@ -72,6 +73,13 @@ const AppContentLanding = () => {
                 <ConfirmarCompraPage />
               </LoginProtectedClient>
             }
+          />
+          <Route
+            key={'mi-carrito'}
+            path={'/eco/mi-carrito'}
+            exact={true}
+            name={'Mi Carrito'}
+            element={<CartComponent />}
           />
           <Route
             key={'confirmar-compra'}

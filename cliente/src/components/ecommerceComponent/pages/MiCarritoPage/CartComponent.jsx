@@ -1,13 +1,14 @@
 /* eslint-disable prettier/prettier */
 import React, { useContext, useEffect, useState } from 'react'
-import { useLocalStorage } from '../../hooks/useLocalStorage'
-import AuthContext from '../../context/AuthContext'
-import { ViewDollar } from '../../utils'
-import { useProductos } from '../../hooks/useProductos'
+import { useLocalStorage } from '../../../../hooks/useLocalStorage'
+import AuthContext from '../../../../context/AuthContext'
+import { ViewDollar } from '../../../../utils'
+import { useProductos } from '../../../../hooks/useProductos'
 import toast from 'react-hot-toast'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
+import './CartComponent.css'
 
-export default function CartComponent({ onHide }) {
+export default function CartComponent() {
   const [cartEcommerceAmerican, setCartEcommerceAmerican] = useLocalStorage(
     'cartEcommerceAmerican',
     [],
@@ -19,6 +20,8 @@ export default function CartComponent({ onHide }) {
 
   const [Data, setData] = useState(null)
   const [isLoading, setisLoading] = useState(false)
+
+  const navigate = useNavigate()
 
   useEffect(() => {
     getAllProductCart()
@@ -54,10 +57,16 @@ export default function CartComponent({ onHide }) {
   }
 
   return (
-    <>
-      <p className="text-center">Mi Carrito</p>
-      <hr/>
-      <div className="table-responsive">
+    <div className="mt-5">
+      <div className="card card-body position-relative ">
+        <button onClick={() => navigate(-1)} className='btn  position-absolute start-0"'>
+          <i className="fa-solid fa-chevron-left me-2"></i>Atras
+        </button>
+        <h5 className="text-center">
+          <i className="fa-solid fa-cart-shopping fa-xl me-2"></i>Mi Carrito
+        </h5>
+      </div>
+      <div className="table-responsive mt-5">
         <table className="table ">
           <thead>
             <tr>
@@ -123,13 +132,13 @@ export default function CartComponent({ onHide }) {
 
             {Data && Array.isArray(Data) && Data.length === 0 && (
               <tr>
-                <td colSpan={5}>
+                <td colSpan={6}>
                   <p className="text-center text-muted mt-4">NO HAY PRODUCTO EN EL CARRITO</p>
                 </td>
               </tr>
             )}
             <tr>
-              <td colSpan={3} align="right">
+              <td colSpan={4} align="right">
                 <span className="fw-bold fs-5">Total</span>
               </td>
               <td colSpan={1}>
@@ -159,7 +168,7 @@ export default function CartComponent({ onHide }) {
       </div>
       <div className="mt-3 mb-2 text-center">
         {Data && Array.isArray(Data) && Data.length !== 0 && (
-          <Link to={`/eco/confirmar-compra`} onClick={onHide}>
+          <Link to={`/eco/confirmar-compra`}>
             <button disabled={client ? false : true} className="button-ecomerce">
               <i className="fa-solid fa-money-bill me-3"></i> Ir a Pagar
             </button>
@@ -177,6 +186,6 @@ export default function CartComponent({ onHide }) {
           asistencia con tu pedido, no dudes en contactarnos. Estamos aquí para ayudarte.
         </p>
       </div>
-    </>
+    </div>
   )
 }
