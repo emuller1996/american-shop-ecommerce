@@ -7,7 +7,7 @@ import AuthContext from '../context/AuthContext'
 import { useLocalStorage } from '../hooks/useLocalStorage'
 import { ViewDollar } from '../utils'
 import { AuthClientComponent } from './ecommerceComponent/AuthClientComponent'
-import CartComponent from './ecommerceComponent/CartComponent'
+import CartComponent from './ecommerceComponent/pages/MiCarritoPage/CartComponent'
 
 const AppNavBarEcomerce = () => {
   const headerRef = useRef()
@@ -53,7 +53,7 @@ const AppNavBarEcomerce = () => {
         </Modal.Body>
       </Modal>
 
-      <Modal
+      {/* <Modal
         size="lg"
         centered
         show={showCart}
@@ -62,70 +62,15 @@ const AppNavBarEcomerce = () => {
         }}
       >
         <Modal.Body>
-          {/*  <p>Mi Carrito</p>
-          <div className="table-responsive">
-            <table className="table ">
-              <thead>
-                <tr>
-                  <th scope="col">Producto</th>
-                  <th scope="col">Unidades</th>
-                  <th scope="col">Tallta</th>
-                  <th scope="col">Precio</th>
-                  <th scope="col"></th>
-                </tr>
-              </thead>
-              <tbody>
-                {cartEcommerceAmericanState.map((st) => (
-                  <tr key={st._id} className="">
-                    <td scope="row">{st.name_producto}</td>
-                    <td>{st.cantidad}</td>
-                    <td>{st.size}</td>
-                    <td>{ViewDollar(st.price_producto)}</td>
-                    <td>
-                      <button
-                        onClick={() => {
-                          console.log(cartEcommerceAmericanState.filter((c) => c._id !== st._id))
-                          setCartEcommerceAmericanState(
-                            cartEcommerceAmericanState.filter((c) => c._id !== st._id),
-                          )
-                          setCartEcommerceAmerican(
-                            cartEcommerceAmericanState.filter((c) => c._id !== st._id),
-                          )
-                        }}
-                        type="button"
-                        className="btn btn-sm btn-danger text-white"
-                      >
-                        <i className="fa-regular fa-trash-can"></i>
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-            <p>
-              Total{' '}
-              {ViewDollar(
-                cartEcommerceAmericanState.reduce(
-                  (acumulador, actual) => acumulador + actual.price_producto,
-                  0,
-                ),
-              )}
-            </p>
-            <div className="mt-3 mb-2 text-center">
-              <button disabled={client ? false : true} className="button-ecomerce">
-                <i className="fa-solid fa-money-bill me-3"></i> Ir a Pagar
-              </button>
-            </div>
-          </div> */}
           <CartComponent
             onHide={() => {
               setShowCart(false)
             }}
           />
         </Modal.Body>
-      </Modal>
+      </Modal> */}
 
-      <div className="header-top border-bottom py-2" style={{ backgroundColor: '#b3cef5' }}>
+      <div className="header-top border-bottom py-2">
         <div className="container-lg">
           <div className="row justify-content-evenly">
             <div className="col">
@@ -162,20 +107,22 @@ const AppNavBarEcomerce = () => {
             <div className="col-3 col-lg-auto">
               <ul className="list-unstyled d-flex m-0 justify-content-end">
                 <li className="d-none d-lg-block">
-                  <button
-                    className="btn text-uppercase cursor-pointer"
-                    data-bs-toggle="offcanvas"
-                    data-bs-target="#offcanvasCart"
-                    aria-controls="offcanvasCart"
-                    onClick={() => {
-                      setShowCart(true)
-                    }}
-                  >
-                    <i className="fa-solid fa-cart-shopping"></i>
-                    <span className="cart-count text-nowrap ">
-                      ({`${cartEcommerceAmericanState?.length}`})
-                    </span>
-                  </button>
+                  <Link to={`/eco/mi-carrito`}>
+                    <button
+                      className="btn text-uppercase cursor-pointer"
+                      data-bs-toggle="offcanvas"
+                      data-bs-target="#offcanvasCart"
+                      aria-controls="offcanvasCart"
+                      onClick={() => {
+                        setShowCart(true)
+                      }}
+                    >
+                      <i className="fa-solid fa-cart-shopping"></i>
+                      <span className="cart-count text-nowrap ">
+                        ({`${cartEcommerceAmericanState?.length}`})
+                      </span>
+                    </button>
+                  </Link>
                 </li>
                 <AuthClientComponent
                   onShow={() => {
@@ -184,18 +131,19 @@ const AppNavBarEcomerce = () => {
                 />
 
                 <li className="d-lg-none">
-                  <button
-                    className="btn text-uppercase text-nowrap cursor-pointer"
-                    data-bs-toggle="offcanvas"
-                    data-bs-target="#offcanvasCart"
-                    aria-controls="offcanvasCart"
-                    onClick={() => {
-                      setShowCart(true)
-                    }}
-                  >
-                    <i className="fa-solid fa-cart-shopping"></i>
-                    <span className="cart-count ">({`${cartEcommerceAmericanState?.length}`})</span>
-                  </button>
+                  <Link to={`/eco/mi-carrito`}>
+                    <button
+                      className="btn text-uppercase text-nowrap cursor-pointer"
+                      data-bs-toggle="offcanvas"
+                      data-bs-target="#offcanvasCart"
+                      aria-controls="offcanvasCart"
+                    >
+                      <i className="fa-solid fa-cart-shopping"></i>
+                      <span className="cart-count ">
+                        ({`${cartEcommerceAmericanState?.length}`})
+                      </span>
+                    </button>
+                  </Link>
                 </li>
                 <li className="d-lg-none">
                   {client ? (
