@@ -120,12 +120,12 @@ export default function HomeLanding() {
                 style={{
                   padding: '0.5em 0.7em',
                   borderStyle: 'solid',
-                  borderColor: filterData?.category === null ? '#5b9cff' : '#cccccc',
-                  backgroundColor: filterData?.category === null ? '#e9f2ff' : 'transparent',
+                  borderColor: filterData?.category === null ? '#ff5b5b' : '#cccccc',
+                  backgroundColor: filterData?.category === null ? '#ffe9e9' : 'transparent',
                   borderWidth: '1px',
                   borderRadius: '0.4em',
                   cursor: 'pointer',
-                  color: filterData?.category === null ? '#093d8b' : '#c0c0c0',
+                  color: filterData?.category === null ? '#8b0909' : '#c0c0c0',
                   display: 'flex',
                   alignItems: 'center',
                 }}
@@ -153,13 +153,13 @@ export default function HomeLanding() {
                     style={{
                       padding: '0.5em 0.7em',
                       borderStyle: 'solid',
-                      borderColor: cate._id === filterData?.category ? '#5b9cff' : '#cccccc',
+                      borderColor: cate._id === filterData?.category ? '#ff5b5b' : '#cccccc',
                       backgroundColor:
-                        cate._id === filterData?.category ? '#e9f2ff' : 'transparent',
+                        cate._id === filterData?.category ? '#ffe9e9' : 'transparent',
                       borderWidth: '1px',
                       borderRadius: '0.4em',
                       cursor: 'pointer',
-                      color: cate._id !== filterData?.category ? '#cccccc' : '#093d8b',
+                      color: cate._id !== filterData?.category ? '#cccccc' : '#8b0909',
                       display: 'flex',
                       alignItems: 'center',
                     }}
@@ -190,16 +190,18 @@ export default function HomeLanding() {
                 style={{
                   padding: '0.7em',
                   borderStyle: 'solid',
-                  borderColor: filterData?.gender === null ? '#5b9cff' : '#cccccc',
+                  borderColor: filterData?.gender === null ? '#ff5b5b' : '#cccccc',
                   borderWidth: '1px',
                   borderRadius: '0.4em',
-                  color: filterData?.gender === null ? '#5b9cff' : '#cccccc',
+                  backgroundColor:
+                        filterData?.gender === null ? '#ffe9e9' : 'transparent',
+                  color: filterData?.gender === null ? '#8b0909' : '#cccccc',
                   cursor: 'pointer',
                 }}
               >
                 <i
                   className="fa-solid fa-circle-dot me-2"
-                  style={{ color: filterData?.gender === null ? '#5b9cff' : '#cccccc' }}
+                  style={{ color: filterData?.gender === null ? '#ff5b5b' : '#cccccc' }}
                 ></i>
                 Todas
               </label>
@@ -225,11 +227,13 @@ export default function HomeLanding() {
                   style={{
                     padding: '0.7em',
                     borderStyle: 'solid',
-                    borderColor: gen === filterData?.gender ? '#5b9cff' : '#cccccc',
+                    borderColor: gen === filterData?.gender ? '#ff5b5b' : '#cccccc',
                     borderWidth: '1px',
+                    backgroundColor:
+                        gen === filterData?.gender ? '#ffe9e9' : 'transparent',
                     borderRadius: '0.4em',
                     cursor: 'pointer',
-                    color: gen === filterData?.gender ? '#5b9cff' : '#cccccc',
+                    color: gen === filterData?.gender ? '#ff5b5b' : '#cccccc',
                     display: 'flex',
                     alignItems: 'center',
                   }}
@@ -237,19 +241,19 @@ export default function HomeLanding() {
                 >
                   {gen === 'men' && (
                     <i
-                      style={{ color: gen === filterData?.gender ? '#5b9cff' : '#cccccc' }}
+                      style={{ color: gen === filterData?.gender ? '#ff5b5b' : '#cccccc' }}
                       className="fa-solid fa-mars me-2 fa-xl"
                     ></i>
                   )}
                   {gen === 'women' && (
                     <i
-                      style={{ color: gen === filterData?.gender ? '#5b9cff' : '#cccccc' }}
+                      style={{ color: gen === filterData?.gender ? '#ff5b5b' : '#cccccc' }}
                       className="fa-solid fa-venus me-2 fa-xl"
                     ></i>
                   )}
                   {gen === 'kid' && (
                     <i
-                      style={{ color: gen === filterData?.gender ? '#5b9cff' : '#cccccc' }}
+                      style={{ color: gen === filterData?.gender ? '#ff5b5b' : '#cccccc' }}
                       className="fa-solid fa-children me-2 fa-xl"
                     ></i>
                   )}

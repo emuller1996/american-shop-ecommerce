@@ -4,6 +4,6 @@
 
 .form-search-eco:focus{
     background-color: white;
-    border-color: rgb(151, 193, 255);
-    box-shadow: rgba(3, 94, 214, 0.164) 0px 0px 0px 3px;
+    border-color: rgb(255, 151, 151);
+    box-shadow: rgba(214, 3, 3, 0.164) 0px 0px 0px 3px;
 }
