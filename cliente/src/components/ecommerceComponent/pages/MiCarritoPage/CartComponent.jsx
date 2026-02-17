@@ -59,10 +59,10 @@ export default function CartComponent() {
   return (
     <div className="mt-5">
       <div className="card card-body position-relative card-cart">
-        <button onClick={() => navigate(-1)} className='btn  position-absolute start-0"' style={{zIndex:10}}>
+        <button onClick={() => navigate(-1)} className='btn  position-absolute start-0"' style={{zIndex:10, top:"10px"}}>
           <i className="fa-solid fa-chevron-left me-2"></i>Atras
         </button>
-        <h5 className="text-center">
+        <h5 className="text-center mb-0">
           <i className="fa-solid fa-cart-shopping fa-xl me-2"></i>Mi Carrito
         </h5>
       </div>
@@ -82,9 +82,9 @@ export default function CartComponent() {
           <tbody>
             {isLoading && (
               <tr>
-                <td colSpan={5}>
+                <td colSpan={6}>
                   <div className="d-flex justify-content-center my-4">
-                    <div className="spinner-border" role="status" style={{ color: '#5b64db' }}>
+                    <div className="spinner-border" role="status" style={{ color: '#db5b5b' }}>
                       <span className="visually-hidden">Loading...</span>
                     </div>
                   </div>

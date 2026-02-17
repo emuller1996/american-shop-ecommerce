@@ -35,11 +35,11 @@ export default function ProductDetailPage() {
           <button
             onClick={() => navigate(-1)}
             className='btn  position-absolute start-0"'
-            style={{ zIndex: 10 }}
+            style={{ zIndex: 10, top:"10px" }}
           >
             <i className="fa-solid fa-chevron-left me-2"></i>Atras
           </button>
-          <h5 className="text-center">
+          <h5 className="text-end mb-0">
             <i className="fa-regular fa-eye fa-xl me-2"></i>Detalle del Producto
           </h5>
         </div>
@@ -47,7 +47,7 @@ export default function ProductDetailPage() {
       </div>
       {dataDetalle && (
         <section className="section" id="product">
-          <div className="container">
+          <div className="">
             <div className="row g-4">
               <div className="col-lg-7">
                 <Carousel interval={1500}>

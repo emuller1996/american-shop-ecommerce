@@ -183,7 +183,7 @@ export default function ConsultasProductoComponent({ productId }) {
                 disabled={client ? false : true}
                 style={{ height: '88px' }}
                 type="button"
-                className=" btn btn-primary"
+                className=" btn btn-secondary"
                 onClick={handleSendConsulta}
               >
                 Consultar

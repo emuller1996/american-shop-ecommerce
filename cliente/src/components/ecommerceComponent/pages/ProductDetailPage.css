@@ -11,10 +11,10 @@
 }
 
 .StockSizeContainer {
-  background-color: rgb(233, 235, 255);
+  background-color: rgb(255, 233, 233);
   padding: 0.4em 0.6em;
   border-radius: 0.4em;
-  border: 1px solid rgb(199, 176, 255);
+  border: 1px solid rgb(255, 176, 176);
   color: rgb(54, 54, 54);
   cursor: pointer;
   transition: box-shadow .35s;
@@ -23,16 +23,16 @@
 
 }
 .StockSizeContainer_selected {
-  background-color: rgb(233, 235, 255);
+  background-color: rgb(255, 233, 233);
   padding: 0.4em 0.6em;
   border-radius: 0.4em;
-  border: 1px solid rgb(105, 46, 255);
+  border: 1px solid rgb(255, 46, 46);
   color: rgb(54, 54, 54);
   cursor: pointer;
   transition: box-shadow .35s;
 }
 .StockSizeContainer:hover {
-  border: 1px solid rgb(120, 118, 255);
+  border: 1px solid rgb(255, 118, 118);
 
   box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
 }
@@ -63,10 +63,10 @@
 .button-29 {
   align-items: center;
   appearance: none;
-  background-image: radial-gradient(100% 100% at 100% 0, #5adaff 0, #5468ff 100%);
+  background-image: radial-gradient(100% 100% at 100% 0, #ff5a5a 0, #500a0a 100%);
   border: 0;
   border-radius: 0px;
-  box-shadow: rgba(45, 35, 66, .4) 0 2px 4px, rgba(45, 35, 66, .3) 0 7px 13px -3px, rgba(58, 65, 111, .5) 0 -3px 0 inset;
+  box-shadow: rgba(66, 35, 35, 0.4) 0 2px 4px, rgba(66, 35, 35, 0.3) 0 7px 13px -3px, rgba(111, 58, 58, 0.5) 0 -3px 0 inset;
   box-sizing: border-box;
   color: #fff;
   cursor: pointer;
@@ -92,15 +92,15 @@
 }
 
 .button-29:focus {
-  box-shadow: #3c4fe0 0 0 0 1.5px inset, rgba(45, 35, 66, .4) 0 2px 4px, rgba(45, 35, 66, .3) 0 7px 13px -3px, #3c4fe0 0 -3px 0 inset;
+  box-shadow: #e03c3c 0 0 0 1.5px inset, rgba(45, 35, 66, .4) 0 2px 4px, rgba(45, 35, 66, .3) 0 7px 13px -3px, #e03c3c 0 -3px 0 inset;
 }
 
 .button-29:hover {
-  box-shadow: rgba(45, 35, 66, .4) 0 4px 8px, rgba(45, 35, 66, .3) 0 7px 13px -3px, #3c4fe0 0 -3px 0 inset;
+  box-shadow: rgba(45, 35, 66, .4) 0 4px 8px, rgba(45, 35, 66, .3) 0 7px 13px -3px, #e03c3c 0 -3px 0 inset;
 }
 
 .button-29:active {
-  box-shadow: #3c4fe0 0 3px 7px inset;
+  box-shadow: #e03c3c 0 3px 7px inset;
   transform: translateY(1px);
 }
 
