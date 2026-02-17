@@ -1,9 +1,9 @@
 .ss {
-    background-color: #b3cef5;
+    background-color: #f5b3b3;
 }
 
 .card-product {
-    border-color: #d9e8f8;
+    border-color: #f8d9d9;
     box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;
     overflow: hidden;
     transition:
@@ -13,7 +13,7 @@
 }
 
 .card-product:hover {
-    border-color: #7da9d8;
+    border-color: #d87d7d;
     box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;
     background-color: #f3f9ff;
 

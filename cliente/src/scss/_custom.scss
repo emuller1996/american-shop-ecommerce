@@ -111,7 +111,7 @@
 .button-ecomerce {
   align-items: center;
   appearance: none;
-  background-image: radial-gradient(100% 100% at 100% 0, #5adaff 0, #5468ff 100%);
+  background-image: radial-gradient(100% 100% at 100% 0, #ff5a5a 0, #500a0a 100%);
   border: 0;
   border-radius: 6px;
   box-shadow:
@@ -146,22 +146,22 @@
 
 .button-ecomerce:focus {
   box-shadow:
-    #3c4fe0 0 0 0 1.5px inset,
+    #d34343 0 0 0 1.5px inset,
     rgba(45, 35, 66, 0.4) 0 2px 4px,
     rgba(45, 35, 66, 0.3) 0 7px 13px -3px,
-    #3c4fe0 0 -3px 0 inset;
+    #e03c3c 0 -3px 0 inset;
 }
 
 .button-ecomerce:hover {
   box-shadow:
     rgba(45, 35, 66, 0.4) 0 4px 8px,
     rgba(45, 35, 66, 0.3) 0 7px 13px -3px,
-    #3c4fe0 0 -3px 0 inset;
+    #972626 0 -3px 0 inset;
   transform: translateY(-2px);
 }
 
 .button-ecomerce:active {
-  box-shadow: #3c4fe0 0 3px 7px inset;
+  box-shadow: #e03c3c 0 3px 7px inset;
   transform: translateY(2px);
 }
 .button-ecomerce:disabled {
@@ -171,7 +171,7 @@
 .button-ecomerce-cancel {
   align-items: center;
   appearance: none;
-  background-image: radial-gradient(100% 100% at 100% 0, #ff8686 0, #ff5462 100%);
+  background-image: radial-gradient(100% 100% at 100% 0, #a1a1a1 0, #3a2a2b 100%);
   border: 0;
   border-radius: 6px;
   box-shadow:
@@ -206,22 +206,22 @@
 
 .button-ecomerce-cancel:focus {
   box-shadow:
-    #ff5462 0 0 0 1.5px inset,
+    #421619 0 0 0 1.5px inset,
     rgba(66, 35, 43, 0.4) 0 2px 4px,
     rgba(66, 35, 43, 0.3) 0 7px 13px -3px,
-    #ff5462 0 -3px 0 inset;
+    #2e0a0d 0 -3px 0 inset;
 }
 
 .button-ecomerce-cancel:hover {
   box-shadow:
     rgba(66, 35, 37, 0.4) 0 4px 8px,
     rgba(66, 35, 44, 0.3) 0 7px 13px -3px,
-    #ff5462 0 -3px 0 inset;
+    #5f484a 0 -3px 0 inset;
   transform: translateY(-2px);
 }
 
 .button-ecomerce-cancel:active {
-  box-shadow: #ff5462 0 3px 7px inset;
+  box-shadow: #44161a 0 3px 7px inset;
   transform: translateY(2px);
 }
 .button-ecomerce-cancel:disabled {
