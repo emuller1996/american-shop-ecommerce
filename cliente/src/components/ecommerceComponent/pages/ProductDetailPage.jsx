@@ -147,7 +147,7 @@ export default function ProductDetailPage() {
       )}
 
       <section>
-        <div className="container mt-4 mb-5">
+        <div className="mt-4 mb-5">
           <ConsultasProductoComponent productId={id} />
         </div>
       </section>

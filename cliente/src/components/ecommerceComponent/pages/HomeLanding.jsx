@@ -47,7 +47,7 @@ export default function HomeLanding() {
               </div>
               <div className="col-lg-6 mb-0 d-flex align-items-center">
                 <div className="text-align-left align-self-center">
-                  <h1 className="h1 text-primary">
+                  <h1 className="h1 text-danger">
                     <b>AmericanShop</b> Comercio Electronico
                   </h1>
                   <h3 className="h2">Te Viste Real y te Deja de Paker!!</h3>
@@ -79,7 +79,7 @@ export default function HomeLanding() {
               </div>
               <div className="col-lg-6 mb-0 d-flex align-items-center">
                 <div className="text-align-left align-self-center">
-                  <h1 className="h1 text-primary">
+                  <h1 className="h1 text-danger">
                     <b>🚚 Envíos nacionales </b> a todo el país.
                   </h1>
                   <h3 className="h2 mb-3">¡No importa en qué parte de Colombia estés! </h3>
