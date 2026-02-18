@@ -45,8 +45,8 @@ const LandingLayout = () => {
                     Contactanos
                   </Link>
                 </li>
-                <li className="nav-item mb-2">
-                  <Link className="text-decoration-none" to={`/d/`}>
+                <li className="nav-item mb-2 ">
+                  <Link className="text-decoration-none text-danger" to={`/d/`}>
                     Admin
                   </Link>
                 </li>

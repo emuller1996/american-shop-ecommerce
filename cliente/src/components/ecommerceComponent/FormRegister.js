@@ -118,7 +118,7 @@ const FormRegister = ({ client }) => {
         <p className="text-center">{client ? 'Actualizando mis Datos' : 'Registrame'}</p>
         <div className="mb-3">
           <label className="form-label" htmlFor="name_client">
-            Nombre Completo <span className="fw-bold text-primary">*</span>
+            Nombre Completo <span className="fw-bold text-danger">*</span>
           </label>
           <input
             {...register('name_client', { required: true })}
@@ -131,7 +131,7 @@ const FormRegister = ({ client }) => {
         </div>
         <div className=" mb-3">
           <label className="form-label" htmlFor="email_client">
-            Correo Electronico <span className="fw-bold text-primary">*</span>
+            Correo Electronico <span className="fw-bold text-danger">*</span>
           </label>
           <input
             {...register('email_client', { required: true })}
@@ -145,7 +145,7 @@ const FormRegister = ({ client }) => {
         </div>
         <div className="  mb-3">
           <label className="form-label" htmlFor="phone_client">
-            Numero Telefonico <span className="fw-bold text-primary">*</span>
+            Numero Telefonico <span className="fw-bold text-danger">*</span>
           </label>
 
           <input
@@ -159,7 +159,7 @@ const FormRegister = ({ client }) => {
         </div>
         <div className="  mb-3">
           <label className="form-label" htmlFor="type_document_client">
-            Tipo de Documento <span className="fw-bold text-primary">*</span>
+            Tipo de Documento <span className="fw-bold text-danger">*</span>
           </label>
           <select
             className="form-select"
@@ -179,7 +179,7 @@ const FormRegister = ({ client }) => {
         </div>
         <div className="  mb-3">
           <label className="form-label" htmlFor="number_document_client">
-            Numero Documento <span className="fw-bold text-primary">*</span>
+            Numero Documento <span className="fw-bold text-danger">*</span>
           </label>
           <input
             {...register('number_document_client', { required: true })}
@@ -194,7 +194,7 @@ const FormRegister = ({ client }) => {
           {optionCities && (
             <div>
               <Form.Label htmlFor="city">
-                Cuidad <span className="fw-bold text-primary">*</span>
+                Cuidad <span className="fw-bold text-danger">*</span>
               </Form.Label>
               <Controller
                 name="city"
@@ -262,7 +262,7 @@ const FormRegister = ({ client }) => {
           <>
             <div className="  mb-3">
               <label className="form-label" htmlFor="password_client">
-                Contraseña <span className="fw-bold text-primary">*</span>
+                Contraseña <span className="fw-bold text-danger">*</span>
               </label>
               <input
                 {...register('password_client', { required: true })}
@@ -281,7 +281,7 @@ const FormRegister = ({ client }) => {
                 id="is_tc"
               />
               <label className="form-check-label" htmlFor="is_tc">
-                Acepto los terminos y condiciones <span className="fw-bold text-primary">*</span>
+                Acepto los terminos y condiciones <span className="fw-bold text-danger">*</span>
               </label>
             </div>
           </>
