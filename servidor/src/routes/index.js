@@ -3,8 +3,6 @@ import { client } from "../db.js";
 
 import UsuariosRouters from "./usuarios.routes.js";
 import AuthRouters from "./auth.routes.js";
-import CategoriasRouters from "./categorias.routes.js";
-import ProductosRouters from "./productos.routes.js";
 import ImagesRouters from "./images.routes.js";
 import ClienteRouters from "./clientes.routes.js";
 import { validateTokenMid } from "../utils/authjws.js";
@@ -13,6 +11,8 @@ import ConsultasRouters from "./consultas.routes.js";
 import OrdenesRouters from "./ordenes.routes.js";
 import PuntoVentaRouters from "./punto_venta.routes.js";
 import PagosRouters from "./pagos.routes.js";
+import ProductosRouters from "../modules/productos/productoRoutes.js";
+import CategoriasRouters from "../modules/categorias/categoriaRoutes.js";
 
 // Importar todos los routers;
 // Ejemplo: const authRouter = require('./auth.js');
