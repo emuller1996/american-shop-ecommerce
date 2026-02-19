@@ -71,7 +71,7 @@ export const getProductoSearchPaginationServices = async (token, ...params) => {
 
   return await axios.get(`/productos/pagination/?${searchs.toString()}`, {
     headers: {
-      Authorization: `Bearer ${token}`,
+      'access-token': `${token}`,
     },
   });
 };
