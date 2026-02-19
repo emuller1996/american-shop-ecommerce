@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 import React, { useEffect } from 'react'
-import { Button, Form } from 'react-bootstrap'
+import { Form } from 'react-bootstrap'
 import { Controller, useForm } from 'react-hook-form'
 import PropTypes from 'prop-types'
 import CurrencyInput from 'react-currency-input-field'
@@ -10,6 +10,8 @@ import { genderOptions, stylesSelect, themeSelect } from '../../../utils/options
 import { putUpdateProductoService } from '../../../services/productos.services'
 import toast from 'react-hot-toast'
 import { useProductos } from '../../../hooks/useProductos'
+
+import { Button } from '@mui/material'
 
 export default function FormProducto({ onHide, getAllProduct, producto }) {
   FormProducto.propTypes = {
@@ -21,7 +23,7 @@ export default function FormProducto({ onHide, getAllProduct, producto }) {
     register,
     handleSubmit,
     control,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm()
 
   const { createProducto, updatedProducto } = useProductos()
@@ -64,7 +66,9 @@ export default function FormProducto({ onHide, getAllProduct, producto }) {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <p className="text-center border-bottom pb-2">{producto ? "Actualizando Usuario" :  "Creando Usuario"} </p>
+      <p className="text-center border-bottom pb-2">
+        {producto ? 'Actualizando Usuario' : 'Creando Usuario'}{' '}
+      </p>
       <div className="row g-3">
         <div className="col-md-6">
           <Form.Group className="" controlId="name">
@@ -270,10 +274,16 @@ export default function FormProducto({ onHide, getAllProduct, producto }) {
       </div>
 
       <div className="mt-5 d-flex gap-4 justify-content-center">
-        <button type="button" onClick={onHide} className="btn btn-danger text-white">
+        <Button variant="contained" color="error" type="button" onClick={onHide} className="btn btn-danger text-white">
           Cancelar
-        </button>
-        <Button type="submit" className="text-white" variant="success">
+        </Button>
+        <Button
+          variant="contained"
+          loading={isSubmitting}
+          color="success"
+          type="submit"
+          className="text-white"
+        >
           Guardar Producto
         </Button>
       </div>
