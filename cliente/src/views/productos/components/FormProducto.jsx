@@ -24,7 +24,7 @@ export default function FormProducto({ onHide, getAllProduct, producto }) {
     formState: { errors },
   } = useForm()
 
-  const { createProducto } = useProductos()
+  const { createProducto, updatedProducto } = useProductos()
   const { getAllCategorias, data: ListCategorias } = useCategorias()
 
   useEffect(() => {
@@ -49,11 +49,12 @@ export default function FormProducto({ onHide, getAllProduct, producto }) {
       }
     } else {
       try {
-        const result = await putUpdateProductoService(producto._id, data)
+        const result = await updatedProducto(producto._id, data)
         console.log(result.data)
         onHide()
         toast.success(result.data.message)
       } catch (error) {
+        toast.error(error.response.data.message || error.message)
         console.log(error)
       }
     }
@@ -63,7 +64,7 @@ export default function FormProducto({ onHide, getAllProduct, producto }) {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <p className="text-center border-bottom pb-2">Creando Usuario</p>
+      <p className="text-center border-bottom pb-2">{producto ? "Actualizando Usuario" :  "Creando Usuario"} </p>
       <div className="row g-3">
         <div className="col-md-6">
           <Form.Group className="" controlId="name">
