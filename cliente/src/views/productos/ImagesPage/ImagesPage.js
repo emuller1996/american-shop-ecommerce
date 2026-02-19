@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Alert, Button, Form } from 'react-bootstrap'
+import { Alert, Form } from 'react-bootstrap'
 
 import { useProductos } from '../../../hooks/useProductos'
 import { useParams } from 'react-router-dom'
@@ -10,6 +10,7 @@ import {
 import toast from 'react-hot-toast'
 import PropTypes from 'prop-types'
 import imageCompression from 'browser-image-compression'
+import { Button } from '@mui/material'
 
 const ImagesPage = ({ idProduct }) => {
   ImagesPage.propTypes = {
@@ -17,10 +18,12 @@ const ImagesPage = ({ idProduct }) => {
   }
   const [selectedImage, setSelectedImage] = useState(null)
   const [isLoading, setisLoading] = useState(true)
+  const [isLoadingUpload, setisLoadingUpload] = useState(false)
   const [base64Image, setBase64Image] = useState(null)
   const [ErrorFile, setErrorFile] = useState(null)
 
-  const { getImagesByProductId, ImagesProduct, getProductById, dataDetalle } = useProductos()
+  const { getImagesByProductId, ImagesProduct, getProductById, dataDetalle, updatedProducto } =
+    useProductos()
 
   //const { idProduct } = useParams()
 
@@ -153,12 +156,22 @@ const ImagesPage = ({ idProduct }) => {
 
                 <div className="text-center mt-3">
                   <Button
+                    variant="contained"
+                    color="primary"
+                    loading={isLoadingUpload}
                     onClick={async () => {
-                      await postCreateProductoImageService({ image: base64Image }, idProduct)
-                      await getImagesByProductId(idProduct)
-                      setSelectedImage(null)
-                      setBase64Image(null)
-                      console.log(base64Image)
+                      try {
+                        setisLoadingUpload(true)
+                        await postCreateProductoImageService({ image: base64Image }, idProduct)
+                        await getImagesByProductId(idProduct)
+                        setSelectedImage(null)
+                        setBase64Image(null)
+                        console.log(base64Image)
+                      } catch (err) {
+                        console.log(err)
+                      } finally {
+                        setisLoadingUpload(false)
+                      }
                     }}
                     disabled={base64Image === null ? true : false}
                   >
@@ -190,10 +203,11 @@ const ImagesPage = ({ idProduct }) => {
                           </div>
                           <div className="position-absolute top-50 start-50 translate-middle">
                             <Button
+                              variant="contained"
                               style={{ opacity: '0.4' }}
                               onClick={async () => {
                                 try {
-                                  const result = await putUpdateProductoService(idProduct, {
+                                  const result = await updatedProducto(idProduct, {
                                     image_id: ima._id,
                                   })
                                   console.log(result.data)
