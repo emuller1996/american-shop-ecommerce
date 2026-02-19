@@ -9,8 +9,8 @@ export const getAllProductoService = (token, signal) => {
   return axios.get('/productos', { headers: { 'access-token': token }, signal: signal })
 }
 
-export const putUpdateProductoService = (id, data) => {
-  return axios.put(`/productos/${id}`, data)
+export const putUpdateProductoService = (id, data, token) => {
+  return axios.put(`/productos/${id}`, data,{ headers: { 'access-token': token }})
 }
 
 export const postCreateProductoImageService = (data, product_id) => {
@@ -71,7 +71,7 @@ export const getProductoSearchPaginationServices = async (token, ...params) => {
 
   return await axios.get(`/productos/pagination/?${searchs.toString()}`, {
     headers: {
-      Authorization: `Bearer ${token}`,
+      'access-token': `${token}`,
     },
   });
 };
