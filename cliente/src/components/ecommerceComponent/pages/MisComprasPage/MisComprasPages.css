@@ -1,4 +1,51 @@
 .table th,
 .table td {
-    color: rgba(40, 45, 54, 0.95) !important;
+  color: rgba(40, 45, 54, 0.95) !important;
+}
+
+.bg-badged-eco {
+  background: #ebebeb;
+  background: radial-gradient(circle, rgba(235, 235, 235, 1) 0%, rgb(237, 154, 154) 49%);
+  box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
+  font-size: 14px;
+  color: #464646;
+}
+
+.card-mi-compra {
+  position: relative;
+  overflow: hidden;
+  background: #ebebeb; /* fondo base */
+  box-shadow: 0 0 0 0 rgba(214, 3, 3, 0);
+  transition: box-shadow 0.4s ease-in-out;
+}
+
+/* Capa animada */
+.card-mi-compra::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    circle,
+    rgba(235, 235, 235, 1) 0%,
+    rgba(255, 210, 210, 1) 100%
+  );
+  opacity: 0;
+  transition: opacity 0.4s ease-in-out;
+  z-index: 0;
+
+}
+
+/* Mantener el contenido arriba */
+.card-mi-compra > * {
+  position: relative;
+  z-index: 1;
+}
+
+.card-mi-compra:hover::before {
+  opacity: 1;
+
+}
+
+.card-mi-compra:hover {
+  box-shadow: 0 0 0 3px rgba(214, 3, 3, 0.281);
 }
