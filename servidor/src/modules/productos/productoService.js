@@ -104,8 +104,8 @@ class ProductoService {
           bool: {
             must: [
               { term: { "type.keyword": { value: "consulta" } } },
-              { term: { product_id: { value: productId } } },
-              { terms: { status: ["pending", "completed"] } },
+              { term: { "product_id.keyword": { value: productId } } },
+              //{ terms: { status: ["pending", "completed"] } },
             ],
           },
         },

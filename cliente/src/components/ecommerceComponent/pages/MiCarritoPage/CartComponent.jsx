@@ -33,7 +33,7 @@ export default function CartComponent() {
       const rest = cartEcommerceAmericanState.map(async (pro) => {
         try {
           const resss = await validateProductoCart(pro._id, pro)
-          return { ...resss.data.resutl, cantidad: pro.cantidad }
+          return { ...resss.data.stock, cantidad: pro.cantidad }
         } catch (error) {
           setCartEcommerceAmericanState(
             cartEcommerceAmericanState.filter((c) => c._id !== pro?._id),
@@ -146,7 +146,7 @@ export default function CartComponent() {
                   {Data &&
                     ViewDollar(
                       Data.reduce(
-                        (acumulador, actual) => acumulador + actual.product.price * actual.cantidad,
+                        (acumulador, actual) => acumulador + actual?.product?.price * actual?.cantidad,
                         0,
                       ),
                     )}
