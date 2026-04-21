@@ -6,9 +6,9 @@ import {
   updateElasticByType,
 } from "../utils/index.js";
 
-import md5 from "md5";
 import { client } from "../db.js";
 import { INDEX_ES_MAIN } from "../config.js";
+import { hashPassword } from "../utils/password.js";
 
 const UsuariosRouters = Router();
 
@@ -37,9 +37,14 @@ UsuariosRouters.post("/", async (req, res) => {
     var recinto = {};
     const data = req.body;
 
-    data.password = md5(data.password);
+    if (typeof data.password !== "string" || !data.password) {
+      return res.status(400).json({ message: "password requerido." });
+    }
+
+    data.password = await hashPassword(data.password);
     const response = await crearElasticByType(data, "usuario");
     //recinto = response.body;
+    delete data.password;
     return res.status(201).json({ message: "Usuario Creado.", recinto, data });
   } catch (error) {
     return res.status(500).json({ message: error.message });
@@ -49,8 +54,13 @@ UsuariosRouters.post("/", async (req, res) => {
 UsuariosRouters.patch("/:id/change_password", async (req, res) => {
   try {
     const data = req.body;
-    let password = md5(data.password);
-    const r = await updateElasticByType(req.params.id, { password: password });
+
+    if (typeof data.password !== "string" || !data.password) {
+      return res.status(400).json({ message: "password requerido." });
+    }
+
+    const password = await hashPassword(data.password);
+    const r = await updateElasticByType(req.params.id, { password });
     if (r.body.result === "updated") {
       await client.indices.refresh({ index: INDEX_ES_MAIN });
       return res.json({ message: "Actualizado" });
