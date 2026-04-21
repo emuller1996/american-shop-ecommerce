@@ -42,6 +42,10 @@ class ClienteService {
     return await updateElasticByType(id, data);
   }
 
+  async actualizarHashCliente(id, hash) {
+    return await updateElasticByType(id, { hash });
+  }
+
   async obtenerClientePorId(id) {
     return await getDocumentById(id);
   }

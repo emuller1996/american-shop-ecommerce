@@ -1,9 +1,16 @@
-import md5 from "md5";
 import { jwtDecode } from "jwt-decode";
 import clienteService from "./clienteService.js";
 import { INDEX_ES_MAIN } from "../../config.js";
 import { generateClienteAccessToken } from "../../utils/authjws.js";
+import { hashPassword, verifyPassword } from "../../utils/password.js";
 import { sendVerificationEmail } from "../../services/mailService.js";
+
+const INVALID_CREDENTIALS = {
+  error: true,
+  message: "Credenciales inválidas.",
+  detail:
+    "El correo electrónico o la contraseña son incorrectos. Si no recuerdas tu contraseña, usa la opción de recuperar contraseña.",
+};
 
 // Funciones auxiliares fuera de la clase
 const construirConsultaClientes = ({ perPage, page, search, gender }) => {
@@ -146,35 +153,54 @@ export const obtenerComprasPorCliente = async (req, res) => {
 
 export const crear = async (req, res) => {
   try {
-    const data = req.body;
+    const data = { ...req.body };
+    const { email_client, password_client } = data;
 
-    const requestEL = await clienteService.buscarClientePorEmail(data.email_client);
+    if (typeof email_client !== "string" || !email_client) {
+      return res.status(400).json({
+        error: true,
+        message: "Email requerido.",
+        detail: "Debes ingresar un correo electrónico válido.",
+      });
+    }
+
+    if (typeof password_client !== "string" || !password_client) {
+      return res.status(400).json({
+        error: true,
+        message: "Contraseña requerida.",
+        detail: "Debes ingresar una contraseña.",
+      });
+    }
+
+    const requestEL = await clienteService.buscarClientePorEmail(email_client);
 
     if (requestEL.body.hits.total.value > 0) {
       return res.status(400).json({
-        ...requestEL,
-        message: "Usuario ya esta Registrado.",
-        detail: `Ya hay un usuario con el correo electronico '${data.email_client}' en la base de datos como cliente.`,
         error: true,
+        message: "Usuario ya está registrado.",
+        detail: `Ya hay un usuario con el correo electrónico '${email_client}' en la base de datos como cliente.`,
       });
     }
 
     data.createdTime = new Date().getTime();
-    data.hash = md5(req.body.password_client);
+    data.hash = await hashPassword(password_client);
     delete data.password_client;
 
-    const response = await clienteService.crearCliente(data);
-    const customer = response.body;
+    await clienteService.crearCliente(data);
 
-    await sendVerificationEmail(data.email_client);
+    await sendVerificationEmail(email_client);
 
     return res.status(200).json({
       message: "Usuario Creado.",
-      detail: `se creo correctamente su cuenta, por favor revisar el correo '${data.email_client}' para verificar su cuenta.`,
-      customer,
+      detail: `Se creó correctamente su cuenta, por favor revisar el correo '${email_client}' para verificar su cuenta.`,
     });
   } catch (error) {
-    return res.status(500).json({ message: error.message });
+    console.error("[clientes/crear] error:", error);
+    return res.status(500).json({
+      error: true,
+      message: "Error interno del servidor.",
+      detail: "Ocurrió un error al crear la cuenta. Por favor intenta de nuevo.",
+    });
   }
 };
 
@@ -200,39 +226,59 @@ export const actualizar = async (req, res) => {
 
 export const login = async (req, res) => {
   try {
-    const data = req.body;
-    const requestEL = await clienteService.buscarClientePorEmail(data.email_client);
+    const { email_client, password_client } = req.body ?? {};
 
-    if (requestEL.body.hits.total.value > 0) {
-      const dataUser = requestEL.body.hits.hits[0]?._source;
-      dataUser._id = requestEL.body.hits.hits[0]?._id;
-
-      if (md5(data.password_client) === dataUser.hash) {
-        delete dataUser.hash;
-        const token = generateClienteAccessToken(dataUser);
-        return res.status(200).json({
-          ...requestEL,
-          message: "Usuario ya esta Registrado.",
-          detail: `ya hay un usuario con el correo electronico '${data.email_client}' en la base de datos como cliente.`,
-          dataUser,
-          token,
-        });
-      } else {
-        return res.status(404).json({
-          error: true,
-          message: "Contraseña Incorrecta.",
-          detail: `La contraseña que esta ingresando es incorrecta, si no te acuerdas de ella, dale en recuperar contraseña.'`,
-        });
-      }
-    } else {
-      return res.status(404).json({
+    if (
+      typeof email_client !== "string" ||
+      typeof password_client !== "string" ||
+      !email_client ||
+      !password_client
+    ) {
+      return res.status(400).json({
         error: true,
-        message: "Usuario no registrado.",
-        detail: `No hay usuario con el correo electronico '${data.email_client} en la base de datos como cliente.'`,
+        message: "Credenciales requeridas.",
+        detail: "Debes ingresar correo electrónico y contraseña.",
       });
     }
+
+    const requestEL = await clienteService.buscarClientePorEmail(email_client);
+    const hit = requestEL.body.hits.hits[0];
+    const dataUser = hit?._source ? { ...hit._source, _id: hit._id } : null;
+
+    const { valid, needsRehash } = dataUser
+      ? await verifyPassword(password_client, dataUser.hash ?? "")
+      : { valid: false, needsRehash: false };
+
+    // Mismo mensaje para "no existe" y "contraseña incorrecta" → evita enumeración de usuarios.
+    if (!valid) {
+      return res.status(401).json(INVALID_CREDENTIALS);
+    }
+
+    // Migración transparente md5 → bcrypt.
+    if (needsRehash) {
+      try {
+        const newHash = await hashPassword(password_client);
+        await clienteService.actualizarHashCliente(dataUser._id, newHash);
+      } catch (err) {
+        console.error("[clientes/login] fallo al re-hashear hash:", err.message);
+      }
+    }
+
+    delete dataUser.hash;
+    const token = generateClienteAccessToken(dataUser);
+
+    return res.status(200).json({
+      message: "Login exitoso.",
+      dataUser,
+      token,
+    });
   } catch (error) {
-    return res.status(500).json({ message: error.message });
+    console.error("[clientes/login] error:", error);
+    return res.status(500).json({
+      error: true,
+      message: "Error interno del servidor.",
+      detail: "Ocurrió un error al iniciar sesión. Por favor intenta de nuevo.",
+    });
   }
 };
 
