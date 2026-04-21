@@ -29,7 +29,7 @@ const construirConsultaClientes = ({ perPage, page, search, gender }) => {
     consulta.body.query.bool.must.push({
       query_string: {
         query: `*${search}*`,
-        fields: ["name_client", "email_client", "phone_client", "123458477"],
+        fields: ["name_client", "email_client", "phone_client"],
       },
     });
   }
@@ -240,12 +240,10 @@ export const crearDireccion = async (req, res) => {
   try {
     const decoded = jwtDecode(req.headers.authorization);
     const dataAddress = { ...req.body, client_id: decoded._id };
-
     const response = await clienteService.crearDireccion(dataAddress);
-
     return res
       .status(200)
-      .json({ melo: dataAddress, body: req.body, decoded, response });
+      .json({ message:"Se ha creado la nueva dirección de envió correctamente." });
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
