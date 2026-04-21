@@ -8,7 +8,6 @@ import {
 } from "../utils/index.js";
 import { jwtDecode } from "jwt-decode";
 
-import md5 from "md5";
 import { INDEX_ES_MAIN } from "../config.js";
 import { client } from "../db.js";
 import { sendRespuestaConsultaEmail } from "../services/mailService.js";
