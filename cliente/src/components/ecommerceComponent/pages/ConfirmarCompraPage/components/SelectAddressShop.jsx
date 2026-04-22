@@ -36,13 +36,13 @@ export default function SelectAddressShop({
       <div>
         <div className="text-center mb-3 mt-2">
           <button
-            className="btn btn-primary text-white"
+            className="btn btn-danger text-white"
             onClick={() => {
               setAddresUpdate(null)
               setShow(true)
             }}
           >
-            <i className="fa-solid fa-circle-plus me-2"></i>
+            <i className="fa-solid fa-cart-arrow-down me-2" ></i>
             Agrega Direccion de Envio.
           </button>
         </div>
