@@ -106,14 +106,25 @@ export const crearRespuesta = async (req, res) => {
       consultaService.obtenerDocumentoPorId(data.consulta_id),
     ]);
 
-    const [cliente, user] = await Promise.all([
+    const [cliente, user, producto] = await Promise.all([
       consultaService.obtenerDocumentoPorId(dataConsulta.client_id),
       consultaService.obtenerDocumentoPorId(dataRespuesta.user_id),
+      dataConsulta.product_id
+        ? consultaService.obtenerDocumentoPorId(dataConsulta.product_id).catch(() => null)
+        : null,
     ]);
+
+    if (producto?.image_id) {
+      const imagenDoc = await consultaService
+        .obtenerDocumentoPorId(producto.image_id)
+        .catch(() => null);
+      if (imagenDoc?.image) producto.image = imagenDoc.image;
+    }
 
     dataRespuesta.cliente = cliente;
     dataRespuesta.user = user;
     dataRespuesta.consulta = dataConsulta.consulta;
+    dataRespuesta.producto = producto;
 
     await sendRespuestaConsultaEmail(dataRespuesta);
 
