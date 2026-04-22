@@ -85,6 +85,7 @@ export const procesarPago = async (req, res) => {
 
     const mercaResponse = await crearPagoMercadoPago(paymentMercado);
 
+    console.log("mercaResponse", mercaResponse);
     ordenData.mercadopago_id = mercaResponse.id;
     ordenData.payment_method = "Tarjeta";
     ordenData.status = "Pendiente";

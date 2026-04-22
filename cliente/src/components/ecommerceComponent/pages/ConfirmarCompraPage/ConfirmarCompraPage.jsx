@@ -47,7 +47,7 @@ export default function ConfirmarCompraPage({}) {
       const rest = cartEcommerceAmericanState.map(async (pro) => {
         try {
           const resss = await validateProductoCart(pro._id, pro)
-          return { ...resss.data.resutl, cantidad: pro.cantidad }
+          return { ...resss.data.stock, cantidad: pro.cantidad }
         } catch (error) {
           setCartEcommerceAmericanState(
             cartEcommerceAmericanState.filter((c) => c._id !== pro?._id),
@@ -57,21 +57,14 @@ export default function ConfirmarCompraPage({}) {
           return null
         }
       })
-      console.log(rest)
       const res2 = await Promise.all(rest)
-      console.log(res2)
-      res2.forEach((c) => {
-        if (c === null) {
-        }
-      })
-      console.log(res2.filter((c) => c !== null).map((c) => c))
-      console.log(
-        res2.reduce((acumulador, actual) => acumulador + actual.product.price * actual.cantidad, 0),
+      const productosValidos = res2.filter((c) => c && c.product)
+      const totalCarrito = productosValidos.reduce(
+        (acumulador, actual) => acumulador + (actual.product?.price ?? 0) * (actual.cantidad ?? 0),
+        0,
       )
-      settotal(
-        res2.reduce((acumulador, actual) => acumulador + actual.product.price * actual.cantidad, 0),
-      )
-      setData(res2.filter((c) => c !== null).map((c) => c))
+      settotal(totalCarrito)
+      setData(productosValidos)
     } catch (error) {
       console.log(error)
     } finally {
