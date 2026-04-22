@@ -39,7 +39,6 @@ const FormLogin = ({ onHide }) => {
         detail: '',
       })
       const result = await postLoginClientesService(data)
-      console.log(result)
       setTokenClient(result.data.token)
       setTokenAccessCliente(result.data.token)
       setClient(jwtDecode(result.data.token))
@@ -47,13 +46,14 @@ const FormLogin = ({ onHide }) => {
       navigate('/eco/mi-perfil')
     } catch (error) {
       console.log(error)
-      if (error.response.status == 404) {
-        setErrorText({
-          status: true,
-          message: error.response.data.message,
-          detail: error.response.data.detail,
-        })
-      }
+      const resData = error?.response?.data
+      setErrorText({
+        status: true,
+        message: resData?.message ?? 'No se pudo iniciar sesión.',
+        detail:
+          resData?.detail ??
+          'Verifica tu conexión e intenta de nuevo. Si el problema persiste, contáctanos.',
+      })
     } finally {
       setisLoadingForm(false)
     }
@@ -84,8 +84,14 @@ const FormLogin = ({ onHide }) => {
             <label htmlFor="password_client">Contraseña</label>
           </div>
           <div className="text-center">
-            <button type="submit" className="button-ecomerce">
-              Ingresar
+            <button type="submit" className="button-ecomerce" disabled={isLoadingForm}>
+              {isLoadingForm ? (
+                <>
+                  <CSpinner size="sm" className="me-2" /> Ingresando...
+                </>
+              ) : (
+                'Ingresar'
+              )}
             </button>
           </div>
           <div className="mt-4">
