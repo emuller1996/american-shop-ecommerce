@@ -9,6 +9,7 @@ import './ConfirmarCompraPage.css'
 import SelectAddressShop from './components/SelectAddressShop'
 import axios from 'axios'
 import toast from 'react-hot-toast'
+import { useNavigate } from 'react-router-dom'
 
 initMercadoPago(import.meta.env.VITE_MERCA_PUBLIC_KEY)
 
@@ -157,9 +158,22 @@ export default function ConfirmarCompraPage({}) {
     */
   }
 
+  const navigate = useNavigate()
+
   return (
     <div className="mt-4 mb-5" style={{ minHeight: '50vh' }}>
-      <p className="text-center">CONFIRMAR MI COMPRA</p>
+      <div className="card card-body position-relative card-cart mb-4">
+        <button
+          onClick={() => navigate(-1)}
+          className='btn  position-absolute start-0"'
+          style={{ zIndex: 10, top: '10px' }}
+        >
+          <i className="fa-solid fa-chevron-left me-2"></i>Atras
+        </button>
+        <h5 className="text-center mb-0">
+          <i className="fa-solid fa-cart-shopping fa-xl me-2"></i>CONFIRMAR MI COMPRA
+        </h5>
+      </div>
       <div className="row g-4">
         <div className="col-md-6 col-payment">
           <Accordion defaultActiveKey="0" activeKey={pasoActive}>
@@ -202,7 +216,7 @@ export default function ConfirmarCompraPage({}) {
             <Accordion.Item eventKey="2">
               <Accordion.Header>Confirmación de Orden/Pedido</Accordion.Header>
               <Accordion.Body>
-                <p className='text-center fs-5'>¡Muchas gracias por tu compra! 🎉</p>
+                <p className="text-center fs-5">¡Muchas gracias por tu compra! 🎉</p>
                 <p>
                   Tu pedido se ha realizado con éxito. En breve recibirás un correo electrónico con
                   todos los detalles de tu compra. Prepararemos tu envío lo antes posible. Para

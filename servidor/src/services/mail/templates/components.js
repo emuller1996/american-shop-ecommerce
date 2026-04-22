@@ -71,3 +71,36 @@ export const totalRow = (label, value) =>
 
 export const quoteBox = (text) =>
   `<div style="background-color:${THEME.primaryLight};border-left:3px solid ${THEME.primary};padding:16px 20px;border-radius:6px;margin:12px 0 20px;color:${THEME.textPrimary};font-size:14px;line-height:1.6;">${text}</div>`;
+
+export const productCard = ({ name, price, image, description }) => {
+  const imageCell = image
+    ? `<td width="84" style="padding:0 16px 0 0;vertical-align:middle;">
+        <img src="${image}" alt="" width="84" height="84" style="display:block;width:84px;height:84px;object-fit:cover;border-radius:8px;border:1px solid ${THEME.border};" />
+      </td>`
+    : "";
+
+  const priceBlock = price
+    ? `<div style="color:${THEME.primary};font-size:16px;font-weight:700;">${price}</div>`
+    : "";
+
+  const descriptionBlock = description
+    ? `<div style="color:${THEME.textSecondary};font-size:13px;line-height:1.5;margin-top:6px;">${description}</div>`
+    : "";
+
+  return `<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color:#ffffff;border:1px solid ${THEME.border};border-radius:10px;overflow:hidden;margin-bottom:8px;">
+    <tr>
+      <td style="padding:16px;">
+        <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
+          <tr>
+            ${imageCell}
+            <td style="vertical-align:middle;">
+              <div style="color:${THEME.textPrimary};font-size:15px;font-weight:600;line-height:1.3;">${name}</div>
+              ${priceBlock}
+              ${descriptionBlock}
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>`;
+};
