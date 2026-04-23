@@ -4,6 +4,7 @@ import {
   obtenerPaginados,
   obtenerPublicados,
   obtenerPorId,
+  obtenerMarcas,
   crear,
   actualizar,
   agregarStock,
@@ -29,6 +30,7 @@ const ProductosRouters = Router();
 ProductosRouters.get("/", obtenerTodos);
 ProductosRouters.get("/pagination", validateTokenMid, obtenerPaginados);
 ProductosRouters.get("/published", obtenerPublicados);
+ProductosRouters.get("/brand", obtenerMarcas);
 ProductosRouters.get("/:id", obtenerPorId);
 
 ProductosRouters.post("/", validateTokenMid, crear);
