@@ -18,6 +18,26 @@ class ProductoService {
     return searchResult.body;
   }
 
+  async buscarMarcas({ size = 100 } = {}) {
+    const searchResult = await client.search({
+      index: INDEX_ES_MAIN,
+      size: 0,
+      body: {
+        query: {
+          bool: {
+            filter: { term: { "type.keyword": "producto" } },
+          },
+        },
+        aggs: {
+          brands: {
+            terms: { field: "brand.keyword", size },
+          },
+        },
+      },
+    });
+    return searchResult.body.aggregations?.brands?.buckets ?? [];
+  }
+
   async crearProducto(data) {
     return await crearElasticByType(data, "producto");
   }

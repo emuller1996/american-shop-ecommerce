@@ -1,10 +1,11 @@
 /* eslint-disable prettier/prettier */
-import React, { useEffect } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { Form } from 'react-bootstrap'
 import { Controller, useForm } from 'react-hook-form'
 import PropTypes from 'prop-types'
 import CurrencyInput from 'react-currency-input-field'
 import Select from 'react-select'
+import CreatableSelect from 'react-select/creatable'
 import { useCategorias } from '../../../hooks/useCategorias'
 import { genderOptions, stylesSelect, themeSelect } from '../../../utils/optionsConfig'
 import { putUpdateProductoService } from '../../../services/productos.services'
@@ -26,12 +27,37 @@ export default function FormProducto({ onHide, getAllProduct, producto }) {
     formState: { errors, isSubmitting },
   } = useForm()
 
-  const { createProducto, updatedProducto } = useProductos()
+  const { createProducto, updatedProducto, getBrandsProductos } = useProductos()
   const { getAllCategorias, data: ListCategorias } = useCategorias()
+
+  const [brandOptions, setBrandOptions] = useState(
+    producto?.brand ? [{ label: producto.brand, value: producto.brand }] : [],
+  )
 
   useEffect(() => {
     getAllCategorias()
+    cargarMarcas()
   }, [])
+
+  const cargarMarcas = async () => {
+    try {
+      const brands = await getBrandsProductos()
+      const marcas = new Set(
+        (brands ?? [])
+          .map((b) => (typeof b === 'string' ? b : b?.value))
+          .filter((v) => typeof v === 'string' && v.trim() !== ''),
+      )
+      // Asegura la marca del producto actual aunque ya no exista en el catálogo.
+      if (producto?.brand) marcas.add(producto.brand)
+      setBrandOptions(
+        Array.from(marcas)
+          .sort((a, b) => a.localeCompare(b))
+          .map((b) => ({ label: b, value: b })),
+      )
+    } catch (err) {
+      console.log(err)
+    }
+  }
 
   console.log(producto)
 
@@ -67,7 +93,7 @@ export default function FormProducto({ onHide, getAllProduct, producto }) {
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <p className="text-center border-bottom pb-2">
-        {producto ? 'Actualizando Usuario' : 'Creando Usuario'}{' '}
+        {producto ? 'Actualizando Producto' : 'Creando Producto'}{' '}
       </p>
       <div className="row g-3">
         <div className="col-md-6">
@@ -239,15 +265,45 @@ export default function FormProducto({ onHide, getAllProduct, producto }) {
           </div>
         </div>
         <div className="col-md-4">
-          <Form.Group className="" controlId="brand">
-            <Form.Label>Marca</Form.Label>
-            <Form.Control
-              defaultValue={producto?.brand}
-              {...register('brand', { required: true })}
-              type="text"
-              placeholder=""
-            />
-          </Form.Group>
+          <Form.Label htmlFor="brand">Marca</Form.Label>
+          <Controller
+            name="brand"
+            control={control}
+            rules={{ required: true }}
+            defaultValue={producto?.brand ?? ''}
+            render={({ field: { name, onChange, ref, value } }) => {
+              const selected =
+                value ? brandOptions.find((o) => o.value === value) ?? { label: value, value } : null
+              return (
+                <CreatableSelect
+                  ref={ref}
+                  id={name}
+                  name={name}
+                  placeholder="Buscar o crear marca..."
+                  isClearable
+                  options={brandOptions}
+                  value={selected}
+                  onChange={(option) => onChange(option?.value ?? '')}
+                  onCreateOption={(inputValue) => {
+                    const nueva = inputValue.trim()
+                    if (!nueva) return
+                    setBrandOptions((prev) =>
+                      prev.some((o) => o.value.toLowerCase() === nueva.toLowerCase())
+                        ? prev
+                        : [...prev, { label: nueva, value: nueva }].sort((a, b) =>
+                            a.label.localeCompare(b.label),
+                          ),
+                    )
+                    onChange(nueva)
+                  }}
+                  formatCreateLabel={(input) => `Crear marca "${input}"`}
+                  noOptionsMessage={() => 'Escribe una marca para crearla'}
+                  styles={stylesSelect}
+                  theme={themeSelect}
+                />
+              )
+            }}
+          />
         </div>
         <div className="col-md-12">
           <Form.Group className="" controlId="published">

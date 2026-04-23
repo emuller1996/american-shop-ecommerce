@@ -160,6 +160,18 @@ export const obtenerPaginados = async (req, res) => {
   }
 };
 
+export const obtenerMarcas = async (req, res) => {
+  try {
+    const buckets = await productoService.buscarMarcas();
+    const brands = buckets
+      .map((b) => ({ value: b.key, count: b.doc_count }))
+      .filter((b) => typeof b.value === "string" && b.value.trim() !== "");
+    return res.status(200).json(brands);
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+
 export const obtenerPublicados = async (req, res) => {
   const perPage = parseInt(req.query.perPage) || 10;
   const page = parseInt(req.query.page) || 1;
