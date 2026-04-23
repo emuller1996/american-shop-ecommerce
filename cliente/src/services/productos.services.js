@@ -13,8 +13,21 @@ export const putUpdateProductoService = (id, data, token) => {
   return axios.put(`/productos/${id}`, data,{ headers: { 'access-token': token }})
 }
 
-export const postCreateProductoImageService = (data, product_id) => {
-  return axios.post(`/productos/${product_id}/images`, data)
+export const postCreateProductoImageService = (file, product_id, token) => {
+  const formData = new FormData()
+  formData.append('image', file, file.name || 'imagen.webp')
+  return axios.post(`/productos/${product_id}/images`, formData, {
+    headers: {
+      'access-token': token,
+      'Content-Type': 'multipart/form-data',
+    },
+  })
+}
+
+export const deleteProductoImageService = (product_id, image_id, token) => {
+  return axios.delete(`/productos/${product_id}/images/${image_id}`, {
+    headers: { 'access-token': token },
+  })
 }
 
 export const postCreateStockProductoService = (data, product_id, token) => {
