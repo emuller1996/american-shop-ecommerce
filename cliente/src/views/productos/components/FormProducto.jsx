@@ -27,7 +27,7 @@ export default function FormProducto({ onHide, getAllProduct, producto }) {
     formState: { errors, isSubmitting },
   } = useForm()
 
-  const { createProducto, updatedProducto, getAllProductos, data: ListProductos } = useProductos()
+  const { createProducto, updatedProducto, getBrandsProductos } = useProductos()
   const { getAllCategorias, data: ListCategorias } = useCategorias()
 
   const [brandOptions, setBrandOptions] = useState(
@@ -36,23 +36,28 @@ export default function FormProducto({ onHide, getAllProduct, producto }) {
 
   useEffect(() => {
     getAllCategorias()
-    getAllProductos()
+    cargarMarcas()
   }, [])
 
-  // Deriva marcas únicas del catálogo y las mezcla con la marca actual del producto (por si ya no
-  // existe en otros productos).
-  useEffect(() => {
-    if (!ListProductos) return
-    const marcas = new Set(
-      ListProductos.map((p) => p?.brand?.trim()).filter((b) => typeof b === 'string' && b),
-    )
-    if (producto?.brand) marcas.add(producto.brand)
-    setBrandOptions(
-      Array.from(marcas)
-        .sort((a, b) => a.localeCompare(b))
-        .map((b) => ({ label: b, value: b })),
-    )
-  }, [ListProductos, producto?.brand])
+  const cargarMarcas = async () => {
+    try {
+      const brands = await getBrandsProductos()
+      const marcas = new Set(
+        (brands ?? [])
+          .map((b) => (typeof b === 'string' ? b : b?.value))
+          .filter((v) => typeof v === 'string' && v.trim() !== ''),
+      )
+      // Asegura la marca del producto actual aunque ya no exista en el catálogo.
+      if (producto?.brand) marcas.add(producto.brand)
+      setBrandOptions(
+        Array.from(marcas)
+          .sort((a, b) => a.localeCompare(b))
+          .map((b) => ({ label: b, value: b })),
+      )
+    } catch (err) {
+      console.log(err)
+    }
+  }
 
   console.log(producto)
 

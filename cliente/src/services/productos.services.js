@@ -13,6 +13,10 @@ export const putUpdateProductoService = (id, data, token) => {
   return axios.put(`/productos/${id}`, data,{ headers: { 'access-token': token }})
 }
 
+export const getProductoBrandsService = (signal) => {
+  return axios.get('/productos/brand', { signal })
+}
+
 export const postCreateProductoImageService = (file, product_id, token) => {
   const formData = new FormData()
   formData.append('image', file, file.name || 'imagen.webp')

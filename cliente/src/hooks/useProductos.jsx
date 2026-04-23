@@ -10,6 +10,7 @@ import {
   getAllProductoLogsStockService,
   getAllProductoService,
   getAllProductoStockService,
+  getProductoBrandsService,
   getProductoSearchPaginationServices,
   getProductoSearchPublishedServices,
   postCreateConsultaProductoService,
@@ -210,6 +211,11 @@ export const useProductos = () => {
     return postCreateProductoImageService(file, productId, Token)
   }
 
+  const getBrandsProductos = async () => {
+    const r = await getProductoBrandsService(signal)
+    return r.data
+  }
+
   const deleteProductoImage = async (productId, imageId) => {
     return deleteProductoImageService(productId, imageId, Token)
   }
@@ -241,5 +247,6 @@ export const useProductos = () => {
     StockProductLogs,
     uploadProductoImage,
     deleteProductoImage,
+    getBrandsProductos,
   }
 }
