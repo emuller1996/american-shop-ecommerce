@@ -2,11 +2,6 @@ import React, { useEffect, useState } from 'react'
 import { Alert, Form } from 'react-bootstrap'
 
 import { useProductos } from '../../../hooks/useProductos'
-import { useParams } from 'react-router-dom'
-import {
-  postCreateProductoImageService,
-  putUpdateProductoService,
-} from '../../../services/productos.services'
 import toast from 'react-hot-toast'
 import PropTypes from 'prop-types'
 import imageCompression from 'browser-image-compression'
@@ -17,21 +12,34 @@ const ImagesPage = ({ idProduct }) => {
     idProduct: PropTypes.string,
   }
   const [selectedImage, setSelectedImage] = useState(null)
+  const [previewUrl, setPreviewUrl] = useState(null)
   const [isLoading, setisLoading] = useState(true)
   const [isLoadingUpload, setisLoadingUpload] = useState(false)
-  const [base64Image, setBase64Image] = useState(null)
+  const [deletingId, setDeletingId] = useState(null)
   const [ErrorFile, setErrorFile] = useState(null)
 
-  const { getImagesByProductId, ImagesProduct, getProductById, dataDetalle, updatedProducto } =
-    useProductos()
-
-  //const { idProduct } = useParams()
+  const {
+    getImagesByProductId,
+    ImagesProduct,
+    getProductById,
+    dataDetalle,
+    updatedProducto,
+    uploadProductoImage,
+    deleteProductoImage,
+  } = useProductos()
 
   useEffect(() => {
     if (idProduct) {
       getAllDataFetch()
     }
   }, [idProduct])
+
+  // Liberar object URL del preview cuando cambie/desmonte.
+  useEffect(() => {
+    return () => {
+      if (previewUrl) URL.revokeObjectURL(previewUrl)
+    }
+  }, [previewUrl])
 
   const getAllDataFetch = async () => {
     try {
@@ -45,64 +53,75 @@ const ImagesPage = ({ idProduct }) => {
     }
   }
 
+  const resetSelection = (inputEl) => {
+    if (previewUrl) URL.revokeObjectURL(previewUrl)
+    setSelectedImage(null)
+    setPreviewUrl(null)
+    if (inputEl) inputEl.value = ''
+  }
+
   const handleImageChange = async (e) => {
+    const inputEl = e.target
     try {
-      setSelectedImage(null)
+      resetSelection()
       setErrorFile(null)
-      const file = e.target.files[0]
+      const file = inputEl.files[0]
       if (!file) return
 
       const options = {
-        maxSizeMB: 1, // Tamaño máximo en MB
-        maxWidthOrHeight: 1920, // Dimensión máxima
-        useWebWorker: true, // Usar web worker para mejor rendimiento
-        fileType: 'image/webp', // Convertir a WebP
-        initialQuality: 0.8, // Calidad (0.8 = 80%)
+        maxSizeMB: 1,
+        maxWidthOrHeight: 1920,
+        useWebWorker: true,
+        fileType: 'image/webp',
+        initialQuality: 0.8,
       }
 
       const compressedFile = await imageCompression(file, options)
-      console.log('Tamaño original:', file.size, 'bytes')
-      console.log('Tamaño comprimido:', compressedFile.size, 'bytes')
-      /* // Validaciones
-      const validTypes = ['image/jpeg', 'image/jpg', 'image/png']
-      const maxSize = 3 * 1024 * 1024 // 3MB
 
-      if (!validTypes.includes(file.type.toLowerCase())) {
-        throw new Error('Formato no válido. Solo se aceptan JPG/PNG')
-      }
+      // Asegura nombre con .webp para el upload
+      const webpFile =
+        compressedFile instanceof File && compressedFile.name?.endsWith('.webp')
+          ? compressedFile
+          : new File([compressedFile], `${Date.now()}.webp`, { type: 'image/webp' })
 
-      if (file.size > maxSize) {
-        throw new Error('El archivo excede el límite de 3MB')
-      } */
-      if (compressedFile) {
-        setSelectedImage(compressedFile)
-        convertToBase64(compressedFile)
-      }
+      setSelectedImage(webpFile)
+      setPreviewUrl(URL.createObjectURL(webpFile))
     } catch (error) {
       console.error('Error al procesar imagen:', error.message)
-      e.target.value = '' // Limpiar input
-      // Puedes usar un estado para mostrar el error en la UI
-      // setError(error.message);
-      //alert(error.message)
+      inputEl.value = ''
       setErrorFile(error.message)
     }
   }
-  const convertToBase642 = (file) => {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader()
-      reader.readAsDataURL(file)
-      reader.onload = () => resolve(reader.result)
-      reader.onerror = (error) => reject(error)
-    })
-  }
-  const convertToBase64 = (file) => {
-    const reader = new FileReader()
-    reader.readAsDataURL(file)
-    reader.onloadend = () => {
-      setBase64Image(reader.result)
+
+  const handleUpload = async (inputEl) => {
+    if (!selectedImage) return
+    try {
+      setisLoadingUpload(true)
+      await uploadProductoImage(idProduct, selectedImage)
+      await getImagesByProductId(idProduct)
+      resetSelection(inputEl)
+      toast.success('Imagen subida correctamente.')
+    } catch (err) {
+      console.log(err)
+      toast.error(err?.response?.data?.message ?? 'No se pudo subir la imagen.')
+    } finally {
+      setisLoadingUpload(false)
     }
-    reader.onerror = (error) => {
-      console.error('Error al convertir la imagen a Base64:', error)
+  }
+
+  const handleDelete = async (imageId) => {
+    if (!window.confirm('¿Eliminar esta imagen? Esta acción es permanente.')) return
+    try {
+      setDeletingId(imageId)
+      await deleteProductoImage(idProduct, imageId)
+      await getImagesByProductId(idProduct)
+      await getProductById(idProduct)
+      toast.success('Imagen eliminada.')
+    } catch (err) {
+      console.log(err)
+      toast.error(err?.response?.data?.message ?? 'No se pudo eliminar la imagen.')
+    } finally {
+      setDeletingId(null)
     }
   }
 
@@ -145,10 +164,10 @@ const ImagesPage = ({ idProduct }) => {
                   <Form.Control type="file" accept="image/*" onChange={handleImageChange} />
                 </Form.Group>
 
-                {selectedImage && (
+                {selectedImage && previewUrl && (
                   <div className=" d-flex gap-4 justify-content-center my-4">
                     <div className="rounded-4 border overflow-hidden">
-                      <img src={URL.createObjectURL(selectedImage)} alt="Preview" width="300px" />
+                      <img src={previewUrl} alt="Preview" width="300px" />
                     </div>
                   </div>
                 )}
@@ -159,21 +178,8 @@ const ImagesPage = ({ idProduct }) => {
                     variant="contained"
                     color="primary"
                     loading={isLoadingUpload}
-                    onClick={async () => {
-                      try {
-                        setisLoadingUpload(true)
-                        await postCreateProductoImageService({ image: base64Image }, idProduct)
-                        await getImagesByProductId(idProduct)
-                        setSelectedImage(null)
-                        setBase64Image(null)
-                        console.log(base64Image)
-                      } catch (err) {
-                        console.log(err)
-                      } finally {
-                        setisLoadingUpload(false)
-                      }
-                    }}
-                    disabled={base64Image === null ? true : false}
+                    onClick={() => handleUpload(document.getElementById('formFile'))}
+                    disabled={!selectedImage || isLoadingUpload}
                   >
                     Agregar Imagen
                   </Button>
@@ -197,7 +203,13 @@ const ImagesPage = ({ idProduct }) => {
                           className={`card position-relative overflow-hidden  rounded-4  ${ima._id === dataDetalle?.image_id ? ' border-2 border-primary ' : ''}`}
                         >
                           <div className="position-absolute top-0 end-0">
-                            <Button variant={'danger'} className="mt-1 me-1 text-white" size="sm">
+                            <Button
+                              variant={'danger'}
+                              className="mt-1 me-1 text-white"
+                              size="sm"
+                              disabled={deletingId === ima._id}
+                              onClick={() => handleDelete(ima._id)}
+                            >
                               <i className="fa-regular fa-trash-can"></i>
                             </Button>
                           </div>
@@ -210,7 +222,6 @@ const ImagesPage = ({ idProduct }) => {
                                   const result = await updatedProducto(idProduct, {
                                     image_id: ima._id,
                                   })
-                                  console.log(result.data)
                                   toast.success(result.data.message)
                                   await getImagesByProductId(idProduct)
                                   await getProductById(idProduct)

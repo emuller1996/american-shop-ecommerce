@@ -3,6 +3,7 @@
 import { useContext, useState } from 'react'
 import { getAllCategoriasService } from '../services/categorias.services'
 import {
+  deleteProductoImageService,
   getAllProductoByIdService,
   getAllProductoConsultaService,
   getAllProductoImageService,
@@ -12,6 +13,7 @@ import {
   getProductoSearchPaginationServices,
   getProductoSearchPublishedServices,
   postCreateConsultaProductoService,
+  postCreateProductoImageService,
   postCreateProductoService,
   postCreateStockProductoService,
   postImportProductoService,
@@ -203,6 +205,14 @@ export const useProductos = () => {
   const validateProductoCart = async (id, data) => {
     return postValidateStockProductoService(data, id, Token)
   }
+
+  const uploadProductoImage = async (productId, file) => {
+    return postCreateProductoImageService(file, productId, Token)
+  }
+
+  const deleteProductoImage = async (productId, imageId) => {
+    return deleteProductoImageService(productId, imageId, Token)
+  }
   return {
     data,
     error,
@@ -229,5 +239,7 @@ export const useProductos = () => {
     createConsultaProducto,
     getStocLogsByProductId,
     StockProductLogs,
+    uploadProductoImage,
+    deleteProductoImage,
   }
 }

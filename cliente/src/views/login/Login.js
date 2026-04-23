@@ -50,7 +50,7 @@ const Login = () => {
       navigate('/d/dashboard')
     } catch (error) {
       console.log(error)
-      if (error.response.status === 400) {
+      if (error.response.status === 401) {
         seterrorMessage(error.response.data.message)
       }
     } finally {
