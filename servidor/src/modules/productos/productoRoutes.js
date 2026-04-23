@@ -12,6 +12,7 @@ import {
   actualizarStock,
   validarStock,
   agregarImagen,
+  eliminarImagen,
   obtenerImagenes,
   crearConsulta,
   obtenerConsultas,
@@ -41,8 +42,9 @@ ProductosRouters.put("/stock/:idStock", actualizarStock);
 ProductosRouters.post("/stock/:idStock/validate", validarStock);
 
 // Rutas de imágenes
-ProductosRouters.post("/:id/images", agregarImagen);
+ProductosRouters.post("/:id/images", validateTokenMid, agregarImagen);
 ProductosRouters.get("/:id/images", obtenerImagenes);
+ProductosRouters.delete("/:id/images/:imageId", validateTokenMid, eliminarImagen);
 
 // Rutas de consultas
 ProductosRouters.post("/:id/consultas", validateTokenClientMid, crearConsulta);

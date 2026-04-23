@@ -3,6 +3,10 @@ import { crearLogsElastic } from "../../utils/index.js";
 import { jwtDecode } from "jwt-decode";
 import { INDEX_ES_MAIN } from "../../config.js";
 import xlsx from "xlsx";
+import {
+  uploadImageFromTempFile,
+  deleteImage as cloudinaryDeleteImage,
+} from "../../services/cloudinaryService.js";
 
 // Funciones auxiliares fuera de la clase
 const construirConsultaProductos = ({ perPage, page, search, gender, category, published }) => {
@@ -298,21 +302,73 @@ export const agregarStock = async (req, res) => {
 
 export const agregarImagen = async (req, res) => {
   try {
+    const file = req.files?.image || req.files?.file;
+    if (!file) {
+      return res.status(400).json({ message: "Archivo 'image' requerido." });
+    }
+
+    const uploaded = await uploadImageFromTempFile(file.tempFilePath);
+
     const imageData = {
       product_id: req.params.id,
-      image: req.body.image,
+      image: uploaded.url,
+      public_id: uploaded.public_id,
+      width: uploaded.width,
+      height: uploaded.height,
+      bytes: uploaded.bytes,
+      format: uploaded.format,
     };
 
     const resElasCreateFun = await productoService.crearImagen(imageData);
 
     await crearLogsElastic(
       JSON.stringify(req.headers),
-      JSON.stringify(req.body),
-      "Se ha cargado nueva imagen a un producto."
+      "",
+      "Se ha cargado nueva imagen a un producto (Cloudinary)."
     );
 
     return res.status(201).json({ message: "Imagen creada.", resElasCreateFun });
   } catch (error) {
+    console.error("[productos/agregarImagen] error:", error.message);
+    return res.status(500).json({ message: error.message });
+  }
+};
+
+export const eliminarImagen = async (req, res) => {
+  try {
+    const { id, imageId } = req.params;
+
+    const imagen = await productoService.obtenerProductoPorId(imageId).catch(() => null);
+    if (!imagen) {
+      return res.status(404).json({ message: "Imagen no encontrada." });
+    }
+
+    if (imagen.public_id) {
+      try {
+        await cloudinaryDeleteImage(imagen.public_id);
+      } catch (err) {
+        console.error("[productos/eliminarImagen] Cloudinary:", err.message);
+      }
+    }
+
+    await productoService.eliminarImagen(imageId);
+
+    const producto = await productoService.obtenerProductoPorId(id).catch(() => null);
+    if (producto?.image_id === imageId) {
+      await productoService.actualizarProducto(id, { image_id: null });
+    }
+
+    await productoService.refreshIndex();
+
+    await crearLogsElastic(
+      JSON.stringify(req.headers),
+      JSON.stringify({ id, imageId }),
+      "Se ha eliminado una imagen de un producto."
+    );
+
+    return res.status(200).json({ message: "Imagen eliminada." });
+  } catch (error) {
+    console.error("[productos/eliminarImagen] error:", error.message);
     return res.status(500).json({ message: error.message });
   }
 };

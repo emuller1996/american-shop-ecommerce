@@ -47,6 +47,13 @@ class ProductoService {
     return await crearElasticByType(imageData, "imagen");
   }
 
+  async eliminarImagen(imageId) {
+    return await client.delete({
+      index: INDEX_ES_MAIN,
+      id: imageId,
+    });
+  }
+
   async crearConsulta(consultaData) {
     return await crearElasticByType(consultaData, "consulta");
   }
