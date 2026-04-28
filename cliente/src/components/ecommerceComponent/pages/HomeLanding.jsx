@@ -14,8 +14,9 @@ import { seFiltertData } from '../../../redux/slices/ProductsSlice'
 import CardProductoHolderTest from '../../../views/landing/components/CardProductoHolderTest'
 
 export default function HomeLanding() {
-  const { dataP: Productos, getAllProductosPublished, loading } = useProductos()
+  const { dataP: Productos, getAllProductosPublished, loading, getBrandsProductos } = useProductos()
   const { getAllCategorias, data: Categorias } = useCategorias()
+  const [brands, setBrands] = useState([])
 
   const { products, total, filterData } = useSelector((state) => state.productosPublished)
   const dispatch = useDispatch()
@@ -31,6 +32,16 @@ export default function HomeLanding() {
 
   useEffect(() => {
     getAllCategorias()
+    
+    const fetchBrands = async () => {
+      try {
+        const data = await getBrandsProductos()
+        setBrands(data)
+      } catch (error) {
+        console.error('Error fetching brands:', error)
+      }
+    }
+    fetchBrands()
   }, [])
 
   useEffect(() => {
@@ -263,6 +274,76 @@ export default function HomeLanding() {
                 </label>
               </div>
             ))}
+          </div>
+
+          <p className="mx-2 mb-2 text-muted">Filtra por Marca</p>
+          <div className="mb-2 mx-2 d-flex gap-2 flex-wrap">
+            <div key={'all_brand'} className="form-check form-check-inline m-0 p-0">
+              <input
+                className="form-check-input"
+                type="radio"
+                name="filter_brand"
+                id={'all_brand'}
+                value={'all_brand'}
+                hidden
+                onChange={(e) => {
+                  dispatch(seFiltertData({ brand: null, page: 1 }))
+                }}
+              />
+              <label
+                className="form-check-label"
+                htmlFor={'all_brand'}
+                style={{
+                  padding: '0.5em 0.7em',
+                  borderStyle: 'solid',
+                  borderColor: filterData?.brand === null ? '#ff5b5b' : '#cccccc',
+                  backgroundColor: filterData?.brand === null ? '#ffe9e9' : 'transparent',
+                  borderWidth: '1px',
+                  borderRadius: '0.4em',
+                  cursor: 'pointer',
+                  color: filterData?.brand === null ? '#8b0909' : '#c0c0c0',
+                  display: 'flex',
+                  alignItems: 'center',
+                }}
+              >
+                {'Todas'}
+              </label>
+            </div>
+            {brands &&
+              brands.map((brand) => (
+                <div key={brand.value} className="form-check form-check-inline m-0 p-0">
+                  <input
+                    className="form-check-input"
+                    type="radio"
+                    name="filter_brand"
+                    hidden
+                    id={brand.value}
+                    value={brand.value}
+                    onChange={(e) => {
+                      dispatch(seFiltertData({ brand: e.target.value, page: 1 }))
+                    }}
+                  />
+                  <label
+                    className="form-check-label"
+                    htmlFor={brand.value}
+                    style={{
+                      padding: '0.5em 0.7em',
+                      borderStyle: 'solid',
+                      borderColor: brand.value === filterData?.brand ? '#ff5b5b' : '#cccccc',
+                      backgroundColor:
+                        brand.value === filterData?.brand ? '#ffe9e9' : 'transparent',
+                      borderWidth: '1px',
+                      borderRadius: '0.4em',
+                      cursor: 'pointer',
+                      color: brand.value !== filterData?.brand ? '#cccccc' : '#8b0909',
+                      display: 'flex',
+                      alignItems: 'center',
+                    }}
+                  >
+                    {brand.value}
+                  </label>
+                </div>
+              ))}
           </div>
           <div className="mt-3 mb-2 mx-2">
             <div className="input-group ">

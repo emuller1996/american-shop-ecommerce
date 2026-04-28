@@ -9,7 +9,7 @@ import {
 } from "../../services/cloudinaryService.js";
 
 // Funciones auxiliares fuera de la clase
-const construirConsultaProductos = ({ perPage, page, search, gender, category, published }) => {
+const construirConsultaProductos = ({ perPage, page, search, gender, category, published, brand }) => {
   const consulta = {
     index: INDEX_ES_MAIN,
     size: perPage,
@@ -31,6 +31,9 @@ const construirConsultaProductos = ({ perPage, page, search, gender, category, p
   if (category) {
     consulta.body.query.bool.filter.push({ term: { "category_id.keyword": category } });
   }
+  if (brand) {
+    consulta.body.query.bool.filter.push({ term: { "brand.keyword": brand } });
+  }
   if (published) {
     consulta.body.query.bool.filter.push({ term: { published } });
   }
@@ -43,7 +46,7 @@ const construirConsultaProductos = ({ perPage, page, search, gender, category, p
   return consulta;
 };
 
-const construirConsultaProductosPublicados = ({ perPage, page, search, gender, category }) => {
+const construirConsultaProductosPublicados = ({ perPage, page, search, gender, category, brand }) => {
   const consulta = {
     index: INDEX_ES_MAIN,
     size: perPage,
@@ -64,6 +67,9 @@ const construirConsultaProductosPublicados = ({ perPage, page, search, gender, c
   }
   if (category) {
     consulta.body.query.bool.filter.push({ term: { "category_id.keyword": category } });
+  }
+  if (brand) {
+    consulta.body.query.bool.filter.push({ term: { "brand.keyword": brand } });
   }
   if (search) {
     consulta.body.query.bool.must.push({
@@ -122,6 +128,7 @@ export const obtenerPaginados = async (req, res) => {
   const search = req.query.search || "";
   const gender = req.query.gender || "";
   const category = req.query.category || "";
+  const brand = req.query.brand || "";
   const published = req.query.published || "";
 
   try {
@@ -131,6 +138,7 @@ export const obtenerPaginados = async (req, res) => {
       search,
       gender,
       category,
+      brand,
       published,
     });
 
@@ -178,6 +186,7 @@ export const obtenerPublicados = async (req, res) => {
   const search = req.query.search || "";
   const gender = req.query.gender || "";
   const category = req.query.category || "";
+  const brand = req.query.brand || "";
 
   try {
     const consulta = construirConsultaProductosPublicados({
@@ -186,6 +195,7 @@ export const obtenerPublicados = async (req, res) => {
       search,
       gender,
       category,
+      brand,
     });
 
     const searchResult = await productoService.buscarProductosPaginados(consulta);
