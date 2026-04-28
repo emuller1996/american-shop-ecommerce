@@ -1,26 +1,18 @@
 import React, { useContext, useEffect, useRef, useState } from 'react'
-import { Container, Dropdown, Modal, Nav, Navbar } from 'react-bootstrap'
+import { Dropdown, Modal, Navbar } from 'react-bootstrap'
 import logo from '../assets/Logo.png'
 import { Link, useNavigate } from 'react-router-dom'
 import FormLogin from './ecommerceComponent/FormLogin'
 import AuthContext from '../context/AuthContext'
 import { useLocalStorage } from '../hooks/useLocalStorage'
-import { ViewDollar } from '../utils'
 import { AuthClientComponent } from './ecommerceComponent/AuthClientComponent'
-import CartComponent from './ecommerceComponent/pages/MiCarritoPage/CartComponent'
+
+import './AppNavBarEcomerce.css'
 
 const AppNavBarEcomerce = () => {
   const headerRef = useRef()
-  const {
-    client,
-    setTokenClient,
-    setTokenAccessCliente,
-    setClient,
-    cartEcommerceAmericanState,
-    setCartEcommerceAmericanState,
-  } = useContext(AuthContext)
-
-  console.log(client)
+  const { client, setTokenClient, setTokenAccessCliente, setClient, cartEcommerceAmericanState } =
+    useContext(AuthContext)
 
   useEffect(() => {
     document.addEventListener('scroll', () => {
@@ -30,16 +22,10 @@ const AppNavBarEcomerce = () => {
   }, [])
 
   const [show, setShow] = useState(false)
-  const [showCart, setShowCart] = useState(false)
+  const navigate = useNavigate()
 
   const handleClose = () => setShow(false)
   const handleShow = () => setShow(true)
-
-  const [cartEcommerceAmerican, setCartEcommerceAmerican] = useLocalStorage(
-    'cartEcommerceAmerican',
-    [],
-  )
-  const navigate = useNavigate()
 
   return (
     <>
@@ -53,26 +39,9 @@ const AppNavBarEcomerce = () => {
         </Modal.Body>
       </Modal>
 
-      {/* <Modal
-        size="lg"
-        centered
-        show={showCart}
-        onHide={() => {
-          setShowCart(false)
-        }}
-      >
-        <Modal.Body>
-          <CartComponent
-            onHide={() => {
-              setShowCart(false)
-            }}
-          />
-        </Modal.Body>
-      </Modal> */}
-
       <div className="header-top border-bottom py-2">
         <div className="container-lg">
-          <div className="row justify-content-evenly">
+          <div className="row justify-content-evenly align-items-center">
             <div className="col">
               <ul className="social-links list-unstyled d-flex m-0 text-white">
                 <li className="pe-2">
@@ -88,117 +57,83 @@ const AppNavBarEcomerce = () => {
             </div>
             <div className="col d-none d-md-block">
               <p className="text-center text-light m-0">
-                <strong>Envios </strong> a Todo Colombia
+                <strong className="text-uppercase">Envios </strong> a Todo Colombia
               </p>
             </div>
           </div>
         </div>
       </div>
-      <nav className="navbar navbar-expand-lg bg-white text-uppercase fs-6 p-3 border-bottom align-items-center ">
-        <div className="container">
-          <div className="row justify-content-between align-items-center w-100">
-            <div className="col-auto">
-              <Link to={``} className="navbar-brand text-dark">
-                <img src={logo} className="me-2" style={{ width: '60px' }} />
-                <span className=""> American Shop</span>
-              </Link>
-            </div>
 
-            <div className="col-3 col-lg-auto">
-              <ul className="list-unstyled d-flex m-0 justify-content-end">
-                <li className="d-none d-lg-block">
-                  <Link to={`/eco/mi-carrito`}>
-                    <button
-                      className="btn text-uppercase cursor-pointer"
-                      data-bs-toggle="offcanvas"
-                      data-bs-target="#offcanvasCart"
-                      aria-controls="offcanvasCart"
+      <Navbar
+        expand="lg"
+        className="navbar glass-navbar text-uppercase fs-6 p-3 align-items-center"
+      >
+        <div className="container">
+          <Link to={`/`} className="navbar-brand navbar-brand-glass">
+            <img src={logo} className="me-2" style={{ width: '60px' }} alt="Logo" />
+            <span> American Shop</span>
+          </Link>
+
+          <Navbar.Toggle aria-controls="navbar-nav-glass" className="border-0 shadow-none" />
+
+          <Navbar.Collapse id="navbar-nav-glass">
+            <div className="d-flex justify-content-end align-items-center gap-3 w-100 mt-3 mt-lg-0">
+              <Link to={`/eco/mi-carrito`} className="text-decoration-none">
+                <button className="nav-action-btn">
+                  <i className="fa-solid fa-cart-shopping"></i>
+                  <span className="cart-count">{`${cartEcommerceAmericanState?.length}`}</span>
+                </button>
+              </Link>
+
+              {client && (
+                <Dropdown className="glass-dropdown">
+                  <Dropdown.Toggle className="glass-dropdown-toggle" id="dropdown-basic">
+                    {`${client?.name_client[0]}${client?.name_client[1]}`}
+                  </Dropdown.Toggle>
+
+                  <Dropdown.Menu className="glass-dropdown-menu">
+                    <Link
+                      className="dropdown-item glass-dropdown-item text-decoration-none"
+                      to={`/eco/mis-compras`}
+                    >
+                      Mis Compras
+                    </Link>
+                    <Link
+                      className="dropdown-item glass-dropdown-item text-decoration-none"
+                      to={`/eco/mi-perfil`}
+                    >
+                      Mi Perfil
+                    </Link>
+                    <Dropdown.Item
+                      className="glass-dropdown-item"
                       onClick={() => {
-                        setShowCart(true)
+                        setTokenClient(null)
+                        setTokenAccessCliente(null)
+                        setClient(null)
+                        navigate('/')
                       }}
                     >
-                      <i className="fa-solid fa-cart-shopping"></i>
-                      <span className="cart-count text-nowrap ">
-                        ({`${cartEcommerceAmericanState?.length}`})
-                      </span>
-                    </button>
-                  </Link>
-                </li>
-                <AuthClientComponent
-                  onShow={() => {
+                      Cerrar Session
+                    </Dropdown.Item>
+                  </Dropdown.Menu>
+                </Dropdown>
+              )}
+
+              {!client && (
+                <button
+                  className="nav-action-btn"
+                  onClick={() => {
                     setShow(true)
                   }}
-                />
-
-                <li className="d-lg-none">
-                  <Link to={`/eco/mi-carrito`}>
-                    <button
-                      className="btn text-uppercase text-nowrap cursor-pointer"
-                      data-bs-toggle="offcanvas"
-                      data-bs-target="#offcanvasCart"
-                      aria-controls="offcanvasCart"
-                    >
-                      <i className="fa-solid fa-cart-shopping"></i>
-                      <span className="cart-count ">
-                        ({`${cartEcommerceAmericanState?.length}`})
-                      </span>
-                    </button>
-                  </Link>
-                </li>
-                <li className="d-lg-none">
-                  {client ? (
-                    <>
-                      <Dropdown className="">
-                        <Dropdown.Toggle variant="light" id="dropdown-basic">
-                          {`${client?.name_client[0]}${client?.name_client[1]}`}
-                        </Dropdown.Toggle>
-
-                        <Dropdown.Menu>
-                          <Link
-                            className="dropdown-item text-decoration-none"
-                            to={`/eco/mis-compras`}
-                          >
-                            Mis Compras
-                          </Link>
-                          <Link
-                            className="dropdown-item text-decoration-none"
-                            to={`/eco/mi-perfil`}
-                          >
-                            Mi Perfil
-                          </Link>
-                          <Dropdown.Item
-                            onClick={() => {
-                              setTokenClient(null)
-                              setTokenAccessCliente(null)
-                              setClient(null)
-                              navigate('/')
-                            }}
-                          >
-                            Cerrar Session
-                          </Dropdown.Item>
-                        </Dropdown.Menu>
-                      </Dropdown>
-                    </>
-                  ) : (
-                    <button
-                      className="btn text-uppercase  cursor-pointer"
-                      data-bs-toggle="offcanvas"
-                      data-bs-target="#offcanvasCart"
-                      aria-controls="offcanvasCart"
-                      onClick={() => {
-                        setShow(true)
-                      }}
-                    >
-                      <i className="fa-solid fa-right-to-bracket me-2"></i>
-                      <span className="cart-count"></span>
-                    </button>
-                  )}
-                </li>
-              </ul>
+                >
+                  <i className="fa-solid fa-right-to-bracket me-2"></i>
+                  <span>Ingresar</span>
+                </button>
+              )}
             </div>
-          </div>
+          </Navbar.Collapse>
         </div>
-      </nav>
+      </Navbar>
     </>
   )
 }

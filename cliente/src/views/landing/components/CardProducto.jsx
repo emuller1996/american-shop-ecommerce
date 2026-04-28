@@ -20,20 +20,29 @@ const CardProducto = ({ producto }) => {
   }, [])
   console.log(producto.image_id)
 
-  let html = ``
-  let htmlText = ``
-  if (producto?.gender === 'men') {
-    html += `<i class="fa-solid fa-mars me-2 fa-xl" style="color: #2a95ff;"></i>`
-    htmlText += `Hombre`
+  const renderGender = () => {
+    switch (producto?.gender) {
+      case 'men':
+        return {
+          icon: <i className="fa-solid fa-mars me-2 fa-xl" style={{ color: '#2a95ff' }} />,
+          text: 'Hombre',
+        }
+      case 'women':
+        return {
+          icon: <i className="fa-solid fa-venus me-2 fa-xl" style={{ color: '#ff2a8b' }} />,
+          text: 'Mujer / Dama',
+        }
+      case 'kid':
+        return {
+          icon: <i className="fa-solid fa-children me-2 fa-xl" style={{ color: '#a869e4' }} />,
+          text: 'Niño / Niña',
+        }
+      default:
+        return { icon: null, text: '' }
+    }
   }
-  if (producto?.gender === 'women') {
-    html += `<i class="fa-solid fa-venus me-2 fa-xl" style="color: #ff2a8b;"></i>`
-    htmlText += `Mujer / Dama`
-  }
-  if (producto?.gender === 'kid') {
-    html += `<i class="fa-solid fa-children me-2 fa-xl" style="color:#a869e4;"></i>`
-    htmlText += `Niño / Niña`
-  }
+
+  const genderInfo = renderGender()
 
   const getImage = async () => {
     try {
@@ -49,38 +58,50 @@ const CardProducto = ({ producto }) => {
   }
 
   return (
-    <div key={producto._id} className="col-sm-6 col-md-4">
-      <div className="card text-dark h-100 card-product">
-        {producto.image_id && !isLoading && (
-          <img
-            className="card-img-top"
-            style={{ height: '350px' }}
-            src={`${imagesBase64}`}
-            alt="Title"
-          />
-        )}
-        {!producto.image_id && (
-          <div className="p-2">
+    <div key={producto._id} className="col-6 col-sm-6 col-md-4 ">
+      <div className="card text-dark h-100 card-product shadow-sm">
+        <div
+          className="product-image-container"
+          style={{ height: '300px', overflow: 'hidden', position: 'relative' }}
+        >
+          {producto.image_id && !isLoading ? (
             <img
-              className="card-img-top"
-              style={{ height: '320px', opacity: '0.2' }}
-              src={`https://esmuller.cloud/assets/Logo-LBxHafXJ.png`}
-              alt="Title"
+              className="card-img-top product-img-zoom"
+              style={{ height: '100%', width: '100%', objectFit: 'cover' }}
+              src={`${imagesBase64}`}
+              alt={producto?.name}
             />
+          ) : (
+            <div className="p-2 h-100 d-flex align-items-center justify-content-center">
+              <img
+                className="card-img-top"
+                style={{ height: '200px', opacity: '0.2', objectFit: 'contain' }}
+                src={`https://esmuller.cloud/assets/Logo-LBxHafXJ.png`}
+                alt="No image available"
+              />
+            </div>
+          )}
+        </div>
+        <div className="card-body d-flex flex-column justify-content-between mt-2">
+          <div>
+            <h4 className="card-title fs-5 text-truncate" title={producto?.name}>
+              {producto?.name}
+            </h4>
+            <p className="card-text m-0 fs-5 fw-bold text-primary">{ViewDollar(producto?.price)}</p>
+            <p className="card-text text-center m-0 text-muted small">
+              {producto?.categoria?.name}
+            </p>
           </div>
-        )}
-        <div className="card-body mt-2">
-          <h4 className="card-title fs-4">{producto?.name}</h4>
-          <p className="card-text m-0 fs-5 fw-semibold">{ViewDollar(producto?.price)}</p>
-          <p className="card-text text-center  m-0 text-muted">{producto?.categoria?.name}</p>
-          <div className="d-flex justify-content-between">
-            <span className="card-text text-muted">{htmlText}</span>
-            <div dangerouslySetInnerHTML={{ __html: html }} />
+
+          <div className="d-flex justify-content-between align-items-center mt-3">
+            <span className="card-text text-muted small">{genderInfo.text}</span>
+            <div className="gender-icon">{genderInfo.icon}</div>
           </div>
-          <div className="text-center">
+
+          <div className="text-center mt-3">
             <Link to={`/eco/${producto._id}/producto`}>
-              <button className="button-ecomerce">
-                <i className="fa-solid fa-eye"></i>
+              <button className="button-ecomerce w-100">
+                <i className="fa-solid fa-eye me-2"></i> Ver Detalle
               </button>
             </Link>
           </div>

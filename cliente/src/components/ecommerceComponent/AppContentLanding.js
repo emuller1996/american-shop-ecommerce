@@ -29,7 +29,7 @@ const routes = [
 
 const AppContentLanding = () => {
   return (
-    <CContainer className="px-4" lg>
+    <CContainer>
       <Suspense fallback={<CSpinner color="primary" />}>
         <Routes>
           <Route
