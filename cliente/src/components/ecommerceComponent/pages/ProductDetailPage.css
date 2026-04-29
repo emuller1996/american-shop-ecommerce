@@ -1,110 +1,169 @@
+/* Glass Variables for Product Page */
+:root {
+    --glass-bg: rgba(255, 255, 255, 0.45);
+    --glass-border: rgba(255, 255, 255, 0.6);
+    --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+    --accent-color: #b91c1c;
+    --accent-hover: #dc2626;
+    --text-main: #1a1a1a;
+    --text-muted: #555;
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.glass-panel {
+    background: var(--glass-bg);
+    backdrop-filter: blur(16px) saturate(180%);
+    -webkit-backdrop-filter: blur(16px) saturate(180%);
+    border: 1px solid var(--glass-border);
+    border-radius: 24px;
+    box-shadow: var(--glass-shadow);
+    padding: 2rem;
+    transition: var(--transition-smooth);
+}
+
 .brad_product {
-  padding: 0.4em 0.6em;
-  border: 1px solid rgb(146, 146, 146);
-  border-radius: 0.4em;
-  margin-top: 1em;
+    display: inline-block;
+    padding: 0.3rem 0.8rem;
+    background: rgba(255, 255, 255, 0.5);
+    border: 1px solid var(--glass-border);
+    border-radius: 50px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-main);
+    margin-top: 1rem;
+    backdrop-filter: blur(4px);
+    transition: var(--transition-smooth);
 }
 
 .brad_product:hover {
-  border: 1px solid rgb(104, 104, 104);
-  box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
+    background: rgba(255, 255, 255, 0.8);
+    border-color: var(--accent-color);
+    transform: translateY(-2px);
+}
+
+.right-content {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.price {
+    font-size: 2.5rem !important;
+    color: var(--accent-color);
+    font-weight: 800;
+    letter-spacing: -1px;
+}
+
+.quote {
+    font-size: 1.1rem;
+    color: var(--text-muted);
+    line-height: 1.6;
+    border-left: 4px solid var(--accent-color);
+    padding-left: 1.5rem;
+    font-style: italic;
 }
 
 .StockSizeContainer {
-  background-color: rgb(255, 233, 233);
-  padding: 0.4em 0.6em;
-  border-radius: 0.4em;
-  border: 1px solid rgb(255, 176, 176);
-  color: rgb(54, 54, 54);
-  cursor: pointer;
-  transition: box-shadow .35s;
-
-
-
+    background: rgba(255, 255, 255, 0.5);
+    padding: 1rem;
+    border-radius: 16px;
+    border: 2px solid var(--glass-border);
+    color: var(--text-main);
+    cursor: pointer;
+    transition: var(--transition-smooth);
+    font-weight: 500;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
 }
+
 .StockSizeContainer_selected {
-  background-color: rgb(255, 233, 233);
-  padding: 0.4em 0.6em;
-  border-radius: 0.4em;
-  border: 1px solid rgb(150, 85, 85);
-  color: rgb(54, 54, 54);
-  cursor: pointer;
-  transition: box-shadow .35s;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.7));
+    color: var(--accent-color) !important;
+    border-color: var(--accent-color);
+    box-shadow: 0 10px 20px rgba(185, 28, 28, 0.15), 0 0 0 2px var(--accent-color);
+    transform: translateY(-5px);
 }
-.StockSizeContainer:hover {
-  border: 1px solid rgba(116, 71, 71, 0.596);
 
-  box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
+.StockSizeContainer:hover:not(.StockSizeContainer_selected) {
+    background: rgba(255, 255, 255, 0.9);
+    transform: translateY(-2px);
+    border-color: var(--accent-color);
 }
-.disabled-stock > *{
-  opacity: 0.5;
-  cursor: none;
 
+.disabled-stock {
+    opacity: 0.4;
+    pointer-events: none;
+    filter: grayscale(1);
 }
-.mi_input_group{
-  overflow: hidden;
-  border-radius: 0.4em;
+
+.mi_input_group {
+    border-radius: 12px;
+    border: 1px solid var(--glass-border);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0.5rem auto 0;
+    background: rgba(255, 255, 255, 0.4);
+    backdrop-filter: blur(4px);
+    width: fit-content;
+    overflow: visible;
 }
+
 .input_stock {
-  width: 50px;
-  height: 30px;
-  padding: 0.2rem 0.5rem;
-  text-align: center;
-  border: 1px solid rgb(182, 182, 182);
-  border-radius: 0;
-  outline: none;
-  background-color: transparent;
-  color: #0d0c22;
-  transition: .5s ease;
+    width: 40px;
+    height: 35px;
+    padding: 0;
+    text-align: center;
+    border: none;
+    outline: none;
+    background: transparent;
+    color: var(--text-main);
+    font-weight: 700;
+    font-size: 0.9rem;
+    transition: var(--transition-smooth);
 }
 
-
-/* CSS */
 .button-29 {
-  align-items: center;
-  appearance: none;
-  background-image: radial-gradient(100% 100% at 100% 0, #ff5a5a 0, #500a0a 100%);
-  border: 0;
-  border-radius: 0px;
-  box-shadow: rgba(66, 35, 35, 0.4) 0 2px 4px, rgba(66, 35, 35, 0.3) 0 7px 13px -3px, rgba(111, 58, 58, 0.5) 0 -3px 0 inset;
-  box-sizing: border-box;
-  color: #fff;
-  cursor: pointer;
-  display: inline-flex;
-  font-family: "JetBrains Mono", monospace;
-  height: 30px;
-  justify-content: center;
-  line-height: 1;
-  list-style: none;
-  overflow: hidden;
-  padding-left: 10px;
-  padding-right: 10px;
-  position: relative;
-  text-align: left;
-  text-decoration: none;
-  transition: box-shadow .15s, transform .15s;
-  user-select: none;
-  -webkit-user-select: none;
-  touch-action: manipulation;
-  white-space: nowrap;
-  will-change: box-shadow, transform;
-  font-size: 18px;
+    width: 15px;
+    height: 15px;
+    border: none;
+    background: rgba(255, 255, 255, 0.6);
+    color: var(--text-main);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: var(--transition-smooth);
+    font-size: 0.8rem;
 }
 
-.button-29:focus {
-  box-shadow: #e03c3c 0 0 0 1.5px inset, rgba(45, 35, 66, .4) 0 2px 4px, rgba(45, 35, 66, .3) 0 7px 13px -3px, #e03c3c 0 -3px 0 inset;
-}
-
-.button-29:hover {
-  box-shadow: rgba(45, 35, 66, .4) 0 4px 8px, rgba(45, 35, 66, .3) 0 7px 13px -3px, #e03c3c 0 -3px 0 inset;
-}
-
-.button-29:active {
-  box-shadow: #e03c3c 0 3px 7px inset;
-  transform: translateY(1px);
+.button-29:hover:not(:disabled) {
+    background: var(--accent-color);
+    color: white;
 }
 
 .button-29:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+    filter: grayscale(1);
+}
 
-  opacity: 0.3;
+.input_stock:focus {
+    background: rgba(255, 255, 255, 0.8);
+}
+
+.card-cart {
+    background: var(--glass-bg);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    border: 1px solid var(--glass-border);
+    padding: 1rem 2rem;
+    transition: var(--transition-smooth);
+}
+
+.card-cart:hover {
+    box-shadow: var(--glass-shadow);
 }

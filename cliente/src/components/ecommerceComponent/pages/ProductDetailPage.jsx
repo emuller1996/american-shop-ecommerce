@@ -47,7 +47,7 @@ export default function ProductDetailPage() {
       </div>
       {dataDetalle && (
         <section className="section" id="product">
-          <div className="">
+          <div className="glass-panel">
             <div className="row g-4">
               <div className="col-lg-7">
                 <Carousel interval={1500}>
