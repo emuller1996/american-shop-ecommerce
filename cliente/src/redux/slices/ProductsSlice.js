@@ -13,6 +13,7 @@ const ProductsSlice = createSlice({
       search: '',
       gender: null,
       category: null,
+      brand: null,
     },
   },
   reducers: {
