@@ -59,10 +59,10 @@ export default function CartComponent() {
   return (
     <div className="mt-5">
       <div className="card card-body position-relative card-cart">
-        <button onClick={() => navigate(-1)} className='btn  position-absolute start-0"' style={{zIndex:10, top:"10px"}}>
+        <button onClick={() => navigate(-1)} className='btn btn-back position-absolute start-0' style={{zIndex:10, top:"10px"}}>
           <i className="fa-solid fa-chevron-left me-2"></i>Atras
         </button>
-        <h5 className="text-center mb-0">
+        <h5 className="text-center mb-0 fw-bold">
           <i className="fa-solid fa-cart-shopping fa-xl me-2"></i>Mi Carrito
         </h5>
       </div>
@@ -79,12 +79,12 @@ export default function CartComponent() {
               <th scope="col"></th>
             </tr>
           </thead>
-          <tbody>
+          <tbody className="align-middle">
             {isLoading && (
               <tr>
                 <td colSpan={6}>
                   <div className="d-flex justify-content-center my-4">
-                    <div className="spinner-border" role="status" style={{ color: '#db5b5b' }}>
+                    <div className="spinner-border" role="status" style={{ color: 'var(--accent-color)' }}>
                       <span className="visually-hidden">Loading...</span>
                     </div>
                   </div>
@@ -93,25 +93,22 @@ export default function CartComponent() {
             )}
             {Data &&
               Data.map((st) => (
-                <tr key={st?._id} className="">
-                  <td width={'450px'} scope="row">
+                <tr key={st?._id}>
+                  <td data-label="Producto" width={'450px'} scope="row">
                     <img
-                      className="img-fluid me-3"
-                      style={{ width: '60px', height: '60px', borderRadius: 50 }}
+                      className="product-img-cart me-3"
                       src={st?.image?.image}
                       alt=""
                     />
-                    <span className="text-nowrap">{st?.product?.name}</span>
+                    <span className="text-nowrap fw-bold">{st?.product?.name}</span>
                   </td>
-                  <td>{st?.cantidad}</td>
-                  <td>{st?.size}</td>
-                  <td>{ViewDollar(st?.product?.price)}</td>
-                  <td>{ViewDollar(st?.product?.price * st?.cantidad)}</td>
-                  <td>
+                  <td data-label="Unidades">{st?.cantidad}</td>
+                  <td data-label="Talla">{st?.size}</td>
+                  <td data-label="Precio U.">{ViewDollar(st?.product?.price)}</td>
+                  <td data-label="Total U." className="fw-bold">{ViewDollar(st?.product?.price * st?.cantidad)}</td>
+                  <td data-label="Acción">
                     <button
                       onClick={() => {
-                        console.log(cartEcommerceAmericanState.filter((c) => c._id !== st?._id))
-
                         setCartEcommerceAmericanState(
                           cartEcommerceAmericanState.filter((c) => c._id !== st?._id),
                         )
@@ -122,7 +119,7 @@ export default function CartComponent() {
                         toast.success(`Se Borro el producto de tu carrito.`)
                       }}
                       type="button"
-                      className="btn btn-sm btn-danger text-white"
+                      className="btn-delete-cart"
                     >
                       <i className="fa-regular fa-trash-can"></i>
                     </button>
@@ -133,16 +130,16 @@ export default function CartComponent() {
             {Data && Array.isArray(Data) && Data.length === 0 && (
               <tr>
                 <td colSpan={6}>
-                  <p className="text-center text-muted mt-4">NO HAY PRODUCTO EN EL CARRITO</p>
+                  <p className="text-center text-muted mt-4 fw-bold">NO HAY PRODUCTOS EN EL CARRITO</p>
                 </td>
               </tr>
             )}
-            <tr>
-              <td colSpan={4} align="right">
-                <span className="fw-bold fs-5">Total</span>
+            <tr className="total-row">
+              <td colSpan={4} align="right" data-label="Total">
+                <span className="fw-bold fs-5">Total General</span>
               </td>
-              <td colSpan={1}>
-                <span className=" fs-5">
+              <td colSpan={1} data-label="Monto">
+                <span className="total-amount fs-5 fw-bold">
                   {Data &&
                     ViewDollar(
                       Data.reduce(
@@ -152,7 +149,7 @@ export default function CartComponent() {
                     )}
                 </span>
               </td>
-              <td></td>
+              <td data-label="Acción"></td>
             </tr>
           </tbody>
         </table>
