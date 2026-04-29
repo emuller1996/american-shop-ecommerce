@@ -1,24 +1,195 @@
+/* Luxury Glassmorphism Variables */
+:root {
+    --glass-bg: rgba(255, 255, 255, 0.45);
+    --glass-border: rgba(255, 255, 255, 0.6);
+    --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+    --accent-color: #b91c1c;
+    --accent-hover: #dc2626;
+    --text-main: #1a1a1a;
+    --text-muted: #555;
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Header Glass Card */
 .card-cart {
-  position: relative;
-  overflow: hidden;
-  border-color: #4d4d4d98 !important;
-  box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
+    background: var(--glass-bg);
+    backdrop-filter: blur(16px) saturate(180%);
+    -webkit-backdrop-filter: blur(16px) saturate(180%);
+    border: 1px solid var(--glass-border);
+    border-radius: 24px;
+    box-shadow: var(--glass-shadow);
+    padding: 1.5rem;
+    transition: var(--transition-smooth);
+    position: relative;
+    overflow: hidden;
 }
 
-/* Imagen */
 .card-cart::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background-image: url('/images/negocio_1.jpg');
-  background-size: auto;
-  background-position: center;
-  opacity: 0.25; /* 👈 controla la intensidad */
-  z-index: 0;
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: url('/images/negocio_1.jpg');
+    background-size: cover;
+    background-position: center;
+    opacity: 0.1;
+    z-index: -1;
 }
 
-/* Contenido por encima */
-.card-cart > * {
-  position: relative;
-  z-index: 1;
+.btn-back {
+    background: rgba(255, 255, 255, 0.6);
+    border: 1px solid var(--glass-border);
+    color: var(--text-main);
+    border-radius: 50px;
+    padding: 0.4rem 1rem;
+    font-weight: 600;
+    transition: var(--transition-smooth);
+}
+
+.btn-back:hover {
+    background: var(--accent-color);
+    color: white !important;
+    border-color: var(--accent-color);
+}
+
+/* Glass Table Styling */
+.table-responsive {
+    background: var(--glass-bg);
+    backdrop-filter: blur(12px);
+    border-radius: 24px;
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--glass-shadow);
+    padding: 1rem;
+    transition: var(--transition-smooth);
+}
+
+.table {
+    color: var(--text-main);
+    margin-bottom: 0;
+}
+
+.table thead th {
+    border-bottom: 2px solid var(--accent-color);
+    color: var(--text-main);
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 1px;
+    padding: 1rem;
+}
+
+.table tbody tr {
+    transition: var(--transition-smooth);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.table tbody tr:hover {
+    background: rgba(255, 255, 255, 0.4);
+    transform: scale(1.005);
+}
+
+.table td {
+    padding: 1rem;
+    vertical-align: middle;
+}
+
+/* Product image in table */
+.product-img-cart {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    border: 2px solid white;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    object-fit: cover;
+}
+
+/* Action Buttons */
+.btn-delete-cart {
+    background: rgba(185, 28, 28, 0.1);
+    color: var(--accent-color);
+    border: 1px solid rgba(185, 28, 28, 0.2);
+    border-radius: 12px;
+    transition: var(--transition-smooth);
+    width: 38px;
+    height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-delete-cart:hover {
+    background: var(--accent-color);
+    color: white;
+    transform: rotate(15deg) scale(1.1);
+}
+
+/* Total Row */
+.total-row {
+    font-size: 1.2rem;
+    font-weight: 800;
+    color: var(--text-main);
+    border-top: 2px solid var(--glass-border);
+}
+
+.total-amount {
+    color: var(--accent-color);
+}
+
+/* Mobile Responsive Magic */
+@media (max-width: 768px) {
+    .table-responsive {
+        background: transparent;
+        border: none;
+        box-shadow: none;
+        padding: 0;
+    }
+
+    .table, .table thead, .table tbody, .table th, .table td, .table tr {
+        display: block;
+    }
+
+    .table thead {
+        display: none; /* Hide headers on mobile */
+    }
+
+    .table tbody tr {
+        background: var(--glass-bg);
+        backdrop-filter: blur(16px);
+        border: 1px solid var(--glass-border);
+        border-radius: 20px;
+        margin-bottom: 1.5rem;
+        padding: 1rem;
+        box-shadow: var(--glass-shadow);
+        text-align: center;
+    }
+
+    .table td {
+        text-align: center;
+        padding: 0.5rem;
+        border: none;
+        position: relative;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .table td::before {
+        content: attr(data-label);
+        font-weight: 700;
+        color: var(--text-muted);
+        font-size: 0.8rem;
+        text-transform: uppercase;
+    }
+
+    .table td:first-child {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    .table td:first-child::before {
+        display: none;
+    }
+
+    .total-row td {
+        justify-content: center;
+        font-size: 1.5rem;
+    }
 }
