@@ -8,7 +8,7 @@ import AuthContext from '../../context/AuthContext'
 import { jwtDecode } from 'jwt-decode'
 import PropTypes from 'prop-types'
 import { useNavigate } from 'react-router-dom'
-// routes config
+import './FormLogin.css'
 
 const FormLogin = ({ onHide }) => {
   FormLogin.propTypes = {
@@ -22,15 +22,12 @@ const FormLogin = ({ onHide }) => {
   const {
     register,
     handleSubmit,
-    control,
     formState: { errors },
-    reset,
   } = useForm()
 
   const navigate = useNavigate()
 
   const onSubmit = async (data) => {
-    console.log(data)
     try {
       setisLoadingForm(true)
       setErrorText({
@@ -45,7 +42,7 @@ const FormLogin = ({ onHide }) => {
       onHide()
       navigate('/eco/mi-perfil')
     } catch (error) {
-      console.log(error)
+      console.error(error)
       const resData = error?.response?.data
       setErrorText({
         status: true,
@@ -58,68 +55,74 @@ const FormLogin = ({ onHide }) => {
       setisLoadingForm(false)
     }
   }
+
   return (
-    <CContainer className="px-4" lg>
+    <CContainer className="px-0 py-4" lg>
       {estadoFormulario === 'login' && (
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <p className="text-center">Login</p>
-          <div className="form-floating mb-3">
-            <input
-              type="email"
-              className="form-control "
-              {...register('email_client', { required: true })}
-              id="email_client"
-              placeholder=""
-            />
-            <label htmlFor="email_client">Correo Electronico</label>
-          </div>
-          <div className="form-floating mb-3">
-            <input
-              type="password"
-              {...register('password_client', { required: true })}
-              className="form-control "
-              id="password_client"
-              placeholder=""
-            />
-            <label htmlFor="password_client">Contraseña</label>
-          </div>
-          <div className="text-center">
-            <button type="submit" className="button-ecomerce" disabled={isLoadingForm}>
-              {isLoadingForm ? (
-                <>
-                  <CSpinner size="sm" className="me-2" /> Ingresando...
-                </>
-              ) : (
-                'Ingresar'
-              )}
-            </button>
-          </div>
-          <div className="mt-4">
-            <p>
-              No tienes Cuenta? Registrate
-              <a
-                className="text-primary"
-                onClick={() => {
-                  setEstadoFormulario('register')
-                }}
-              >
-                Aqui
-              </a>
-            </p>
-          </div>
-          <div>
-            <div>
-              {ErrorText.status && (
-                <>
-                  <Alert className="mt-4" key={'warning'} variant={'warning'}>
-                    <Alert.Heading>{ErrorText?.message}</Alert.Heading>
-                    <p>{ErrorText?.detail}</p>
-                  </Alert>
-                </>
-              )}
+        <div className="glass-form-container">
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <h2 className="text-center glass-form-title">Login</h2>
+            
+            <div className="form-floating glass-input-group">
+              <input
+                type="email"
+                className="form-control glass-input"
+                {...register('email_client', { required: true })}
+                id="email_client"
+                placeholder="nombre@ejemplo.com"
+              />
+              <label htmlFor="email_client" className="glass-input-label">
+                Correo Electrónico
+              </label>
             </div>
-          </div>
-        </form>
+
+            <div className="form-floating glass-input-group">
+              <input
+                type="password"
+                {...register('password_client', { required: true })}
+                className="form-control glass-input"
+                id="password_client"
+                placeholder="Contraseña"
+              />
+              <label htmlFor="password_client" className="glass-input-label">
+                Contraseña
+              </label>
+            </div>
+
+            <div className="text-center mt-4">
+              <button type="submit" className="button-ecomerce w-100" disabled={isLoadingForm}>
+                {isLoadingForm ? (
+                  <>
+                    <CSpinner size="sm" className="me-2" /> Ingresando...
+                  </>
+                ) : (
+                  'Ingresar'
+                )}
+              </button>
+            </div>
+
+            <div className="glass-form-footer text-center">
+              <p className="m-0">
+                ¿No tienes cuenta? Registrate{' '}
+                <span
+                  className="glass-form-link"
+                  onClick={() => setEstadoFormulario('register')}
+                >
+                  Aquí
+                </span>
+              </p>
+            </div>
+
+            {ErrorText.status && (
+              <div className="mt-4">
+                <Alert className="glass-alert" variant="warning">
+                  <Alert.Heading className="h6">{ErrorText?.message}</Alert.Heading>
+                  <p className="small mb-0">{ErrorText?.detail}</p>
+                </Alert>
+              </div>
+            )}
+          </form>
+        </div>
       )}
 
       {estadoFormulario === 'register' && <FormRegister />}
