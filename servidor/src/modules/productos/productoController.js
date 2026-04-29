@@ -228,10 +228,6 @@ export const obtenerPorId = async (req, res) => {
   try {
     const producto = await productoService.obtenerProductoPorId(req.params.id);
 
-    if (producto.image_id) {
-      producto.imageBase64 = await productoService.obtenerImagen(producto.image_id);
-    }
-
     producto.Imagenes = await obtenerTodasLasImagenes(req.params.id);
     producto.Stock = await obtenerTodoElStock(req.params.id);
 
@@ -243,6 +239,8 @@ export const obtenerPorId = async (req, res) => {
 
     return res.status(200).json(producto);
   } catch (error) {
+    console.log(error);
+    
     return res.status(500).json({ message: error.message });
   }
 };

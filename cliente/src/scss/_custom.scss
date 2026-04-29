@@ -111,121 +111,109 @@
 .button-ecomerce {
   align-items: center;
   appearance: none;
-  background-image: radial-gradient(100% 100% at 100% 0, #ff5a5a 0, #500a0a 100%);
-  border: 0;
-  border-radius: 6px;
-  box-shadow:
-    rgba(45, 35, 66, 0.4) 0 2px 4px,
-    rgba(45, 35, 66, 0.3) 0 7px 13px -3px,
-    rgba(58, 65, 111, 0.5) 0 -3px 0 inset;
+  background: linear-gradient(135deg, #b91c1c 0%, #7f1d1d 100%);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
   box-sizing: border-box;
   color: #fff;
   cursor: pointer;
   display: inline-flex;
-  font-family: 'JetBrains Mono', monospace;
+  font-family: 'Sofia Sans', sans-serif;
+  font-weight: 600;
   height: 48px;
   justify-content: center;
   line-height: 1;
   list-style: none;
   overflow: hidden;
-  padding-left: 16px;
-  padding-right: 16px;
+  padding: 0 24px;
   position: relative;
-  text-align: left;
+  text-align: center;
   text-decoration: none;
-  transition:
-    box-shadow 0.15s,
-    transform 0.15s;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   user-select: none;
   -webkit-user-select: none;
   touch-action: manipulation;
   white-space: nowrap;
-  will-change: box-shadow, transform;
-  font-size: 18px;
-}
-
-.button-ecomerce:focus {
-  box-shadow:
-    #d34343 0 0 0 1.5px inset,
-    rgba(45, 35, 66, 0.4) 0 2px 4px,
-    rgba(45, 35, 66, 0.3) 0 7px 13px -3px,
-    #e03c3c 0 -3px 0 inset;
+  font-size: 16px;
+  letter-spacing: 0.5px;
 }
 
 .button-ecomerce:hover {
-  box-shadow:
-    rgba(45, 35, 66, 0.4) 0 4px 8px,
-    rgba(45, 35, 66, 0.3) 0 7px 13px -3px,
-    #972626 0 -3px 0 inset;
-  transform: translateY(-2px);
+  background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2);
+  transform: translateY(-1px);
 }
 
 .button-ecomerce:active {
-  box-shadow: #e03c3c 0 3px 7px inset;
-  transform: translateY(2px);
+  transform: translateY(0);
+  box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.1);
+  filter: brightness(0.9);
 }
+
+.button-ecomerce:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(185, 28, 28, 0.4);
+}
+
 .button-ecomerce:disabled {
-  opacity: 0.4;
+  opacity: 0.5;
+  cursor: not-allowed;
+  filter: grayscale(0.5);
 }
 
 .button-ecomerce-cancel {
   align-items: center;
   appearance: none;
-  background-image: radial-gradient(100% 100% at 100% 0, #a1a1a1 0, #3a2a2b 100%);
-  border: 0;
-  border-radius: 6px;
-  box-shadow:
-    rgba(45, 35, 66, 0.4) 0 2px 4px,
-    rgba(45, 35, 66, 0.3) 0 7px 13px -3px,
-    rgba(111, 58, 76, 0.5) 0 -3px 0 inset;
+  background: #262626;
+  border: 1px solid #404040;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
   box-sizing: border-box;
-  color: #fff;
+  color: #e5e5e5;
   cursor: pointer;
   display: inline-flex;
-  font-family: 'JetBrains Mono', monospace;
+  font-family: 'Sofia Sans', sans-serif;
+  font-weight: 600;
   height: 48px;
   justify-content: center;
   line-height: 1;
   list-style: none;
   overflow: hidden;
-  padding-left: 16px;
-  padding-right: 16px;
+  padding: 0 24px;
   position: relative;
-  text-align: left;
+  text-align: center;
   text-decoration: none;
-  transition:
-    box-shadow 0.15s,
-    transform 0.15s;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   user-select: none;
   -webkit-user-select: none;
   touch-action: manipulation;
   white-space: nowrap;
-  will-change: box-shadow, transform;
-  font-size: 18px;
-}
-
-.button-ecomerce-cancel:focus {
-  box-shadow:
-    #421619 0 0 0 1.5px inset,
-    rgba(66, 35, 43, 0.4) 0 2px 4px,
-    rgba(66, 35, 43, 0.3) 0 7px 13px -3px,
-    #2e0a0d 0 -3px 0 inset;
+  font-size: 16px;
+  letter-spacing: 0.5px;
 }
 
 .button-ecomerce-cancel:hover {
-  box-shadow:
-    rgba(66, 35, 37, 0.4) 0 4px 8px,
-    rgba(66, 35, 44, 0.3) 0 7px 13px -3px,
-    #5f484a 0 -3px 0 inset;
-  transform: translateY(-2px);
+  background: #171717;
+  color: #fff;
+  border-color: #737373;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2);
+  transform: translateY(-1px);
 }
 
 .button-ecomerce-cancel:active {
-  box-shadow: #44161a 0 3px 7px inset;
-  transform: translateY(2px);
+  transform: translateY(0);
+  box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.1);
 }
+
+.button-ecomerce-cancel:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(38, 38, 38, 0.4);
+}
+
 .button-ecomerce-cancel:disabled {
-  opacity: 0.4;
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .dropdown-item:active {
