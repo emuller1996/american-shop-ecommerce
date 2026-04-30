@@ -1,18 +1,18 @@
 import { Router } from "express";
 import { client } from "../db.js";
 
-import UsuariosRouters from "./usuarios.routes.js";
-import ImagesRouters from "./images.routes.js";
 import { validateTokenMid } from "../utils/authjws.js";
 import { INDEX_ES_MAIN_LOGS } from "../config.js";
-import PuntoVentaRouters from "./punto_venta.routes.js";
-import PagosRouters from "./pagos.routes.js";
 import ProductosRouters from "../modules/productos/productoRoutes.js";
 import CategoriasRouters from "../modules/categorias/categoriaRoutes.js";
 import ClientesRouters from "../modules/clientes/clienteRoutes.js";
 import AuthRouters from "../modules/auth/authRoutes.js";
 import OrdenesRouters from "../modules/ordenes/ordenRoutes.js";
 import ConsultasRouters from "../modules/consultas/consultaRoutes.js";
+import UsuariosRouters from "../modules/usuarios/usuarioRoutes.js";
+import PuntoVentaRouters from "../modules/puntoVenta/puntoVentaRoutes.js";
+import PagosRouters from "../modules/pagos/pagoRoutes.js";
+import ImagesRouters from "../modules/imagenes/imagenRoutes.js";
 
 // Importar todos los routers;
 // Ejemplo: const authRouter = require('./auth.js');
