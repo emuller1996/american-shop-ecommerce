@@ -309,7 +309,7 @@ export default function ConfirmarCompraPage({}) {
           <h6 className="text-center fs-4 fw-bold">Nota!</h6>
           <p>
             Es un placer Atenderte, Queremos informarle que el costo del envío para su pedido será
-            manejado mediante el método de "Contra Entrega". Esto significa que el pago del
+            manejado mediante el método de &quot;Contra Entrega&quot;. Esto significa que el pago del
             <span className="text-uppercase  fw-bold  text-success ">{' valor del ENVIO '}</span>
             se realizará en el momento de la entrega de sus productos.
           </p>
