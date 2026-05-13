@@ -17,6 +17,25 @@ class ConsultaService {
     return searchResult.body;
   }
 
+  async buscarConsultasPendientes({ size = 1000 } = {}) {
+    const searchResult = await client.search({
+      index: INDEX_ES_MAIN,
+      size,
+      body: {
+        query: {
+          bool: {
+            filter: [
+              { term: { type: "consulta" } },
+              { term: { "status.keyword": "pending" } },
+            ],
+          },
+        },
+        sort: [{ createdTime: { order: "asc" } }],
+      },
+    });
+    return searchResult.body.hits.hits.map((c) => ({ ...c._source, _id: c._id }));
+  }
+
   async obtenerConsultaPorId(id) {
     return await getDocumentById(id);
   }

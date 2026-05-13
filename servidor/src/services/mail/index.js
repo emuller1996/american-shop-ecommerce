@@ -2,6 +2,7 @@ import { sendMail } from "./sender.js";
 import { welcomeEmail } from "./templates/welcome.js";
 import { orderDetailEmail } from "./templates/orderDetail.js";
 import { respuestaConsultaEmail } from "./templates/respuestaConsulta.js";
+import { consultasPendientesEmail } from "./templates/consultasPendientes.js";
 
 export async function sendVerificationEmail(email) {
   return sendMail({
@@ -26,6 +27,15 @@ export async function sendRespuestaConsultaEmail(data) {
     subject: "Respuesta a tu consulta",
     fromLabel: "Respuesta a consulta",
     html: respuestaConsultaEmail(data),
+  });
+}
+
+export async function sendConsultasPendientesEmail({ to, consultas }) {
+  return sendMail({
+    to,
+    subject: `Consultas pendientes (${consultas.length})`,
+    fromLabel: "Consultas pendientes",
+    html: consultasPendientesEmail({ consultas }),
   });
 }
 
