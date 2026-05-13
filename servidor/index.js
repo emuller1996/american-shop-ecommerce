@@ -1,7 +1,9 @@
 import server from "./src/app.js";
+import { startAllJobs } from "./src/jobs/index.js";
 
 server.listen(process.env.PORT, () => {
   console.log(`Server listening at port ${process.env.PORT}`); // eslint-disable-line no-console
+  startAllJobs();
 });
 
 /* const { Client } = require("@elastic/elasticsearch");
