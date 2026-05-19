@@ -9,6 +9,8 @@ import { Button, Modal } from 'react-bootstrap'
 import './MisComprasPages.css'
 import StepperStatus from './components/StepperStatus'
 import { useNavigate } from 'react-router-dom'
+import logo_ame from "../../../../assets/Logo.png"
+
 export default function MisComprasPages() {
   const { getAllShoppingByClientes, loading, dataShopping, getShopDetailById, dataShopDetail } =
     useClientes()
@@ -258,7 +260,7 @@ export default function MisComprasPages() {
                         <td width={'450px'} scope="row">
                           <div>
                             <img
-                              src={pro.image}
+                              src={pro.image.image ?? logo_ame}
                               alt="IMG_PRODUCT"
                               style={{ width: '60px', height: '60px', borderRadius: '50%' }}
                             />

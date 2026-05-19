@@ -371,14 +371,13 @@ export const obtenerCompraPorId = async (req, res) => {
       orden.products.map(async (c) => {
         const producto_data = await clienteService.obtenerDocumentoPorId(c.product_id);
         const stock_data = await clienteService.obtenerDocumentoPorId(c.stock_id);
-        const image_id = producto_data.image_id;
-        const image = (await clienteService.obtenerDocumentoPorId(image_id)).image;
+        const image = await clienteService.obtenerDocumentoPorId(producto_data.image_id);
+        
         return {
           ...c,
           producto_data,
           stock_data,
-          image_id,
-          image,
+          image : image ?? null,
         };
       })
     );
