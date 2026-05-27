@@ -25,7 +25,7 @@ class ConsultaService {
         query: {
           bool: {
             filter: [
-              { term: { type: "consulta" } },
+              { term: { "type.keyword": "consulta" } },
               { term: { "status.keyword": "pending" } },
             ],
           },
