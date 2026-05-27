@@ -464,6 +464,27 @@ export const obtenerStock = async (req, res) => {
   }
 };
 
+export const obtenerRelacionados = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const producto = await productoService.obtenerProductoPorId(id);
+    
+    if (!producto) {
+      return res.status(404).json({ message: "Producto no encontrado" });
+    }
+
+    const relacionados = await productoService.buscarProductosRelacionados(id, {
+      category_id: producto.category_id,
+      gender: producto.gender,
+      brand: producto.brand,
+    });
+
+    return res.status(200).json(relacionados);
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+
 export const obtenerLogsStock = async (req, res) => {
   try {
     let logs = await productoService.buscarLogsPorProducto(req.params.id);
