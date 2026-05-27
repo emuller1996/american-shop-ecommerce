@@ -1,7 +1,7 @@
 /* eslint-disable prettier/prettier */
 import React, { useContext, useEffect, useState } from 'react'
-import AuthContext from '../../../../context/AuthContext'
-import { useProductos } from '../../../../hooks/useProductos'
+import AuthContext from '../../../../../context/AuthContext'
+import { useProductos } from '../../../../../hooks/useProductos'
 import toast from 'react-hot-toast'
 import ReactTimeAgo from 'react-time-ago'
 import PropTypes from 'prop-types'

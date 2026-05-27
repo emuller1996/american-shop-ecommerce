@@ -1,15 +1,15 @@
 /* eslint-disable prettier/prettier */
 import React, { useContext, useEffect, useState } from 'react'
-import { useProductos } from '../../../hooks/useProductos'
+import { useProductos } from '../../../../hooks/useProductos'
 import { useNavigate, useParams } from 'react-router-dom'
-import { ViewDollar } from '../../../utils'
+import { ViewDollar } from '../../../../utils'
 import { Carousel } from 'react-bootstrap'
 import './ProductDetailPage.css'
-import StockComponent from './ProductDetailPage/StockComponent'
-import { useLocalStorage } from '../../../hooks/useLocalStorage'
+import StockComponent from './components/StockComponent'
+import { useLocalStorage } from '../../../../hooks/useLocalStorage'
 import toast from 'react-hot-toast'
-import AuthContext from '../../../context/AuthContext'
-import ConsultasProductoComponent from './ProductDetailPage/ConsultasProductoComponent'
+import AuthContext from '../../../../context/AuthContext'
+import ConsultasProductoComponent from './components/ConsultasProductoComponent'
 export default function ProductDetailPage() {
   const { id } = useParams()
   const { getProductById, dataDetalle } = useProductos()

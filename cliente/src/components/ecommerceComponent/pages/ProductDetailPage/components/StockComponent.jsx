@@ -1,7 +1,7 @@
 /* eslint-disable prettier/prettier */
 import React, { useContext, useState } from 'react'
 import PropTypes from 'prop-types'
-import AuthContext from '../../../../context/AuthContext'
+import AuthContext from '../../../../../context/AuthContext'
 
 export default function StockComponent({ setSizeSelected, stock, sizeSelected }) {
   StockComponent.propTypes = {
