@@ -18,6 +18,7 @@ import {
   crearConsulta,
   obtenerConsultas,
   importarDesdeExcel,
+  obtenerRelacionados,
 } from "./productoController.js";
 import {
   validateTokenClientMid,
@@ -39,6 +40,7 @@ ProductosRouters.put("/:id", validateTokenMid, actualizar);
 // Rutas de stock
 ProductosRouters.post("/:id/stock", agregarStock);
 ProductosRouters.get("/:id/stock", obtenerStock);
+ProductosRouters.get("/:id/relacionados", obtenerRelacionados);
 ProductosRouters.get("/:id/stock/logs", obtenerLogsStock);
 ProductosRouters.put("/stock/:idStock", actualizarStock);
 ProductosRouters.post("/stock/:idStock/validate", validarStock);

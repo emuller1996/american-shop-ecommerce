@@ -227,6 +227,72 @@ class ProductoService {
   async refreshIndex() {
     await client.indices.refresh({ index: INDEX_ES_MAIN });
   }
+
+  async buscarProductosRelacionados(productId, { category_id, gender, brand }) {
+    const searchCriterias = [
+      { category_id, gender, brand },
+      { category_id, gender },
+      { category_id },
+    ];
+
+    let finalProducts = [];
+
+    for (const criteria of searchCriterias) {
+      if (!criteria.category_id) continue;
+
+      const must = [{ term: { "type.keyword": "producto" } }];
+      const filter = [];
+
+      if (criteria.gender) filter.push({ term: { "gender.keyword": criteria.gender } });
+      if (criteria.brand) filter.push({ term: { "brand.keyword": criteria.brand } });
+
+      const searchResult = await client.search({
+        index: INDEX_ES_MAIN,
+        size: 10,
+        body: {
+          query: {
+            bool: {
+              must: must,
+              filter: [
+                ...filter,
+                { bool: { must_not: { term: { "product_id.keyword": productId } } } },
+              ],
+            },
+          },
+        },
+      });
+
+      const products = searchResult.body.hits.hits.map((c) => ({
+        ...c._source,
+        _id: c._id,
+      }));
+
+      finalProducts = [...finalProducts, ...products];
+      
+      // If we have enough products (at least 4), we can stop tiered search
+      if (finalProducts.length >= 4) break;
+    } 
+
+    // Remove duplicates and limit to 9
+    const uniqueProducts = Array.from(new Map(finalProducts.map(p => [p._id, p])).values()).slice(0, 9);
+
+    const productsWithImages = await Promise.all(
+      uniqueProducts.map(async (product) => {
+        let image = "";
+        if (product.image_id) {
+          try {
+            const imgDoc = await getDocumentById(product.image_id);
+            image = imgDoc?.image || "";
+          } catch (error) {
+            console.error(`Error fetching image for product ${product._id}:`, error);
+          }
+        }
+        return { ...product, image };
+      })
+    );
+
+    return productsWithImages;
+  }
 }
 
 export default new ProductoService();
