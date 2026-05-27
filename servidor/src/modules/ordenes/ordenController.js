@@ -109,6 +109,30 @@ export const procesarPago = async (req, res) => {
   }
 };
 
+export const crearOrdenNequi = async (req, res) => {
+  try {
+    const ordenData = { ...req.body.orderData };
+    ordenData.payment_method = "Nequi";
+    ordenData.status = "Pendiente";
+
+    const response = await ordenService.crearOrden(ordenData);
+    const order = response.body;
+
+    const ordenDataSend = await ordenService.obtenerOrdenPorId(order._id);
+    await enriquecerOrden(ordenDataSend);
+
+    await sendOrdenDetail(ordenDataSend);
+
+    return res.status(200).json({ 
+      message: "Orden creada exitosamente para pago con Nequi", 
+      order 
+    });
+  } catch (error) {
+    console.error("[ordenes/crearOrdenNequi] error:", error.message);
+    return res.status(500).json({ message: error.message });
+  }
+};
+
 export const actualizar = async (req, res) => {
   try {
     const r = await ordenService.actualizarOrden(req.params.id, req.body);
