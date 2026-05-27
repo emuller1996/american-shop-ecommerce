@@ -10,6 +10,7 @@ import { useLocalStorage } from '../../../../hooks/useLocalStorage'
 import toast from 'react-hot-toast'
 import AuthContext from '../../../../context/AuthContext'
 import ConsultasProductoComponent from './components/ConsultasProductoComponent'
+import RelatedProductsComponent from './components/RelatedProductsComponent'
 export default function ProductDetailPage() {
   const { id } = useParams()
   const { getProductById, dataDetalle } = useProductos()
@@ -146,11 +147,12 @@ export default function ProductDetailPage() {
         </section>
       )}
 
-      <section>
-        <div className="mt-4 mb-5">
-          <ConsultasProductoComponent productId={id} />
-        </div>
-      </section>
+       <section>
+         <div className="mt-4 mb-5">
+           <ConsultasProductoComponent productId={id} />
+         </div>
+       </section>
+       <RelatedProductsComponent />
     </>
   )
 }
