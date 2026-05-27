@@ -194,7 +194,7 @@ export default function ConfirmarCompraPage({}) {
   };
 
   const goToWhatsApp = () => {
-    const phone = "573000000000"; // Reemplazar con el número del negocio
+    const phone = import.meta.env.VITE_NUMBER_PHONE; // Reemplazar con el número del negocio
     const message = `Hola! Quiero confirmar mi pago por Nequi.\n\n*Orden:* ${nequiOrder._id}\n*Cliente:* ${client.name_client}\n*Total:* ${ViewDollar(total)}\n\nAdjunto el comprobante de pago.`;
     const url = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
     window.open(url, '_blank');
