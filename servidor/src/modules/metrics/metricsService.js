@@ -19,10 +19,13 @@ class MetricsService {
       size: 0, // We only want aggregation results, not documents
       query: {
         bool: {
+          must: [
+            { term: { "type.keyword": "orden" } }
+          ],
+          must_not: [
+            { term: { "status.keyword": "Anulada" } }
+          ],
           filter: [
-            {
-              term: { "type.keyword": "orden" }
-            },
             {
               range: {
                 createdTime: {
@@ -34,19 +37,24 @@ class MetricsService {
           ],
         },
       },
-      aggregations: {
+      aggs: {
         orders_over_time: {
           date_histogram: {
             field: "createdTime",
             calendar_interval: "day",
             min_doc_count: 0,
           },
-          aggregations: {
+          aggs: {
             total_value: {
               sum: {
                 field: "total_order",
               },
             },
+          },
+        },
+        total_revenue: {
+          sum: {
+            field: "total_order",
           },
         },
       },
@@ -58,15 +66,22 @@ class MetricsService {
         body: query,
       });
       
-      const buckets = response.body.aggregations.orders_over_time.buckets;
-      console.log(response.body.aggregations.orders_over_time.buckets);
-      
-      
-      return buckets.map(bucket => ({
-        date: bucket.key_as_string,
-        count: bucket.doc_count,
-        total: bucket.total_value.value || 0
-      }));
+      const aggregations = response.body.aggregations || response.body.aggs || {};
+      const buckets = aggregations.orders_over_time?.buckets || [];
+      const totalRevenue = aggregations.total_revenue?.value || 0;
+      const totalOrders = response.body.hits?.total?.value || 0;
+                      
+      return {
+        dailyStats: buckets.map(bucket => ({
+          date: bucket.key_as_string || new Date(bucket.key).toLocaleDateString('en-CA', { timeZone: 'America/Bogota' }),
+          count: bucket.doc_count,
+          total: bucket.total_value?.value || 0
+        })),
+        totals: {
+          totalOrders,
+          totalRevenue
+        }
+      };
     } catch (error) {
       console.error("Error fetching metrics from Elasticsearch:", error);
       throw error;

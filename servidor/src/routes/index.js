@@ -33,7 +33,7 @@ router.use("/auth", AuthRouters);
 router.use("/ordenes", OrdenesRouters);
 router.use("/punto_venta", PuntoVentaRouters);
 router.use("/pagos", PagosRouters);
-router.use("/metrics", MetricsRouters);
+router.use("/metrics", validateTokenMid, MetricsRouters);
 
 
 
