@@ -13,6 +13,7 @@ import UsuariosRouters from "../modules/usuarios/usuarioRoutes.js";
 import PuntoVentaRouters from "../modules/puntoVenta/puntoVentaRoutes.js";
 import PagosRouters from "../modules/pagos/pagoRoutes.js";
 import ImagesRouters from "../modules/imagenes/imagenRoutes.js";
+import MetricsRouters from "../modules/metrics/metricsRoutes.js";
 
 // Importar todos los routers;
 // Ejemplo: const authRouter = require('./auth.js');
@@ -32,6 +33,7 @@ router.use("/auth", AuthRouters);
 router.use("/ordenes", OrdenesRouters);
 router.use("/punto_venta", PuntoVentaRouters);
 router.use("/pagos", PagosRouters);
+router.use("/metrics", MetricsRouters);
 
 
 
