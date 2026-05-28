@@ -87,6 +87,57 @@ class MetricsService {
       throw error;
     }
   }
+
+  async getStatusStats() {
+    const query = {
+      size: 0,
+      aggs: {
+        orders_by_status: {
+          filter: { term: { "type.keyword": "orden" } },
+          aggs: {
+            statuses: {
+              terms: { field: "status.keyword" }
+            }
+          }
+        },
+        consultas_by_status: {
+          filter: { term: { "type.keyword": "consulta" } },
+          aggs: {
+            statuses: {
+              terms: { field: "status.keyword" }
+            }
+          }
+        }
+      }
+    };
+
+    try {
+      const response = await client.search({
+        index: INDEX_ES_MAIN,
+        body: query,
+      });
+
+      const aggs = response.body.aggregations || response.body.aggs || {};
+      
+      const ordersStatus = (aggs.orders_by_status?.statuses?.buckets || []).map(b => ({
+        name: b.key,
+        value: b.doc_count
+      }));
+
+      const consultasStatus = (aggs.consultas_by_status?.statuses?.buckets || []).map(b => ({
+        name: b.key,
+        value: b.doc_count
+      }));
+
+      return {
+        ordersStatus,
+        consultasStatus
+      };
+    } catch (error) {
+      console.error("Error fetching status metrics from Elasticsearch:", error);
+      throw error;
+    }
+  }
 }
 
 export default new MetricsService();
