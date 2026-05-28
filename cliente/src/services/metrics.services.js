@@ -7,3 +7,10 @@ export const getOrdersStatsService = (token, signal) => {
     signal: signal 
   })
 }
+
+export const getStatusStatsService = (token, signal) => {
+  return axios.get('/metrics/status-stats', { 
+    headers: { 'access-token': token }, 
+    signal: signal 
+  })
+}
