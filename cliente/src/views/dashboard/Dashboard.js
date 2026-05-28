@@ -11,20 +11,27 @@ import {
   Tooltip,
   Legend,
   ResponsiveContainer,
+  PieChart,
+  Pie,
+  Cell,
 } from 'recharts'
 import { ViewDollar } from '../../utils'
 
 const Dashboard = () => {
-  const { data: metricsData, loading: isLoading, getOrdersStats } = useMetrics()
+  const {
+    data: metricsData,
+    statusData,
+    loading: isLoading,
+    getOrdersStats,
+    getStatusStats,
+  } = useMetrics()
 
   useEffect(() => {
     getOrdersStats()
+    getStatusStats()
   }, [])
 
-  useEffect(() => {
-    if (metricsData && metricsData.totals) {
-    }
-  }, [])
+  console.log(statusData?.ordersStatus);
 
   return (
     <div className="p-4">
@@ -166,6 +173,95 @@ const Dashboard = () => {
                         activeDot={{ r: 6 }}
                       />
                     </LineChart>
+                  </ResponsiveContainer>
+                </div>
+              )}
+            </CCardBody>
+          </CCard>
+        </CCol>
+      </CRow>
+      <CRow>
+        {/* Donut Pedidos */}
+        <CCol xs={12} lg={6}>
+          <CCard className="mb-4 shadow-sm">
+            <CCardHeader className="d-flex align-items-center">
+              <strong>Estado de Pedidos</strong>
+            </CCardHeader>
+            <CCardBody>
+              {isLoading && !statusData ? (
+                <div className="text-center py-5">Cargando...</div>
+              ) : !statusData ||
+                !statusData.ordersStatus ||
+                statusData.ordersStatus.length === 0 ? (
+                <div className="text-center py-5">No hay datos disponibles.</div>
+              ) : (
+                <div style={{ height: '300px', width: '100%' }}>
+                  <ResponsiveContainer width="100%" height="100%">
+                    <PieChart>
+                      <Pie
+                        data={statusData.ordersStatus}
+                        cx="50%"
+                        cy="50%"
+                        innerRadius={60}
+                        outerRadius={80}
+                        paddingAngle={5}
+                        dataKey="value"
+                      >
+                        {statusData.ordersStatus.map((entry, index) => (
+                          <Cell
+                            key={`cell-order-${index}`}
+                            fill={getStyle(`--cui-info`)}
+                            style={{ opacity: 1 - index * 0.2 }}
+                          />
+                        ))}
+                      </Pie>
+                      <Tooltip />
+                      <Legend />
+                    </PieChart>
+                  </ResponsiveContainer>
+                </div>
+              )}
+            </CCardBody>
+          </CCard>
+        </CCol>
+
+        {/* Donut Consultas */}
+        <CCol xs={12} lg={6}>
+          <CCard className="mb-4 shadow-sm">
+            <CCardHeader className="d-flex align-items-center">
+              <strong>Estado de Consultas</strong>
+            </CCardHeader>
+            <CCardBody>
+              {isLoading && !statusData ? (
+                <div className="text-center py-5">Cargando...</div>
+              ) : !statusData ||
+                !statusData.consultasStatus ||
+                statusData.consultasStatus.length === 0 ? (
+                <div className="text-center py-5">No hay datos disponibles.</div>
+              ) : (
+                <div style={{ height: '300px', width: '100%' }}>
+                  <ResponsiveContainer width="100%" height="100%">
+                    <PieChart>
+                      <Pie
+                        data={statusData.consultasStatus}
+                        cx="50%"
+                        cy="50%"
+                        innerRadius={60}
+                        outerRadius={80}
+                        paddingAngle={5}
+                        dataKey="value"
+                      >
+                        {statusData.consultasStatus.map((entry, index) => (
+                          <Cell
+                            key={`cell-query-${index}`}
+                            fill={getStyle(`--cui-success`)}
+                            style={{ opacity: 1 - index * 0.2 }}
+                          />
+                        ))}
+                      </Pie>
+                      <Tooltip />
+                      <Legend />
+                    </PieChart>
                   </ResponsiveContainer>
                 </div>
               )}
