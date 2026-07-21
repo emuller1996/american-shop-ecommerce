@@ -87,7 +87,9 @@ const CardProducto = ({ producto }) => {
             <h4 className="card-title fs-5 text-truncate" title={producto?.name}>
               {producto?.name}
             </h4>
-            <p className="card-text m-0 fs-5 fw-bold text-primary">{ViewDollar(producto?.price)}</p>
+            <p className="card-text m-0 fs-4 fw-bold" style={{ color: '#7A2B2B' }}>
+              {ViewDollar(producto?.price)}
+            </p>
             <p className="card-text text-center m-0 text-muted small">
               {producto?.categoria?.name}
             </p>
