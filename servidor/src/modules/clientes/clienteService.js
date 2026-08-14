@@ -75,6 +75,31 @@ class ClienteService {
   async refreshIndex() {
     await client.indices.refresh({ index: INDEX_ES_MAIN });
   }
+
+  async crearTokenReset(data) {
+    return await crearElasticByType(data, "password_reset");
+  }
+
+  async buscarTokenReset(token) {
+    return await client.search({
+      index: INDEX_ES_MAIN,
+      size: 1,
+      body: {
+        query: {
+          bool: {
+            must: [
+              { term: { type: { value: "password_reset" } } },
+              { term: { "token.keyword": { value: token } } },
+            ],
+          },
+        },
+      },
+    });
+  }
+
+  async marcarTokenResetUsado(id) {
+    return await updateElasticByType(id, { used: true });
+  }
 }
 
 export default new ClienteService();

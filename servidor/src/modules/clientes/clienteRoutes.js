@@ -11,6 +11,8 @@ import {
   obtenerDireccionesPorCliente,
   obtenerComprasClienteAutenticado,
   obtenerCompraPorId,
+  forgotPassword,
+  resetPassword,
 } from "./clienteController.js";
 import {
   validateTokenClient,
@@ -28,6 +30,8 @@ ClientesRouters.get("/:id/shoppings", validateTokenMid, obtenerComprasPorCliente
 // Rutas públicas (registro / login)
 ClientesRouters.post("/", crear);
 ClientesRouters.post("/login", login);
+ClientesRouters.post("/forgot-password", forgotPassword);
+ClientesRouters.post("/reset-password", resetPassword);
 
 // Validación de token de cliente
 ClientesRouters.get("/validate", validateTokenClient);
