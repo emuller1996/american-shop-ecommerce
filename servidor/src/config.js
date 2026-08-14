@@ -11,6 +11,9 @@ export const DB_NAME = "my_database";
 export const USER_SMTP = "ecommerce-dev@esmuller.cloud";
 export const PASS_SMTP = "SoporteMuller1996";
 
+export const FRONTEND_URL = process.env.FRONTEND_URL || "http://localhost:3000";
+export const RESET_TOKEN_TTL_MS = 8 * 60 * 60 * 1000;
+
 // Puedes agrupar la configuración en un solo objeto
 export default {
   INDEX_ES_MAIN,

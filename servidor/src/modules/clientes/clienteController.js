@@ -1,9 +1,10 @@
+import crypto from "crypto";
 import { jwtDecode } from "jwt-decode";
 import clienteService from "./clienteService.js";
-import { INDEX_ES_MAIN } from "../../config.js";
+import { INDEX_ES_MAIN, FRONTEND_URL, RESET_TOKEN_TTL_MS } from "../../config.js";
 import { generateClienteAccessToken } from "../../utils/authjws.js";
 import { hashPassword, verifyPassword } from "../../utils/password.js";
-import { sendVerificationEmail } from "../../services/mailService.js";
+import { sendVerificationEmail, sendResetPasswordEmail } from "../../services/mailService.js";
 
 const INVALID_CREDENTIALS = {
   error: true,
@@ -278,6 +279,111 @@ export const login = async (req, res) => {
       error: true,
       message: "Error interno del servidor.",
       detail: "Ocurrió un error al iniciar sesión. Por favor intenta de nuevo.",
+    });
+  }
+};
+
+export const forgotPassword = async (req, res) => {
+  const GENERIC_MESSAGE =
+    "Si el correo está registrado, recibirás un enlace para restablecer tu contraseña.";
+  try {
+    const { email_client } = req.body ?? {};
+
+    if (typeof email_client !== "string" || !email_client) {
+      return res.status(400).json({
+        error: true,
+        message: "Correo requerido.",
+        detail: "Debes ingresar un correo electrónico.",
+      });
+    }
+
+    const requestEL = await clienteService.buscarClientePorEmail(email_client);
+
+    // Anti-enumeración: siempre respondemos el mismo mensaje genérico,
+    // exista o no el correo. Solo si existe generamos token y enviamos correo.
+    if (requestEL.body.hits.total.value > 0) {
+      const clienteHit = requestEL.body.hits.hits[0];
+      const token = crypto.randomBytes(32).toString("hex");
+      const expiresAt = Date.now() + RESET_TOKEN_TTL_MS;
+
+      await clienteService.crearTokenReset({
+        cliente_id: clienteHit._id,
+        email: email_client,
+        token,
+        expiresAt,
+        used: false,
+      });
+
+      const resetUrl = `${FRONTEND_URL}/#/eco/reset-password/${token}`;
+      await sendResetPasswordEmail(email_client, resetUrl);
+    }
+
+    return res.status(200).json({ message: GENERIC_MESSAGE, detail: null });
+  } catch (error) {
+    console.error("[clientes/forgotPassword] error:", error);
+    return res.status(500).json({
+      error: true,
+      message: "Error interno del servidor.",
+      detail: "Ocurrió un error al procesar la solicitud. Por favor intenta de nuevo.",
+    });
+  }
+};
+
+export const resetPassword = async (req, res) => {
+  try {
+    const { token, password } = req.body ?? {};
+
+    if (typeof token !== "string" || !token || typeof password !== "string" || !password) {
+      return res.status(400).json({
+        error: true,
+        message: "Datos incompletos.",
+        detail: "Token y nueva contraseña son obligatorios.",
+      });
+    }
+
+    const requestEL = await clienteService.buscarTokenReset(token);
+
+    if (requestEL.body.hits.total.value === 0) {
+      return res.status(400).json({
+        error: true,
+        message: "Enlace inválido.",
+        detail: "El enlace de restablecimiento no es válido.",
+      });
+    }
+
+    const tokenHit = requestEL.body.hits.hits[0];
+    const tokenDoc = tokenHit._source;
+
+    if (tokenDoc.used) {
+      return res.status(400).json({
+        error: true,
+        message: "Enlace ya utilizado.",
+        detail: "Este enlace de restablecimiento ya fue utilizado.",
+      });
+    }
+
+    if (Date.now() > tokenDoc.expiresAt) {
+      return res.status(400).json({
+        error: true,
+        message: "Enlace expirado.",
+        detail: "El enlace de restablecimiento ha expirado. Solicita uno nuevo.",
+      });
+    }
+
+    const newHash = await hashPassword(password);
+    await clienteService.actualizarHashCliente(tokenDoc.cliente_id, newHash);
+    await clienteService.marcarTokenResetUsado(tokenHit._id);
+
+    return res.status(200).json({
+      message: "Contraseña actualizada correctamente.",
+      detail: "Ya puedes iniciar sesión con tu nueva contraseña.",
+    });
+  } catch (error) {
+    console.error("[clientes/resetPassword] error:", error);
+    return res.status(500).json({
+      error: true,
+      message: "Error interno del servidor.",
+      detail: "Ocurrió un error al restablecer la contraseña. Por favor intenta de nuevo.",
     });
   }
 };

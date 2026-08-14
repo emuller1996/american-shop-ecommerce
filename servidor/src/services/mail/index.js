@@ -3,12 +3,22 @@ import { welcomeEmail } from "./templates/welcome.js";
 import { orderDetailEmail } from "./templates/orderDetail.js";
 import { respuestaConsultaEmail } from "./templates/respuestaConsulta.js";
 import { consultasPendientesEmail } from "./templates/consultasPendientes.js";
+import { resetPasswordEmail } from "./templates/resetPassword.js";
 
 export async function sendVerificationEmail(email) {
   return sendMail({
     to: email,
     subject: "Bienvenido a American Shop VIP",
     html: welcomeEmail(),
+  });
+}
+
+export async function sendResetPasswordEmail(email, resetUrl) {
+  return sendMail({
+    to: email,
+    subject: "Restablece tu contraseña",
+    fromLabel: "Restablecer contraseña",
+    html: resetPasswordEmail({ resetUrl }),
   });
 }
 

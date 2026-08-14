@@ -1,6 +1,7 @@
 import React, { useContext, useState } from 'react'
 import { CContainer, CSpinner } from '@coreui/react'
 import FormRegister from './FormRegister'
+import FormForgotPassword from './FormForgotPassword'
 import { useForm } from 'react-hook-form'
 import { postLoginClientesService } from '../../services/clientes.services'
 import { Alert } from 'react-bootstrap'
@@ -62,7 +63,6 @@ const FormLogin = ({ onHide }) => {
         <div className="glass-form-container">
           <form onSubmit={handleSubmit(onSubmit)}>
             <h2 className="text-center glass-form-title">Login</h2>
-            
             <div className="form-floating glass-input-group">
               <input
                 type="email"
@@ -104,11 +104,13 @@ const FormLogin = ({ onHide }) => {
             <div className="glass-form-footer text-center">
               <p className="m-0">
                 ¿No tienes cuenta? Registrate{' '}
-                <span
-                  className="glass-form-link"
-                  onClick={() => setEstadoFormulario('register')}
-                >
+                <span className="glass-form-link" onClick={() => setEstadoFormulario('register')}>
                   Aquí
+                </span>
+              </p>
+              <p className="m-0">
+                <span className="glass-form-link" onClick={() => setEstadoFormulario('forgot')}>
+                  ¿Olvidaste tu contraseña?
                 </span>
               </p>
             </div>
@@ -126,6 +128,10 @@ const FormLogin = ({ onHide }) => {
       )}
 
       {estadoFormulario === 'register' && <FormRegister />}
+
+      {estadoFormulario === 'forgot' && (
+        <FormForgotPassword onBackToLogin={() => setEstadoFormulario('login')} />
+      )}
     </CContainer>
   )
 }

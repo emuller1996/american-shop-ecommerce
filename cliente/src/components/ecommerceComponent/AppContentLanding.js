@@ -13,6 +13,7 @@ const MisComprasPages = React.lazy(() => import('./pages/MisComprasPage/MisCompr
 const ConfirmarCompraPage = React.lazy(
   () => import('./pages/ConfirmarCompraPage/ConfirmarCompraPage'),
 )
+const ResetPasswordPage = React.lazy(() => import('./pages/ResetPasswordPage/ResetPasswordPage'))
 
 // routes config
 
@@ -24,6 +25,12 @@ const routes = [
     exact: true,
     name: 'Producto Detalle',
     element: PuntosVentasPages,
+  },
+  {
+    path: '/eco/reset-password/:token',
+    exact: true,
+    name: 'Reset Password',
+    element: ResetPasswordPage,
   },
 ]
 

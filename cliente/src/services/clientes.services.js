@@ -9,6 +9,14 @@ export const postLoginClientesService = (data) => {
   return axios.post('/clientes/login', data)
 }
 
+export const postForgotPasswordClientesService = (data) => {
+  return axios.post('/clientes/forgot-password', data)
+}
+
+export const postResetPasswordClientesService = (data) => {
+  return axios.post('/clientes/reset-password', data)
+}
+
 export const getAllClientesService = (token, signal) => {
   return axios.get('/clientes', { headers: { 'access-token': token }, signal: signal })
 }
