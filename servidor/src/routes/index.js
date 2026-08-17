@@ -2,7 +2,6 @@ import { Router } from "express";
 import { client } from "../db.js";
 
 import { validateTokenMid } from "../utils/authjws.js";
-import { INDEX_ES_MAIN_LOGS } from "../config.js";
 import ProductosRouters from "../modules/productos/productoRoutes.js";
 import CategoriasRouters from "../modules/categorias/categoriaRoutes.js";
 import ClientesRouters from "../modules/clientes/clienteRoutes.js";
@@ -14,6 +13,7 @@ import PuntoVentaRouters from "../modules/puntoVenta/puntoVentaRoutes.js";
 import PagosRouters from "../modules/pagos/pagoRoutes.js";
 import ImagesRouters from "../modules/imagenes/imagenRoutes.js";
 import MetricsRouters from "../modules/metrics/metricsRoutes.js";
+import LogsRouters from "../modules/logs/logRoutes.js";
 
 // Importar todos los routers;
 // Ejemplo: const authRouter = require('./auth.js');
@@ -34,6 +34,7 @@ router.use("/ordenes", OrdenesRouters);
 router.use("/punto_venta", PuntoVentaRouters);
 router.use("/pagos", PagosRouters);
 router.use("/metrics", validateTokenMid, MetricsRouters);
+router.use("/logs", validateTokenMid, LogsRouters);
 
 
 
@@ -58,21 +59,4 @@ router.get("/test", async (req, res) => {
   }
 });
 
-router.get("/logs", async (req, res) => {
-  try {
-    const searchResult = await client.search({
-      index: INDEX_ES_MAIN_LOGS,
-      size: 100,
-      body: {
-        sort: [
-          { createdTime: { order: "desc" } }, // Reemplaza con el campo por el que quieres ordenar
-        ],
-      },
-    });
-    return res.json(searchResult.body.hits.hits);
-  } catch (error) {
-    console.log(error);
-    return res.json({ error: error.message });
-  }
-});
 export default router;
