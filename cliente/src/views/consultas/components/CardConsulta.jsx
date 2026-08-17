@@ -6,6 +6,14 @@ import ReactTimeAgo from 'react-time-ago'
 import { getImageByidService } from '../../../services/images.services'
 import { useState } from 'react'
 import { useEffect } from 'react'
+import PropTypes from 'prop-types'
+
+CardConsulta.propTypes = {
+  consul:PropTypes.object,
+  setShow:PropTypes.func,
+  setConsultaSelecionada:PropTypes.func,
+  setShowHide:PropTypes.func,
+}
 
 export default function CardConsulta({ consul, setShow, setConsultaSelecionada, setShowHide }) {
   const translateStatus = {
@@ -33,7 +41,7 @@ export default function CardConsulta({ consul, setShow, setConsultaSelecionada, 
   }
 
   useEffect(() => {
-    if (consul.producto.image_id) {
+    if (consul?.producto?.image_id) {
       console.log('SI')
       getImage()
     }
