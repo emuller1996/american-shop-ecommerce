@@ -9,7 +9,9 @@ import { Button, Modal } from 'react-bootstrap'
 import './MisComprasPages.css'
 import StepperStatus from './components/StepperStatus'
 import { useNavigate } from 'react-router-dom'
-import logo_ame from "../../../../assets/Logo.png"
+import logo_ame from '../../../../assets/Logo.png'
+import nequi_log from './assets/nequi-colombia-svgrepo-com.svg'
+import tarjeta_log from './assets/cards-outline-svgrepo-com.svg'
 
 export default function MisComprasPages() {
   const { getAllShoppingByClientes, loading, dataShopping, getShopDetailById, dataShopDetail } =
@@ -125,17 +127,32 @@ export default function MisComprasPages() {
                       <span>{shop.products.length}</span>
                     </div>
 
-                    <div className="d-flex justify-content-between mb-1">
-                      <small className="text-muted">Metodo de Pago</small>
-                      <span>{shop.payment_method}</span>
-                    </div>
-
                     {/* Total destacado */}
                     <div className="d-flex justify-content-between align-items-center mt-3">
                       <span className="fw-semibold">Total</span>
                       <span className="fs-5 fw-bold text-success">
                         {ViewDollar(shop.total_order ?? 0)}
                       </span>
+                    </div>
+                    <hr/>
+                    <div className="d-flex justify-content-between align-items-center mb-1 payment-method">
+                      <small className="text-muted">Metodo de Pago</small>
+                      {shop.payment_method === 'Nequi' && (
+                        <>
+                          <div>
+                            <img src={nequi_log} />
+                            <span>{shop.payment_method}</span>
+                          </div>
+                        </>
+                      )}
+                      {shop.payment_method === 'Tarjeta' && (
+                        <>
+                          <div>
+                            <img src={tarjeta_log} />
+                            <span>{shop.payment_method}</span>
+                          </div>
+                        </>
+                      )}
                     </div>
 
                     {/* Acción */}

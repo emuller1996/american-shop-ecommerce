@@ -49,3 +49,7 @@
 .card-mi-compra:hover {
   box-shadow: 0 0 0 3px rgba(214, 3, 3, 0.281);
 }
+
+.payment-method img{
+  width: 40px;
+}
