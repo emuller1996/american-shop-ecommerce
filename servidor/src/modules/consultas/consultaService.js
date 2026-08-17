@@ -41,7 +41,11 @@ class ConsultaService {
   }
 
   async obtenerDocumentoPorId(id) {
-    return await getDocumentById(id);
+    try {
+      return await getDocumentById(id);
+    } catch (error) {
+      return null
+    }
   }
 
   async crearRespuesta(data) {
