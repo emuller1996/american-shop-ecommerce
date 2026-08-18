@@ -51,7 +51,11 @@ class ClienteService {
   }
 
   async obtenerDocumentoPorId(id) {
-    return await getDocumentById(id);
+    try {
+      return await getDocumentById(id);
+    } catch (error) {
+      return null
+    }
   }
 
   async buscarComprasPorCliente(consulta) {

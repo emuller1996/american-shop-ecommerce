@@ -134,7 +134,7 @@ export default function MisComprasPages() {
                         {ViewDollar(shop.total_order ?? 0)}
                       </span>
                     </div>
-                    <hr/>
+                    <hr />
                     <div className="d-flex justify-content-between align-items-center mb-1 payment-method">
                       <small className="text-muted">Metodo de Pago</small>
                       {shop.payment_method === 'Nequi' && (
@@ -276,12 +276,14 @@ export default function MisComprasPages() {
                       <tr key={pro._id} className="">
                         <td width={'450px'} scope="row">
                           <div>
-                            <img
-                              src={pro.image.image ?? logo_ame}
-                              alt="IMG_PRODUCT"
-                              style={{ width: '60px', height: '60px', borderRadius: '50%' }}
-                            />
-                            <span className="ms-3">{pro.producto_data.name}</span>
+                            {/* {pro?.image?.image && (
+                              <img
+                                src={pro.image.image ?? logo_ame}
+                                alt="IMG_PRODUCT"
+                                style={{ width: '60px', height: '60px', borderRadius: '50%' }}
+                              />
+                            )} */}
+                            <span className="ms-3">{pro?.producto_data?.name || ""}</span>
                           </div>
                         </td>
                         <td>{ViewDollar(pro.price)}</td>
