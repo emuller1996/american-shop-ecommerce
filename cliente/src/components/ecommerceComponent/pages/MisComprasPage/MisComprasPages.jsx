@@ -10,8 +10,7 @@ import './MisComprasPages.css'
 import StepperStatus from './components/StepperStatus'
 import { useNavigate } from 'react-router-dom'
 import logo_ame from '../../../../assets/Logo.png'
-import nequi_log from './assets/nequi-colombia-svgrepo-com.svg'
-import tarjeta_log from './assets/cards-outline-svgrepo-com.svg'
+import MethodPayment from './components/MethodPayment'
 
 export default function MisComprasPages() {
   const { getAllShoppingByClientes, loading, dataShopping, getShopDetailById, dataShopDetail } =
@@ -135,24 +134,9 @@ export default function MisComprasPages() {
                       </span>
                     </div>
                     <hr />
-                    <div className="d-flex justify-content-between align-items-center mb-1 payment-method">
+                    <div className="d-flex justify-content-between align-items-center mb-1">
                       <small className="text-muted">Metodo de Pago</small>
-                      {shop.payment_method === 'Nequi' && (
-                        <>
-                          <div>
-                            <img src={nequi_log} />
-                            <span>{shop.payment_method}</span>
-                          </div>
-                        </>
-                      )}
-                      {shop.payment_method === 'Tarjeta' && (
-                        <>
-                          <div>
-                            <img src={tarjeta_log} />
-                            <span>{shop.payment_method}</span>
-                          </div>
-                        </>
-                      )}
+                      {shop && <MethodPayment payment_method={shop?.payment_method} />}
                     </div>
 
                     {/* Acción */}
@@ -283,7 +267,7 @@ export default function MisComprasPages() {
                                 style={{ width: '60px', height: '60px', borderRadius: '50%' }}
                               />
                             )} */}
-                            <span className="ms-3">{pro?.producto_data?.name || ""}</span>
+                            <span className="ms-3">{pro?.producto_data?.name || ''}</span>
                           </div>
                         </td>
                         <td>{ViewDollar(pro.price)}</td>
