@@ -473,20 +473,25 @@ export const obtenerCompraPorId = async (req, res) => {
       orden.address = await clienteService.obtenerDocumentoPorId(orden.address_id);
     }
 
+
+
     const productosData = await Promise.all(
       orden.products.map(async (c) => {
         const producto_data = await clienteService.obtenerDocumentoPorId(c.product_id);
         const stock_data = await clienteService.obtenerDocumentoPorId(c.stock_id);
-        const image = await clienteService.obtenerDocumentoPorId(producto_data.image_id);
         
         return {
           ...c,
           producto_data,
           stock_data,
-          image : image ?? null,
+          image: producto_data?.image_id 
+            ? await clienteService.obtenerDocumentoPorId(producto_data.image_id)
+            : null,
         };
       })
     );
+
+
 
     orden.products = productosData;
     return res.status(200).json(orden);
