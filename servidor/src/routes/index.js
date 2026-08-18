@@ -13,7 +13,7 @@ import PuntoVentaRouters from "../modules/puntoVenta/puntoVentaRoutes.js";
 import PagosRouters from "../modules/pagos/pagoRoutes.js";
 import ImagesRouters from "../modules/imagenes/imagenRoutes.js";
 import MetricsRouters from "../modules/metrics/metricsRoutes.js";
-import LogsRouters from "../modules/logs/logRoutes.js";
+import LogsRouters from "../modules/Modulelogs/logRoutes.js";
 
 // Importar todos los routers;
 // Ejemplo: const authRouter = require('./auth.js');

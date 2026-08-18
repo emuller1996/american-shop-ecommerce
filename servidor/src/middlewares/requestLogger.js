@@ -1,5 +1,5 @@
 import { jwtDecode } from "jwt-decode";
-import logService from "../modules/logs/logService.js";
+import logService from "../modules/Modulelogs/logService.js";
 
 function extraerUsuario(req) {
   const raw = req.headers["access-token"] || req.headers["authorization"];
