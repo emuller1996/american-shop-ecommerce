@@ -7,6 +7,7 @@ import { useParams } from 'react-router-dom'
 import { useOrden } from '../../../hooks/useOrden'
 import { ViewDollar } from '../../../utils'
 import toast from 'react-hot-toast'
+import MethodPayment from '../../../components/ecommerceComponent/pages/MisComprasPage/components/MethodPayment'
 
 export default function PedidoDetallesPage() {
   const { idOrder } = useParams()
@@ -131,7 +132,7 @@ export default function PedidoDetallesPage() {
                 <div className="card-body">
                   <div className="d-flex justify-content-between">
                     <span className="">Metodo de Pago</span>
-                    <span className="">TARJETA</span>
+                    <MethodPayment payment_method={dataDetalle?.payment_method} />
                   </div>
                   <div className="d-flex justify-content-between">
                     <span className="">Estado</span>
