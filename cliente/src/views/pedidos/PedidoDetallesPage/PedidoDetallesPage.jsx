@@ -2,12 +2,13 @@
 import React, { useEffect } from 'react'
 import { StatusOrderOptions, stylesSelect, themeSelect } from '../../../utils/optionsConfig'
 import Select from 'react-select'
-import { Form } from 'react-bootstrap'
+import { Badge, Button, Form } from 'react-bootstrap'
 import { useParams } from 'react-router-dom'
 import { useOrden } from '../../../hooks/useOrden'
 import { ViewDollar } from '../../../utils'
 import toast from 'react-hot-toast'
 import MethodPayment from '../../../components/ecommerceComponent/pages/MisComprasPage/components/MethodPayment'
+import TableProductosDetalles from './components/TableProductosDetalles'
 
 export default function PedidoDetallesPage() {
   const { idOrder } = useParams()
@@ -158,39 +159,8 @@ export default function PedidoDetallesPage() {
               </div>
             </div>
           </div>
-          <div className="table-responsive mt-3">
-            <table className="table">
-              <thead>
-                <tr>
-                  <th scope="col">Producto</th>
-                  <th scope="col">Precio U.</th>
-                  <th scope="col">Cantidad</th>
-                  <th scope="col">Talla</th>
-                  <th scope="col">Precio Total.</th>
-                </tr>
-              </thead>
-              <tbody>
-                {dataDetalle?.products?.map((pro) => (
-                  <tr key={pro._id} className="">
-                    <td width={'450px'} scope="row">
-                      <div>
-                        <img
-                          src={pro.image}
-                          alt="IMG_PRODUCT"
-                          style={{ width: '60px', height: '60px', borderRadius: '50%' }}
-                        />
-                        <span className="ms-3">{pro.producto_data.name}</span>
-                      </div>
-                    </td>
-                    <td>{ViewDollar(pro.price)}</td>
-                    <td>{pro.cantidad}</td>
-                    <td>{pro.stock_data.size}</td>
-                    <td>{ViewDollar(pro.price * pro.cantidad)}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+          {dataDetalle && 
+          <TableProductosDetalles products={dataDetalle?.products} />}
         </>
       )}
     </div>
