@@ -3,14 +3,15 @@ import React, { useContext, useEffect, useState } from 'react'
 import { useProductos } from '../../../../hooks/useProductos'
 import AuthContext from '../../../../context/AuthContext'
 import { ViewDollar } from '../../../../utils'
-import { Accordion } from 'react-bootstrap'
+import { Accordion, Spinner } from 'react-bootstrap'
 import { Payment, initMercadoPago } from '@mercadopago/sdk-react'
 import './ConfirmarCompraPage.css'
 import SelectAddressShop from './components/SelectAddressShop'
 import axios from 'axios'
 import toast from 'react-hot-toast'
 import { useNavigate } from 'react-router-dom'
-import logoNequi from "../../../../assets/nequi-logo.svg"
+import logoNequi from '../../../../assets/nequi-logo.svg'
+import { useLocalStorage } from '../../../../hooks/useLocalStorage'
 
 initMercadoPago(import.meta.env.VITE_MERCA_PUBLIC_KEY)
 
@@ -18,8 +19,13 @@ export default function ConfirmarCompraPage({}) {
   const { validateProductoCart } = useProductos()
 
   const [direccionSelecionada, setDireccionSelecionada] = useState(null)
+  const [isLoadingNequi, setIsLoadingNequi] = useState(false)
 
   const [pasoActive, setPasoActive] = useState('0')
+  const [cartEcommerceAmerican, setCartEcommerceAmerican] = useLocalStorage(
+    'cartEcommerceAmerican',
+    [],
+  )
 
   useEffect(() => {
     getAllProductCart()
@@ -116,7 +122,7 @@ export default function ConfirmarCompraPage({}) {
           // recibir el resultado del pago
           console.log(response)
           if (response.data.mercaResponse.status === 'approved') {
-            setCartEcommerceAmericanState([]);
+            setCartEcommerceAmericanState([])
             toast.success('Se ha Generado su Pedido Correctamente.')
             setPasoActive('2')
             resolve()
@@ -163,6 +169,7 @@ export default function ConfirmarCompraPage({}) {
 
   const handleNequiPayment = async () => {
     try {
+      setIsLoadingNequi(true)
       const orderData = {
         products: Data.map((stk) => ({
           stock_id: stk._id,
@@ -179,27 +186,30 @@ export default function ConfirmarCompraPage({}) {
           number_document_client: client.number_document_client,
         },
         total_order: total,
-      };
+      }
 
-      const response = await axios.post('/ordenes/nequi_payment', { orderData });
+      const response = await axios.post('/ordenes/nequi_payment', { orderData })
       if (response.data.order) {
-        setCartEcommerceAmericanState([]);
-        setNequiOrder(response.data.order);
-        toast.success('Orden creada. Ahora confirma el pago por WhatsApp');
+        setCartEcommerceAmericanState([])
+        setCartEcommerceAmerican([])
+        setNequiOrder(response.data.order)
+        toast.success('Orden creada. Ahora confirma el pago por WhatsApp')
       }
     } catch (error) {
-      console.error(error);
-      toast.error('Error al generar la orden con Nequi');
+      console.error(error)
+      toast.error('Error al generar la orden con Nequi')
+    } finally {
+      setIsLoadingNequi(false)
     }
-  };
+  }
 
   const goToWhatsApp = () => {
-    const phone = import.meta.env.VITE_NUMBER_PHONE; // Reemplazar con el número del negocio
-    const message = `Hola! Quiero confirmar mi pago por Nequi.\n\n*Orden:* ${nequiOrder._id}\n*Cliente:* ${client.name_client}\n*Total:* ${ViewDollar(total)}\n\nAdjunto el comprobante de pago.`;
-    const url = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
-    window.open(url, '_blank');
-    setPasoActive('2');
-  };
+    const phone = import.meta.env.VITE_NUMBER_PHONE // Reemplazar con el número del negocio
+    const message = `Hola! Quiero confirmar mi pago por Nequi.\n\n*Orden:* ${nequiOrder._id}\n*Cliente:* ${client.name_client}\n*Total:* ${ViewDollar(total)}\n\nAdjunto el comprobante de pago.`
+    const url = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`
+    window.open(url, '_blank')
+    setPasoActive('2')
+  }
 
   const navigate = useNavigate()
 
@@ -234,43 +244,37 @@ export default function ConfirmarCompraPage({}) {
               <Accordion.Header>Método de Pago</Accordion.Header>
               <Accordion.Body>
                 <div>
-                  <div className="text-center">
-                    <button
-                      className="btn btn-danger text-white"
-                      onClick={() => {
-                        setPasoActive('0')
-                      }}
-                    >
-                      Atras
-                    </button>
-                  </div>
                   {total && pasoActive === '1' && (
                     <div className="d-flex flex-column gap-3">
-                      <Payment
+                      {/* <Payment
                         initialization={{ amount: total }}
                         customization={customization}
                         onSubmit={onSubmit}
                         onReady={onReady}
                         onError={onError}
-                      />
+                      /> */}
                       <div className="text-center mt-3">
                         <hr />
-                        <p className="text-muted small">O paga rápidamente con</p>
                         {!nequiOrder ? (
-                          <button 
-                            className="btn btn-light w-100 text-dark fw-bold" 
+                          <button
+                            disabled={isLoadingNequi}
+                            className="btn btn-light w-100 text-dark fw-bold"
                             onClick={handleNequiPayment}
                             //style={{ backgroundColor: '#2ecc71' }}
                           >
-
-                            <i className="fa-solid fa-mobile-screen-button me-2"></i>
-                            Pagar con 
-                          <img src={logoNequi} />
-
+                            {isLoadingNequi ? (
+                              <Spinner size="sm" />
+                            ) : (
+                              <>
+                                <i className="fa-solid fa-mobile-screen-button me-2"></i>
+                                Pagar con
+                                <img src={logoNequi} />
+                              </>
+                            )}
                           </button>
                         ) : (
-                          <button 
-                            className="btn btn-primary w-100 text-white fw-bold" 
+                          <button
+                            className="btn btn-primary w-100 text-white fw-bold"
                             onClick={goToWhatsApp}
                           >
                             <i className="fa-brands fa-whatsapp me-2"></i>
@@ -280,6 +284,16 @@ export default function ConfirmarCompraPage({}) {
                       </div>
                     </div>
                   )}
+                  <div className="text-center mt-3">
+                    <button
+                      className="btn btn-danger text-white"
+                      onClick={() => {
+                        setPasoActive('0')
+                      }}
+                    >
+                      Atras
+                    </button>
+                  </div>
                 </div>
               </Accordion.Body>
             </Accordion.Item>
@@ -379,7 +393,8 @@ export default function ConfirmarCompraPage({}) {
           <h6 className="text-center fs-4 fw-bold">Nota!</h6>
           <p>
             Es un placer Atenderte, Queremos informarle que el costo del envío para su pedido será
-            manejado mediante el método de &quot;Contra Entrega&quot;. Esto significa que el pago del
+            manejado mediante el método de &quot;Contra Entrega&quot;. Esto significa que el pago
+            del
             <span className="text-uppercase  fw-bold  text-success ">{' valor del ENVIO '}</span>
             se realizará en el momento de la entrega de sus productos.
           </p>
