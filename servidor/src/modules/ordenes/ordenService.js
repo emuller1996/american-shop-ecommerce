@@ -35,6 +35,33 @@ class OrdenService {
   async refreshIndex() {
     await client.indices.refresh({ index: INDEX_ES_MAIN });
   }
+
+  async productPack(id, data) {
+    const order = await getDocumentById(id);
+    const stockObject = await getDocumentById(data.stock_id);
+
+    const productoAEmpacar = order.products.find(
+      (pro) => pro.product_id === data.product_id
+    );
+    const cantidadAEmpacar = parseInt(productoAEmpacar?.cantidad);
+
+    if (parseInt(stockObject.stock) < cantidadAEmpacar) {
+      throw new Error("El producto no tiene en el stock la cantidad a empacar.");
+    }
+
+    const products = order.products.map((pro) =>
+      pro.product_id === data.product_id ? { ...pro, status: "Empacado" } : pro
+    );
+    const nuevoStock = parseInt(stockObject.stock) - cantidadAEmpacar;
+
+    await Promise.all([
+      updateElasticByType(id, { products }),
+      updateElasticByType(data.stock_id, { stock: nuevoStock }),
+    ]);
+    await this.refreshIndex();
+
+    return { order, stockObject: { ...stockObject, stock: nuevoStock }, products };
+  }
 }
 
 export default new OrdenService();

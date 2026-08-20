@@ -5,9 +5,11 @@ import {
   getAllOrdenService,
   getOrdenByIdServices,
   getOrdenesSearchPaginationServices,
+  packProductOrdenServices,
   putUpdateOrdenByIdServices,
 } from '../services/ordenes.services'
 import AuthContext from '../context/AuthContext'
+import toast from 'react-hot-toast'
 
 export const useOrden = () => {
   const [data, setData] = useState(null)
@@ -117,8 +119,19 @@ export const useOrden = () => {
     }
   }
 
-  const changeStatusOrder = async (id,data ) => {
+  const changeStatusOrder = async (id, data) => {
     return putUpdateOrdenByIdServices(Token, data, id)
+  }
+
+  const packProductOfOrder = async (idPedido, data) => {
+    try {
+      const result = await packProductOrdenServices(Token, data, idPedido)
+      toast.success(result.data.message)
+      return result;
+    } catch (error) {
+      toast.error(error?.response?.data?.message || error.message)
+      console.log(error)
+    }
   }
 
   return {
@@ -131,6 +144,7 @@ export const useOrden = () => {
     dataP,
     getOrdenById,
     dataDetalle,
-    changeStatusOrder
+    changeStatusOrder,
+    packProductOfOrder
   }
 }

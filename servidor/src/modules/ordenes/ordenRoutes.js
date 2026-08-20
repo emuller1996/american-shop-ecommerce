@@ -6,6 +6,7 @@ import {
   obtenerPaginados,
   obtenerPorId,
   webhookMercadoPago,
+  productPack,
 } from "./ordenController.js";
 
 const OrdenesRouters = Router();
@@ -18,6 +19,7 @@ OrdenesRouters.post("/webhooks", webhookMercadoPago);
 // Listado y detalle
 OrdenesRouters.get("/pagination", obtenerPaginados);
 OrdenesRouters.get("/:id", obtenerPorId);
+OrdenesRouters.post("/:id/pack-product", productPack);
 
 // Actualización
 OrdenesRouters.put("/:id", actualizar);

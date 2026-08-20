@@ -11,22 +11,35 @@ import {
 } from 'react-bootstrap'
 import PropTypes from 'prop-types'
 import { ViewDollar } from '../../../../utils'
+import { useOrden } from '../../../../hooks/useOrden'
+import { useParams } from 'react-router-dom'
 
 TableProductosDetalles.propTypes = {
   products: PropTypes.array,
+  refreshOrder: PropTypes.func,
 }
 
-export default function TableProductosDetalles({ products }) {
+export default function TableProductosDetalles({ products, refreshOrder }) {
   const [ProductPacking, setProductPacking] = useState({
     show: false,
     product: null,
   })
 
-  const onPacking = () =>{
+  const { idOrder } = useParams()
+  const { packProductOfOrder } = useOrden()
 
-    console.log("Mandar el Empaque  ",ProductPacking.product.stock_id, );
-    
-  } 
+  const onPacking = async () => {
+    console.log('Mandar el Empaque  ', ProductPacking.product.stock_id)
+    try {
+      await packProductOfOrder(idOrder, {
+        stock_id: ProductPacking.product.stock_id,
+        product_id: ProductPacking.product.product_id,
+      })
+      await refreshOrder()
+    } catch (error) {
+      console.log(error)
+    }
+  }
   return (
     <>
       <div className="table-responsive mt-3">
@@ -60,19 +73,23 @@ export default function TableProductosDetalles({ products }) {
                 <td>{pro.stock_data.size}</td>
                 <td>{ViewDollar(pro.price * pro.cantidad)}</td>
                 <td>
-                  <Badge className="bg-warning">Pendiente</Badge>
+                  <Badge className={`bg-${pro.status || 'warning'} warning`}>
+                    {pro.status || 'Pendiente'}
+                  </Badge>
                 </td>
                 <td>
-                  <Button
-                    onClick={() => {
-                      setProductPacking({ show: true, product: pro })
-                    }}
-                    title="Empacar"
-                    size="sm"
-                    variant="light"
-                  >
-                    <i className="fa-solid fa-boxes-packing"></i>{' '}
-                  </Button>
+                  {!pro.status && (
+                    <Button
+                      onClick={() => {
+                        setProductPacking({ show: true, product: pro })
+                      }}
+                      title="Empacar"
+                      size="sm"
+                      variant="light"
+                    >
+                      <i className="fa-solid fa-boxes-packing"></i>{' '}
+                    </Button>
+                  )}
                 </td>
               </tr>
             ))}
@@ -93,19 +110,27 @@ export default function TableProductosDetalles({ products }) {
           <p> Seguro desea empacar este producto para despachar en la Orden de compra.</p>
           <div className="d-flex justify-content-between">
             <span>Producto </span>
-            <span className='fw-semibold text-primary'>{ProductPacking?.product?.producto_data?.name || " "} </span>
+            <span className="fw-semibold text-primary">
+              {ProductPacking?.product?.producto_data?.name || ' '}{' '}
+            </span>
           </div>
           <div className="d-flex justify-content-between">
             <span>Talla </span>
-            <span className='fw-semibold text-primary'>{ProductPacking?.product?.stock_data?.size || " "} </span>
+            <span className="fw-semibold text-primary">
+              {ProductPacking?.product?.stock_data?.size || ' '}{' '}
+            </span>
           </div>
           <div className="d-flex justify-content-between">
             <span>Cantida a Empacar </span>
-            <span className='fw-semibold text-primary'>{ProductPacking?.product?.cantidad || " "} </span>
+            <span className="fw-semibold text-primary">
+              {ProductPacking?.product?.cantidad || ' '}{' '}
+            </span>
           </div>
           <div className="d-flex justify-content-between">
             <span>en Stock </span>
-            <span className='fw-semibold text-primary'>{ProductPacking?.product?.stock_data.stock || " - "} </span>
+            <span className="fw-semibold text-primary">
+              {ProductPacking?.product?.stock_data.stock || ' - '}{' '}
+            </span>
           </div>
         </ModalBody>
         <ModalFooter>
@@ -117,7 +142,7 @@ export default function TableProductosDetalles({ products }) {
           >
             Cancelar
           </Button>
-          <Button > Empacar</Button>
+          <Button onClick={onPacking}> Empacar</Button>
         </ModalFooter>
       </Modal>
     </>
