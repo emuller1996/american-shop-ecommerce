@@ -25,7 +25,9 @@ const construirConsultaOrdenes = ({ perPage, page, search, status }) => {
   };
 
   if (status) {
-    consulta.body.query.bool.filter.push({ term: { "status.keyword": status } });
+    consulta.body.query.bool.filter.push({
+      term: { "status.keyword": status },
+    });
   }
   if (search) {
     consulta.body.query.bool.must.push({
@@ -47,14 +49,16 @@ const construirConsultaOrdenes = ({ perPage, page, search, status }) => {
 const enriquecerProductos = async (productos = []) => {
   return await Promise.all(
     productos.map(async (c) => {
-      const producto_data = await ordenService.obtenerDocumentoPorId(c.product_id);
+      const producto_data = await ordenService.obtenerDocumentoPorId(
+        c.product_id,
+      );
       const stock_data = await ordenService.obtenerDocumentoPorId(c.stock_id);
       const image_id = producto_data?.image_id;
       const image = image_id
         ? (await ordenService.obtenerDocumentoPorId(image_id))?.image
         : null;
       return { ...c, producto_data, stock_data, image_id, image };
-    })
+    }),
   );
 };
 
@@ -65,7 +69,9 @@ const enriquecerOrden = async (orden, { incluirMercadoPago = false } = {}) => {
 
   if (incluirMercadoPago && orden.mercadopago_id) {
     try {
-      orden.mercadopago_data = await obtenerPagoMercadoPago(orden.mercadopago_id);
+      orden.mercadopago_data = await obtenerPagoMercadoPago(
+        orden.mercadopago_id,
+      );
     } catch (err) {
       console.error("[ordenes] error consultando Mercado Pago:", err.message);
     }
@@ -123,9 +129,9 @@ export const crearOrdenNequi = async (req, res) => {
 
     await sendOrdenDetail(ordenDataSend);
 
-    return res.status(200).json({ 
-      message: "Orden creada exitosamente para pago con Nequi", 
-      order 
+    return res.status(200).json({
+      message: "Orden creada exitosamente para pago con Nequi",
+      order,
     });
   } catch (error) {
     console.error("[ordenes/crearOrdenNequi] error:", error.message);
@@ -142,7 +148,7 @@ export const actualizar = async (req, res) => {
       crearLogsElastic(
         JSON.stringify(req.headers),
         JSON.stringify(req.body),
-        "Se ha Actualizado un Orden."
+        "Se ha Actualizado un Orden.",
       );
       return res.json({ message: "Orden  Actualizada" });
     }
@@ -158,7 +164,12 @@ export const obtenerPaginados = async (req, res) => {
   const status = req.query.status || "";
 
   try {
-    const consulta = construirConsultaOrdenes({ perPage, page, search, status });
+    const consulta = construirConsultaOrdenes({
+      perPage,
+      page,
+      search,
+      status,
+    });
     const searchResult = await ordenService.buscarOrdenesPaginadas(consulta);
 
     let data = searchResult.hits.hits.map((c) => ({
@@ -172,7 +183,7 @@ export const obtenerPaginados = async (req, res) => {
         address: orden.address_id
           ? await ordenService.obtenerDocumentoPorId(orden.address_id)
           : "",
-      }))
+      })),
     );
 
     return res.status(200).json({
@@ -193,11 +204,23 @@ export const obtenerPorId = async (req, res) => {
     crearLogsElastic(
       JSON.stringify(req.headers),
       JSON.stringify(req.body),
-      "Se mostro el detalle de un orden."
+      "Se mostro el detalle de un orden.",
     );
 
     return res.status(200).json(orden);
   } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+
+export const productPack = async (req, res) => {
+  try {
+    console.log(req.params);
+    const datos = await ordenService.productPack(req.params.id, req.body);
+    
+    return res.status(200).json({ ...datos, message: "Solitud con exito" });
+  } catch (error) {
+    //console.log(error);
     return res.status(500).json({ message: error.message });
   }
 };
@@ -214,8 +237,10 @@ export const webhookMercadoPago = async (req, res) => {
 
     const pagoDatos = {
       status: payment_mercado.status,
-      net_received_amount: payment_mercado?.transaction_details?.net_received_amount,
-      net_amount: payment_mercado?.net_amount ?? payment_mercado.transaction_amount,
+      net_received_amount:
+        payment_mercado?.transaction_details?.net_received_amount,
+      net_amount:
+        payment_mercado?.net_amount ?? payment_mercado.transaction_amount,
       fee_details_amount: payment_mercado?.fee_details?.[0]?.amount,
       status_detail: payment_mercado?.status_detail,
     };
