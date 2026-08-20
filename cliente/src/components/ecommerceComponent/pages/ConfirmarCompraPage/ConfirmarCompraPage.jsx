@@ -3,7 +3,7 @@ import React, { useContext, useEffect, useState } from 'react'
 import { useProductos } from '../../../../hooks/useProductos'
 import AuthContext from '../../../../context/AuthContext'
 import { ViewDollar } from '../../../../utils'
-import { Accordion } from 'react-bootstrap'
+import { Accordion, Spinner } from 'react-bootstrap'
 import { Payment, initMercadoPago } from '@mercadopago/sdk-react'
 import './ConfirmarCompraPage.css'
 import SelectAddressShop from './components/SelectAddressShop'
@@ -11,6 +11,7 @@ import axios from 'axios'
 import toast from 'react-hot-toast'
 import { useNavigate } from 'react-router-dom'
 import logoNequi from '../../../../assets/nequi-logo.svg'
+import { useLocalStorage } from '../../../../hooks/useLocalStorage'
 
 initMercadoPago(import.meta.env.VITE_MERCA_PUBLIC_KEY)
 
@@ -18,12 +19,13 @@ export default function ConfirmarCompraPage({}) {
   const { validateProductoCart } = useProductos()
 
   const [direccionSelecionada, setDireccionSelecionada] = useState(null)
+  const [isLoadingNequi, setIsLoadingNequi] = useState(false)
 
   const [pasoActive, setPasoActive] = useState('0')
   const [cartEcommerceAmerican, setCartEcommerceAmerican] = useLocalStorage(
-      'cartEcommerceAmerican',
-      [],
-    )
+    'cartEcommerceAmerican',
+    [],
+  )
 
   useEffect(() => {
     getAllProductCart()
@@ -167,6 +169,7 @@ export default function ConfirmarCompraPage({}) {
 
   const handleNequiPayment = async () => {
     try {
+      setIsLoadingNequi(true)
       const orderData = {
         products: Data.map((stk) => ({
           stock_id: stk._id,
@@ -195,6 +198,8 @@ export default function ConfirmarCompraPage({}) {
     } catch (error) {
       console.error(error)
       toast.error('Error al generar la orden con Nequi')
+    } finally {
+      setIsLoadingNequi(false)
     }
   }
 
@@ -252,13 +257,20 @@ export default function ConfirmarCompraPage({}) {
                         <hr />
                         {!nequiOrder ? (
                           <button
+                            disabled={isLoadingNequi}
                             className="btn btn-light w-100 text-dark fw-bold"
                             onClick={handleNequiPayment}
                             //style={{ backgroundColor: '#2ecc71' }}
                           >
-                            <i className="fa-solid fa-mobile-screen-button me-2"></i>
-                            Pagar con
-                            <img src={logoNequi} />
+                            {isLoadingNequi ? (
+                              <Spinner size="sm" />
+                            ) : (
+                              <>
+                                <i className="fa-solid fa-mobile-screen-button me-2"></i>
+                                Pagar con
+                                <img src={logoNequi} />
+                              </>
+                            )}
                           </button>
                         ) : (
                           <button
