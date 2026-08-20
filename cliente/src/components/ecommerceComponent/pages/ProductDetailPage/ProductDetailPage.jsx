@@ -90,7 +90,7 @@ export default function ProductDetailPage() {
                   <hr />
                   <div className="row g-3">
                     {dataDetalle &&
-                      dataDetalle?.Stock.map((stock) => (
+                      dataDetalle?.Stock.filter(sto=> sto.stock !=0).map((stock) => (
                         <StockComponent
                           key={stock?._id}
                           stock={stock}
