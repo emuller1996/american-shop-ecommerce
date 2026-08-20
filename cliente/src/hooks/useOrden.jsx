@@ -127,8 +127,8 @@ export const useOrden = () => {
     try {
       const result = await packProductOrdenServices(Token, data, idPedido)
       toast.success(result.data.message)
+      return result;
     } catch (error) {
-      
       toast.error(error?.response?.data?.message || error.message)
       console.log(error)
     }

@@ -16,10 +16,10 @@ import { useParams } from 'react-router-dom'
 
 TableProductosDetalles.propTypes = {
   products: PropTypes.array,
-  refreshOrder:PropTypes.func
+  refreshOrder: PropTypes.func,
 }
 
-export default function TableProductosDetalles({ products,refreshOrder }) {
+export default function TableProductosDetalles({ products, refreshOrder }) {
   const [ProductPacking, setProductPacking] = useState({
     show: false,
     product: null,
@@ -28,14 +28,16 @@ export default function TableProductosDetalles({ products,refreshOrder }) {
   const { idOrder } = useParams()
   const { packProductOfOrder } = useOrden()
 
-  
-  const onPacking =  async () => {
+  const onPacking = async () => {
     console.log('Mandar el Empaque  ', ProductPacking.product.stock_id)
     try {
-      await packProductOfOrder(idOrder, { stock_id: ProductPacking.product.stock_id, product_id:ProductPacking.product.product_id })
+      await packProductOfOrder(idOrder, {
+        stock_id: ProductPacking.product.stock_id,
+        product_id: ProductPacking.product.product_id,
+      })
       await refreshOrder()
     } catch (error) {
-      console.log(error);
+      console.log(error)
     }
   }
   return (
@@ -71,19 +73,23 @@ export default function TableProductosDetalles({ products,refreshOrder }) {
                 <td>{pro.stock_data.size}</td>
                 <td>{ViewDollar(pro.price * pro.cantidad)}</td>
                 <td>
-                  <Badge className="bg-warning">Pendiente</Badge>
+                  <Badge className={`bg-${pro.status || 'warning'} warning`}>
+                    {pro.status || 'Pendiente'}
+                  </Badge>
                 </td>
                 <td>
-                  <Button
-                    onClick={() => {
-                      setProductPacking({ show: true, product: pro })
-                    }}
-                    title="Empacar"
-                    size="sm"
-                    variant="light"
-                  >
-                    <i className="fa-solid fa-boxes-packing"></i>{' '}
-                  </Button>
+                  {!pro.status && (
+                    <Button
+                      onClick={() => {
+                        setProductPacking({ show: true, product: pro })
+                      }}
+                      title="Empacar"
+                      size="sm"
+                      variant="light"
+                    >
+                      <i className="fa-solid fa-boxes-packing"></i>{' '}
+                    </Button>
+                  )}
                 </td>
               </tr>
             ))}
