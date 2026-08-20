@@ -9,6 +9,7 @@ import { ViewDollar } from '../../../utils'
 import toast from 'react-hot-toast'
 import MethodPayment from '../../../components/ecommerceComponent/pages/MisComprasPage/components/MethodPayment'
 import TableProductosDetalles from './components/TableProductosDetalles'
+import InfoPedidoDetalle from './components/InfoPedidoDetalle'
 
 export default function PedidoDetallesPage() {
   const { idOrder } = useParams()
@@ -40,8 +41,8 @@ export default function PedidoDetallesPage() {
             <div className="row">
               <div className="col-md-6">
                 <p className="m-0 text-center fw-bold fs-5">ID # {dataDetalle._id}</p>
-                <p className='m-0 '>Total Orden</p>
-                <p className='m-0 fs-5 fw-semibold'> {ViewDollar(dataDetalle.total_order)}</p>
+                <p className="m-0 ">Total Orden</p>
+                <p className="m-0 fs-5 fw-semibold"> {ViewDollar(dataDetalle.total_order)}</p>
               </div>
               <div className="col-md-6">
                 <Form.Label htmlFor="status">Cambiar de Estado</Form.Label>
@@ -69,98 +70,8 @@ export default function PedidoDetallesPage() {
               </div>
             </div>
           </div>
-          <div className="row g-3">
-            <div className="col-md-6">
-              <span className="d-flex justify-content-center text-muted">Datos de Cliente</span>
-              <div className="card">
-                <div className="card-body">
-                  <div className="d-flex justify-content-between">
-                    <span className="">Nombre</span>
-                    <span className="">{dataDetalle?.cliente?.name_client}</span>
-                  </div>
-                  <div className="d-flex justify-content-between">
-                    <span className="">Correo</span>
-                    <span className="">{dataDetalle?.cliente?.email_client}</span>
-                  </div>
-                  <div className="d-flex justify-content-between">
-                    <span className="">Telefono</span>
-                    <span className="">{dataDetalle?.cliente?.phone_client}</span>
-                  </div>
-                  <div className="d-flex justify-content-between">
-                    <span className="">Num Documento</span>
-                    <span className="">{dataDetalle?.cliente?.number_document_client}</span>
-                  </div>
-                  <div className="d-flex justify-content-between">
-                    <span className="">
-                      {' '}
-                      <br />
-                    </span>
-                    <span className=""></span>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="col-md-6">
-              <span className="d-flex justify-content-center text-muted">Datos de Envio</span>
-              <div className="card">
-                <div className="card-body">
-                  <div className="d-flex justify-content-between">
-                    <span className="">Cuidad</span>
-                    <span className="">{dataDetalle?.address?.city}</span>
-                  </div>
-                  <div className="d-flex justify-content-between">
-                    <span className="">Departamento</span>
-                    <span className="">{dataDetalle?.address?.departament}</span>
-                  </div>
-                  <div className="d-flex justify-content-between">
-                    <span className="">Direccion</span>
-                    <span className="">{dataDetalle?.address?.address}</span>
-                  </div>
-                  <div className="d-flex justify-content-between">
-                    <span className="">Barrio</span>
-                    <span className="">{dataDetalle?.address?.neighborhood}</span>
-                  </div>
-                  <div className="d-flex justify-content-between">
-                    <span className="">Referencia</span>
-                    <span className="">{dataDetalle?.address?.reference}</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="col-md-6">
-              <span className="d-flex justify-content-center text-muted">Datos de Pago</span>
-              <div className="card">
-                <div className="card-body">
-                  <div className="d-flex justify-content-between">
-                    <span className="">Metodo de Pago</span>
-                    <MethodPayment payment_method={dataDetalle?.payment_method} />
-                  </div>
-                  <div className="d-flex justify-content-between">
-                    <span className="">Estado</span>
-                    <span className="text-uppercase ">{dataDetalle?.mercadopago_data?.status}</span>
-                  </div>
-                  <div className="d-flex justify-content-between">
-                    <span className="">Fecha</span>
-                    <span className="">{dataDetalle?.mercadopago_data?.date_created }</span>
-                  </div>
-                  <div className="d-flex justify-content-between">
-                    <span className="">Ultimos 4 Digitos de la Tarjeta</span>
-                    <span className="">{dataDetalle?.mercadopago_data?.card?.first_six_digits } *********** {dataDetalle?.mercadopago_data?.card?.last_four_digits }</span>
-                  </div>
-                  <div className="d-flex justify-content-between">
-                    <span className="">Monto Transaction {`(MercadoPago)`}</span>
-                    <span className="text-success fw-semibold">{ViewDollar(dataDetalle?.mercadopago_data?.transaction_amount)}</span>
-                  </div>
-                  <div className="d-flex justify-content-between">
-                    <span className="">Monto Tarifa. {`(MercadoPago)`}</span>
-                    <span className="text-warning fw-semibold">{ViewDollar(dataDetalle?.mercadopago_data?.fee_details?.[0]?.amount)}</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          {dataDetalle && 
-          <TableProductosDetalles products={dataDetalle?.products} />}
+          {dataDetalle && <InfoPedidoDetalle pedido={dataDetalle} />}
+          {dataDetalle && <TableProductosDetalles products={dataDetalle?.products} />}
         </>
       )}
     </div>
