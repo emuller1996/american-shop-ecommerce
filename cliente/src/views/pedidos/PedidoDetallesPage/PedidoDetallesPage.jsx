@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { StatusOrderOptions, stylesSelect, themeSelect } from '../../../utils/optionsConfig'
 import Select from 'react-select'
 import { Badge, Button, Form } from 'react-bootstrap'
@@ -13,14 +13,13 @@ import InfoPedidoDetalle from './components/InfoPedidoDetalle'
 
 export default function PedidoDetallesPage() {
   const { idOrder } = useParams()
+  const [Draw, setDraw] = useState(1)
 
   const { getOrdenById, dataDetalle, loading, changeStatusOrder } = useOrden()
 
   useEffect(() => {
     getOrdenById(idOrder)
-  }, [idOrder])
-
-  console.log(dataDetalle)
+  }, [idOrder, Draw])
 
   return (
     <div>
@@ -35,7 +34,7 @@ export default function PedidoDetallesPage() {
           </div>
         </div>
       )}
-      {dataDetalle && (
+      {dataDetalle && !loading && (
         <>
           <div className="card p-3 mb-3">
             <div className="row">
@@ -71,7 +70,14 @@ export default function PedidoDetallesPage() {
             </div>
           </div>
           {dataDetalle && <InfoPedidoDetalle pedido={dataDetalle} />}
-          {dataDetalle && <TableProductosDetalles products={dataDetalle?.products} />}
+          {dataDetalle && (
+            <TableProductosDetalles
+              refreshOrder={() => {
+                setDraw((status) => ++status)
+              }}
+              products={dataDetalle?.products}
+            />
+          )}
         </>
       )}
     </div>

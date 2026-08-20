@@ -40,3 +40,11 @@ export const putUpdateOrdenByIdServices = async (token, data,id) => {
     },
   })
 }
+
+export const packProductOrdenServices = async (token, data,id) => {
+  return await axios.post(`/ordenes/${id}/pack-product`,data ,{
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  })
+}
