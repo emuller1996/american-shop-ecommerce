@@ -41,7 +41,7 @@ export default function HomeLanding() {
   return (
     <div className="home-landing-wrapper">
       <div className="container">
-        <Carousel>
+        <Carousel data-bs-theme="dark" prevIcon={<> <i className="text-danger fa-2xl fa-solid fa-chevron-left"></i></>} nextIcon={<> <i className="text-danger fa-2x fa-solid fa-chevron-right"></i></>}> 
           <Carousel.Item>
             <div className="row p-5 align-items-center">
               <div className="mx-auto col-md-8 col-lg-6 order-lg-last">
