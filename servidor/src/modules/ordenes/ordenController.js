@@ -5,7 +5,7 @@ import {
 } from "./mercadoPagoClient.js";
 import { crearLogsElastic } from "../../utils/index.js";
 import { INDEX_ES_MAIN } from "../../config.js";
-import { sendOrdenDetail } from "../../services/mailService.js";
+import { sendOrdenDetail, sendOrdenStatusPreparacion } from "../../services/mailService.js";
 
 // Funciones auxiliares fuera de la clase
 const construirConsultaOrdenes = ({ perPage, page, search, status }) => {
@@ -141,7 +141,13 @@ export const crearOrdenNequi = async (req, res) => {
 
 export const actualizar = async (req, res) => {
   try {
+
     const r = await ordenService.actualizarOrden(req.params.id, req.body);
+
+    if(req.body.status && req.body.status==="En Proceso"){
+      const order = await ordenService.obtenerOrdenPorId(req.params.id)
+      sendOrdenStatusPreparacion(order)
+    }
 
     if (r.body.result === "updated") {
       await ordenService.refreshIndex();
