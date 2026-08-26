@@ -5,6 +5,7 @@ import { createContext, useState, useEffect } from 'react'
 import { useLocalStorage } from '../hooks/useLocalStorage'
 import PropTypes from 'prop-types'
 import { jwtDecode } from 'jwt-decode'
+import { isTokenExpired } from '../utils/tokenUtils'
 
 const AuthContext = createContext()
 
@@ -24,7 +25,10 @@ export const AuthProvider = ({ children }) => {
   const [TokenClient, setTokenClient] = useState(tokenAccessCliente ? tokenAccessCliente : null)
 
   const [user, setUser] = useState(tokenAccess ? jwtDecode(tokenAccess) : null)
-  const [client, setClient] = useState(tokenAccessCliente ? jwtDecode(tokenAccessCliente) : null)
+  const [client, setClient] = useState(() => {
+    if (!tokenAccessCliente || isTokenExpired(tokenAccessCliente)) return null
+    return jwtDecode(tokenAccessCliente)
+  })
 
   const [cartEcommerceAmerican, setCartEcommerceAmerican] = useLocalStorage(
     'cartEcommerceAmerican',
@@ -42,6 +46,21 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem("tokenAccessAmericanShop")
   }
 
+  const cerrarSessionCliente = () => {
+    setTokenClient(null)
+    setClient(null)
+    setTokenAccessCliente(null)
+  }
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (tokenAccessCliente && isTokenExpired(tokenAccessCliente)) {
+        cerrarSessionCliente()
+      }
+    }, 60000)
+    return () => clearInterval(interval)
+  }, [tokenAccessCliente])
+
   let contextData = {
     user,
     setUser,
@@ -55,7 +74,8 @@ export const AuthProvider = ({ children }) => {
     client,
     cartEcommerceAmericanState,
     setCartEcommerceAmericanState,
-    cerrarSessionAdmin
+    cerrarSessionAdmin,
+    cerrarSessionCliente,
   }
 
   return <AuthContext.Provider value={contextData}>{children}</AuthContext.Provider>

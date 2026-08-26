@@ -20,7 +20,18 @@ export const StatusOrderOptions = [
   { label: 'Cancelada', value: 'Cancelada' },
 ]
 
-
+export const TransportistaOptions = [
+  { label: 'Servientrega', value: 'Servientrega' },
+  { label: 'Interrapidísimo', value: 'Interrapidísimo' },
+  { label: 'Deprisa', value: 'Deprisa' },
+  { label: 'Coordinadora', value: 'Coordinadora' },
+  { label: 'Envía', value: 'Envía' },
+  { label: 'TCC', value: 'TCC' },
+  { label: 'Colvanes', value: 'Colvanes' },
+  { label: 'Carguexpress', value: 'Carguexpress' },
+  { label: 'Logística Express', value: 'Logística Express' },
+  { label: 'MRW', value: 'MRW' },
+]
 
 export const stylesSelect = {
   control: (baseStyles, state) => ({

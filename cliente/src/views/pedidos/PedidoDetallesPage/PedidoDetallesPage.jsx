@@ -1,15 +1,11 @@
 /* eslint-disable prettier/prettier */
 import React, { useEffect, useState } from 'react'
-import { StatusOrderOptions, stylesSelect, themeSelect } from '../../../utils/optionsConfig'
-import Select from 'react-select'
-import { Badge, Button, Form } from 'react-bootstrap'
 import { useParams } from 'react-router-dom'
 import { useOrden } from '../../../hooks/useOrden'
 import { ViewDollar } from '../../../utils'
-import toast from 'react-hot-toast'
-import MethodPayment from '../../../components/ecommerceComponent/pages/MisComprasPage/components/MethodPayment'
 import TableProductosDetalles from './components/TableProductosDetalles'
 import InfoPedidoDetalle from './components/InfoPedidoDetalle'
+import FormChangeStatus from './components/FormChangeStatus'
 
 export default function PedidoDetallesPage() {
   const { idOrder } = useParams()
@@ -44,28 +40,7 @@ export default function PedidoDetallesPage() {
                 <p className="m-0 fs-5 fw-semibold"> {ViewDollar(dataDetalle.total_order)}</p>
               </div>
               <div className="col-md-6">
-                <Form.Label htmlFor="status">Cambiar de Estado</Form.Label>
-                {dataDetalle && (
-                  <Select
-                    name={'status'}
-                    id="status"
-                    placeholder=""
-                    defaultValue={StatusOrderOptions.find(
-                      (sta) => sta.value === dataDetalle?.status,
-                    )}
-                    onChange={async (e) => {
-                      try {
-                        await changeStatusOrder(idOrder, { status: e?.value })
-                        toast.success(`Se ha cambiado de estado la Orden.`)
-                      } catch (error) {
-                        console.log(error)
-                      }
-                    }}
-                    styles={stylesSelect}
-                    theme={themeSelect}
-                    options={StatusOrderOptions}
-                  />
-                )}
+                { dataDetalle && <FormChangeStatus idOrder={dataDetalle._id} changeStatusOrder={changeStatusOrder} order={dataDetalle} />}
               </div>
             </div>
           </div>

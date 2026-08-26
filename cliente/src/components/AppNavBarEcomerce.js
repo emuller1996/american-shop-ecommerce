@@ -11,8 +11,7 @@ import './AppNavBarEcomerce.css'
 
 const AppNavBarEcomerce = () => {
   const headerRef = useRef()
-  const { client, setTokenClient, setTokenAccessCliente, setClient, cartEcommerceAmericanState } =
-    useContext(AuthContext)
+  const { client, cerrarSessionCliente, cartEcommerceAmericanState } = useContext(AuthContext)
 
   useEffect(() => {
     document.addEventListener('scroll', () => {
@@ -107,9 +106,7 @@ const AppNavBarEcomerce = () => {
                     <Dropdown.Item
                       className="glass-dropdown-item"
                       onClick={() => {
-                        setTokenClient(null)
-                        setTokenAccessCliente(null)
-                        setClient(null)
+                        cerrarSessionCliente()
                         navigate('/')
                       }}
                     >

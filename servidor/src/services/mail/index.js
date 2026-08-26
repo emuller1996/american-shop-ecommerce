@@ -4,6 +4,7 @@ import { orderDetailEmail } from "./templates/orderDetail.js";
 import { respuestaConsultaEmail } from "./templates/respuestaConsulta.js";
 import { consultasPendientesEmail } from "./templates/consultasPendientes.js";
 import { resetPasswordEmail } from "./templates/resetPassword.js";
+import { orderStatusPreparacion } from "./templates/orderStatusPreparacion.js";
 
 export async function sendVerificationEmail(email) {
   return sendMail({
@@ -28,6 +29,15 @@ export async function sendOrdenDetail(data) {
     subject: "Detalle de tu compra",
     fromLabel: "Detalle de compra",
     html: orderDetailEmail(data),
+  });
+}
+
+export async function sendOrdenStatusPreparacion(data) {
+  return sendMail({
+    to: data?.cliente?.email_client,
+    subject: "Tu Pedido está en Preparación",
+    fromLabel: "Tu Pedido está en Preparación",
+    html: orderStatusPreparacion(data),
   });
 }
 
