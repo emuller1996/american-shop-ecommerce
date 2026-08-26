@@ -40,7 +40,16 @@ export default function PedidoDetallesPage() {
                 <p className="m-0 fs-5 fw-semibold"> {ViewDollar(dataDetalle.total_order)}</p>
               </div>
               <div className="col-md-6">
-                { dataDetalle && <FormChangeStatus idOrder={dataDetalle._id} changeStatusOrder={changeStatusOrder} order={dataDetalle} />}
+                {dataDetalle && (
+                  <FormChangeStatus
+                    idOrder={dataDetalle._id}
+                    changeStatusOrder={changeStatusOrder}
+                    order={dataDetalle}
+                    refreshOrder={() => {
+                      setDraw((status) => ++status)
+                    }}
+                  />
+                )}
               </div>
             </div>
           </div>
