@@ -9,6 +9,7 @@ import {
   Modal,
   ModalBody,
   ModalHeader,
+  Spinner,
 } from 'react-bootstrap'
 import Select from 'react-select'
 import {
@@ -24,9 +25,10 @@ FormChangeStatus.propTypes = {
   changeStatusOrder: PropTypes.func,
   idOrder: PropTypes.string,
   order: PropTypes.object,
+  refreshOrder: PropTypes.func,
 }
 
-export default function FormChangeStatus({ changeStatusOrder, idOrder, order }) {
+export default function FormChangeStatus({ changeStatusOrder, idOrder, order, refreshOrder }) {
   const [modal, setModal] = useState(false)
 
   const {
@@ -34,7 +36,7 @@ export default function FormChangeStatus({ changeStatusOrder, idOrder, order }) 
     handleSubmit,
     setValue,
     control,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm()
 
   const onSubmit = async (data) => {
@@ -42,6 +44,7 @@ export default function FormChangeStatus({ changeStatusOrder, idOrder, order }) 
     try {
       await changeStatusOrder(idOrder, { ...data, status: 'En Camino' })
       toast.success(`Se ha cambiado de estado la Orden.`)
+      await refreshOrder()
       setModal(false)
     } catch (error) {
       console.log(error)
@@ -64,6 +67,7 @@ export default function FormChangeStatus({ changeStatusOrder, idOrder, order }) 
               return false
             }
             await changeStatusOrder(idOrder, { status: e?.value })
+            await refreshOrder()
             toast.success(`Se ha cambiado de estado la Orden.`)
           } catch (error) {
             console.log(error)
@@ -113,9 +117,25 @@ export default function FormChangeStatus({ changeStatusOrder, idOrder, order }) 
               />
             </div>
 
+            <div className="mb-3">
+              <FormLabel htmlFor="fecha_envio">Fecha de Envio</FormLabel>
+              <FormControl
+                isValid={!errors?.fecha_envio}
+                id="fecha_envio"
+                type="date"
+                {...register('fecha_envio', { required: true })}
+              />
+            </div>
+
             <div className="text-center">
-              <Button type="submit" variant="outline-primary">
-                Cambiar de Estado
+              <Button disabled={isSubmitting} type="submit" variant="outline-primary">
+                {isSubmitting ? (
+                  <>
+                    <Spinner size='sm' />
+                  </>
+                ) : (
+                  'Cambiar de Estado'
+                )}
               </Button>
             </div>
           </form>

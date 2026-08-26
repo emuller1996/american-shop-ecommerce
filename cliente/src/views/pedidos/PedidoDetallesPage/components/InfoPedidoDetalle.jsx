@@ -1,8 +1,8 @@
 /* eslint-disable prettier/prettier */
 import React from 'react'
-import PropTypes from 'prop-types';
-import MethodPayment from '../../../../components/ecommerceComponent/pages/MisComprasPage/components/MethodPayment';
-import { ViewDollar } from '../../../../utils';
+import PropTypes from 'prop-types'
+import MethodPayment from '../../../../components/ecommerceComponent/pages/MisComprasPage/components/MethodPayment'
+import { ViewDollar } from '../../../../utils'
 
 InfoPedidoDetalle.propTypes = {
   pedido: PropTypes.object,
@@ -101,6 +101,26 @@ export default function InfoPedidoDetalle({ pedido }) {
               <span className="text-warning fw-semibold">
                 {ViewDollar(pedido?.mercadopago_data?.fee_details?.[0]?.amount)}
               </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="col-md-6">
+        <span className="d-flex justify-content-center text-muted">Datos Transporte</span>
+        <div className="card">
+          <div className="card-body">
+            <div className="d-flex justify-content-between">
+              <span className="">Transportadora</span>
+              <span className="text-uppercase ">{pedido?.transportadora}</span>
+            </div>
+            <div className="d-flex justify-content-between">
+              <span className="">Número de Guía</span>
+              <span className="text-uppercase ">{pedido?.numero_guia}</span>
+            </div>
+            <div className="d-flex justify-content-between">
+              <span className="">Fecha de Envio</span>
+              <span className="text-uppercase ">{pedido?.fecha_envio}</span>
             </div>
           </div>
         </div>
