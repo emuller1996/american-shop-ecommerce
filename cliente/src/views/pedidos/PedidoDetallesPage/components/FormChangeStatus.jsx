@@ -37,40 +37,42 @@ export default function FormChangeStatus({ changeStatusOrder, idOrder, order }) 
     formState: { errors },
   } = useForm()
 
-  const onSubmit = (data) => console.log(data)
+  const onSubmit = async (data) => {
+    console.log({ ...data, status: 'En Camino' })
+    try {
+      await changeStatusOrder(idOrder, { ...data, status: 'En Camino' })
+      toast.success(`Se ha cambiado de estado la Orden.`)
+      setModal(false)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+  console.log(errors)
 
   return (
     <>
       <Form.Label htmlFor="status">Cambiar de Estado</Form.Label>
-      <Controller
-        name="MyCheckbox"
-        control={control}
-        rules={{ required: true }}
-        render={({ field }) => (
-          <Select
-            name={'status'}
-            id="status"
-            placeholder=""
-            defaultValue={StatusOrderOptions.find((sta) => sta.value === order?.status)}
-            onChange={async (e) => {
-              try {
-                if (e.value === 'En Camino') {
-                  setModal(true)
-                  return false
-                }
-                //await changeStatusOrder(idOrder, { status: e?.value })
-                toast.success(`Se ha cambiado de estado la Orden.`)
-              } catch (error) {
-                console.log(error)
-              }
-            }}
-            styles={stylesSelect}
-            theme={themeSelect}
-            options={StatusOrderOptions}
-          />
-        )}
+      <Select
+        name={'status'}
+        id="status"
+        placeholder=""
+        defaultValue={StatusOrderOptions.find((sta) => sta.value === order?.status)}
+        onChange={async (e) => {
+          try {
+            if (e.value === 'En Camino') {
+              setModal(true)
+              return false
+            }
+            await changeStatusOrder(idOrder, { status: e?.value })
+            toast.success(`Se ha cambiado de estado la Orden.`)
+          } catch (error) {
+            console.log(error)
+          }
+        }}
+        styles={stylesSelect}
+        theme={themeSelect}
+        options={StatusOrderOptions}
       />
-
       <Modal centered show={modal} onHide={() => setModal(false)}>
         <ModalHeader closeButton>Cambiar de estado la orden a en camino</ModalHeader>
         <ModalBody>
@@ -99,17 +101,21 @@ export default function FormChangeStatus({ changeStatusOrder, idOrder, order }) 
                   />
                 )}
               />
-              <span className='text-danger mt-1'>{errors?.transportadora?.message}</span>
+              <span className="text-danger mt-1">{errors?.transportadora?.message}</span>
             </div>
 
             <div className="mb-3">
               <FormLabel htmlFor="numero_guia">Número de Guía</FormLabel>
-              <FormControl isValid={!errors?.numero_guia} id="numero_guia" {...register('numero_guia', { required: true })} />
+              <FormControl
+                isValid={!errors?.numero_guia}
+                id="numero_guia"
+                {...register('numero_guia', { required: true })}
+              />
             </div>
 
             <div className="text-center">
               <Button type="submit" variant="outline-primary">
-                Cambiar de Estado{' '}
+                Cambiar de Estado
               </Button>
             </div>
           </form>
