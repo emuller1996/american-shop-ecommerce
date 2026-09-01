@@ -13,6 +13,7 @@ import {
   obtenerCompraPorId,
   forgotPassword,
   resetPassword,
+  cancelarCompra,
 } from "./clienteController.js";
 import {
   validateTokenClient,
@@ -47,5 +48,6 @@ ClientesRouters.get("/get/address", validateTokenClientMid, obtenerDireccionesPo
 // Compras del cliente autenticado
 ClientesRouters.get("/get/shopping", validateTokenClientMid, obtenerComprasClienteAutenticado);
 ClientesRouters.get("/get/shopping/:id", validateTokenClientMid, obtenerCompraPorId);
+ClientesRouters.put("/shopping/:id/cancelar", validateTokenClientMid, cancelarCompra);
 
 export default ClientesRouters;

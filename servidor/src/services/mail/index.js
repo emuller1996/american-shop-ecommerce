@@ -5,6 +5,7 @@ import { respuestaConsultaEmail } from "./templates/respuestaConsulta.js";
 import { consultasPendientesEmail } from "./templates/consultasPendientes.js";
 import { resetPasswordEmail } from "./templates/resetPassword.js";
 import { orderStatusPreparacion } from "./templates/orderStatusPreparacion.js";
+import { orderStatusEnCamino } from "./templates/orderStatusEnCamino.js";
 
 export async function sendVerificationEmail(email) {
   return sendMail({
@@ -38,6 +39,15 @@ export async function sendOrdenStatusPreparacion(data) {
     subject: "Tu Pedido está en Preparación",
     fromLabel: "Tu Pedido está en Preparación",
     html: orderStatusPreparacion(data),
+  });
+}
+
+export async function sendOrdenStatusEnCamino(data) {
+  return sendMail({
+    to: data?.cliente?.email_client,
+    subject: "Tu Pedido está en Camino",
+    fromLabel: "Tu Pedido está en Camino",
+    html: orderStatusEnCamino(data),
   });
 }
 

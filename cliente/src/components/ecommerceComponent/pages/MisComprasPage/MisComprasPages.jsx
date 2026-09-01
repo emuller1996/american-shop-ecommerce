@@ -2,22 +2,33 @@
 
 import React, { useEffect, useState } from 'react'
 import { useClientes } from '../../../../hooks/useClientes'
-import ReactTimeAgo from 'react-time-ago'
 import { ViewDollar } from '../../../../utils'
-import { IconButton, Step, StepLabel, Stepper } from '@mui/material'
+import { Step, StepLabel, Stepper } from '@mui/material'
 import { Button, Modal } from 'react-bootstrap'
+import toast from 'react-hot-toast'
 import './MisComprasPages.css'
 import StepperStatus from './components/StepperStatus'
+import CardShopping from './components/CardShopping'
 import { useNavigate } from 'react-router-dom'
 import logo_ame from '../../../../assets/Logo.png'
-import MethodPayment from './components/MethodPayment'
 
 export default function MisComprasPages() {
-  const { getAllShoppingByClientes, loading, dataShopping, getShopDetailById, dataShopDetail } =
-    useClientes()
+  const {
+    getAllShoppingByClientes,
+    loading,
+    dataShopping,
+    getShopDetailById,
+    dataShopDetail,
+    cancelarCompra,
+  } = useClientes()
   const [show, setShow] = useState(false)
   const [ShopDetail, setShopDetail] = useState(null)
   const [loadingDetail, setLoadingDetail] = useState(false)
+  const [showCancel, setShowCancel] = useState(false)
+  const [pedidoACancelar, setPedidoACancelar] = useState(null)
+  const [motivoCancelacion, setMotivoCancelacion] = useState('')
+  const [loadingCancelar, setLoadingCancelar] = useState(false)
+  const [cancelError, setCancelError] = useState('')
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -26,16 +37,46 @@ export default function MisComprasPages() {
     getAllShoppingByClientes()
   }, [])
 
-  const getStatusClass = (status) => {
-    switch (status) {
-      case 'Pendiente':
-        return 'bg-warning text-dark'
-      case 'Aprobado':
-        return 'bg-success'
-      case 'Cancelado':
-        return 'bg-danger'
-      default:
-        return 'bg-secondary'
+  const handleVerDetalle = async (shop) => {
+    try {
+      setShow(true)
+      setShopDetail(null)
+      setLoadingDetail(true)
+      const result = await getShopDetailById(shop._id)
+      setShopDetail(result.data)
+    } catch (error) {
+      console.log(error)
+    } finally {
+      setLoadingDetail(false)
+    }
+  }
+
+  const handleAbrirCancelar = (shop) => {
+    setPedidoACancelar(shop)
+    setMotivoCancelacion('')
+    setCancelError('')
+    setShowCancel(true)
+  }
+
+  const handleConfirmarCancelar = async () => {
+    if (!motivoCancelacion.trim()) return
+    try {
+      setLoadingCancelar(true)
+      setCancelError('')
+      const result = await cancelarCompra(pedidoACancelar._id, {
+        note_client: motivoCancelacion,
+      })
+      toast.success(result.data.message)
+      setShowCancel(false)
+      getAllShoppingByClientes()
+    } catch (error) {
+      console.log(error)
+      const resData = error?.response?.data
+      setCancelError(
+        resData?.detail ?? resData?.message ?? 'No se pudo cancelar el pedido.',
+      )
+    } finally {
+      setLoadingCancelar(false)
     }
   }
 
@@ -66,104 +107,11 @@ export default function MisComprasPages() {
           {dataShopping &&
             dataShopping.map((shop) => (
               <div key={shop._id} className="col-md-6">
-                {/* <div className="card card-mi-compra">
-                  <div className="card-body">
-                    <div className="d-flex justify-content-between mb-1">
-                      <span>
-                        <ReactTimeAgo date={shop.createdTime} locale="en-CO" />
-                      </span>
-                      <span className="badge bg-badged-eco" >{shop?.status}</span>
-                    </div>
-                    <div className="d-flex justify-content-between">
-                      <span className="card-text">Total</span>
-                      <span className="card-title">{`${ViewDollar(shop.total_order ?? 0)}`}</span>
-                    </div>
-                    <div className="d-flex justify-content-between">
-                      <span className="card-text">Num. Productos</span>
-                      <span className="card-title">{shop.products.length}</span>
-                    </div>
-                    <div className="text-center">
-                      <IconButton
-                        title="Ver Detalle Compra"
-                        onClick={async (e) => {
-                          try {
-                            setShow(true)
-                            console.log(shop)
-                            setShopDetail(null)
-                            setLoadingDetail(true)
-                            const result = await getShopDetailById(shop._id)
-                            console.log(result.data)
-                            setShopDetail(result.data)
-                          } catch (error) {
-                            console.log(error)
-                          } finally {
-                            setLoadingDetail(false)
-                          }
-                        }}
-                      >
-                        <i className="fa-solid fa-eye"></i>
-                      </IconButton>
-                    </div>
-                  </div>
-                </div> */}
-                <div className="card card-mi-compra shadow-sm">
-                  <div className="card-body">
-                    {/* Header */}
-                    <div className="d-flex justify-content-between align-items-center mb-2">
-                      <div>
-                        <div className="fw-semibold">Order #{shop._id.slice(-6)}</div>
-                        <small className="text-muted">
-                          <ReactTimeAgo date={shop.createdTime} locale="en-CO" />
-                        </small>
-                      </div>
-
-                      <span className={`badge ${getStatusClass(shop.status)}`}>{shop.status}</span>
-                    </div>
-
-                    {/* Info resumida */}
-                    <div className="d-flex justify-content-between mb-1">
-                      <small className="text-muted">Productos</small>
-                      <span>{shop.products.length}</span>
-                    </div>
-
-                    {/* Total destacado */}
-                    <div className="d-flex justify-content-between align-items-center mt-3">
-                      <span className="fw-semibold">Total</span>
-                      <span className="fs-5 fw-bold text-success">
-                        {ViewDollar(shop.total_order ?? 0)}
-                      </span>
-                    </div>
-                    <hr />
-                    <div className="d-flex justify-content-between align-items-center mb-1">
-                      <small className="text-muted">Metodo de Pago</small>
-                      {shop && <MethodPayment payment_method={shop?.payment_method} />}
-                    </div>
-
-                    {/* Acción */}
-                    <div className="text-center mt-3">
-                      <IconButton
-                        title="Ver Detalle Compra"
-                        onClick={async (e) => {
-                          try {
-                            setShow(true)
-                            console.log(shop)
-                            setShopDetail(null)
-                            setLoadingDetail(true)
-                            const result = await getShopDetailById(shop._id)
-                            console.log(result.data)
-                            setShopDetail(result.data)
-                          } catch (error) {
-                            console.log(error)
-                          } finally {
-                            setLoadingDetail(false)
-                          }
-                        }}
-                      >
-                        <i className="fa-solid fa-eye"></i>
-                      </IconButton>
-                    </div>
-                  </div>
-                </div>
+                <CardShopping
+                  shop={shop}
+                  onVerDetalle={handleVerDetalle}
+                  onCancelar={handleAbrirCancelar}
+                />
               </div>
             ))}
         </div>
@@ -298,6 +246,32 @@ export default function MisComprasPages() {
             >
               <i className="fa-solid fa-xmark me-2"></i>Cerrar
             </Button>
+          </div>
+        </Modal.Body>
+      </Modal>
+
+      <Modal centered show={showCancel} onHide={() => setShowCancel(false)}>
+        <Modal.Body>
+          <p className="text-center">¿Seguro que deseas cancelar este pedido?</p>
+          <textarea
+            className="form-control"
+            rows="3"
+            placeholder="Cuéntanos el motivo de la cancelación"
+            value={motivoCancelacion}
+            onChange={(e) => setMotivoCancelacion(e.target.value)}
+          />
+          {cancelError && <p className="text-danger small mt-2">{cancelError}</p>}
+          <div className="d-flex gap-3 justify-content-center mt-3">
+            <button
+              className="btn btn-danger text-white"
+              disabled={loadingCancelar || !motivoCancelacion.trim()}
+              onClick={handleConfirmarCancelar}
+            >
+              {loadingCancelar ? 'Cancelando...' : 'Sí, Cancelar Pedido'}
+            </button>
+            <button className="btn btn-secondary" onClick={() => setShowCancel(false)}>
+              Volver
+            </button>
           </div>
         </Modal.Body>
       </Modal>

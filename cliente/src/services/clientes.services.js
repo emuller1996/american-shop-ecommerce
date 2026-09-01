@@ -47,6 +47,10 @@ export const getShopByIdService = (token, id) => {
   return axios.get(`/clientes/get/shopping/${id}`,{ headers: { 'Authorization': token } })
 }
 
+export const putCancelarCompraClienteService = (token, id, data) => {
+  return axios.put(`/clientes/shopping/${id}/cancelar`, data, { headers: { 'Authorization': token } })
+}
+
 
 export const getShoppingByClientIdService = (token, id) => {
   return axios.get(`/clientes/${id}/shoppings/`,{ headers: { "access-token": `${token}` } })

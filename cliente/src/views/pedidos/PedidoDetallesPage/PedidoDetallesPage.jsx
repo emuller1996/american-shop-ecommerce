@@ -1,6 +1,7 @@
 /* eslint-disable prettier/prettier */
 import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
+import { Alert } from 'react-bootstrap'
 import { useOrden } from '../../../hooks/useOrden'
 import { ViewDollar } from '../../../utils'
 import TableProductosDetalles from './components/TableProductosDetalles'
@@ -53,6 +54,12 @@ export default function PedidoDetallesPage() {
               </div>
             </div>
           </div>
+          {dataDetalle?.note_client && (
+            <Alert variant="warning">
+              <Alert.Heading className="h6">Motivo de cancelación del cliente</Alert.Heading>
+              <p className="mb-0">{dataDetalle.note_client}</p>
+            </Alert>
+          )}
           {dataDetalle && <InfoPedidoDetalle pedido={dataDetalle} />}
           {dataDetalle && (
             <TableProductosDetalles

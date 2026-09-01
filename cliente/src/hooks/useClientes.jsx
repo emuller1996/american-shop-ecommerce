@@ -8,6 +8,7 @@ import {
   getGetShoppingClientesService,
   getShopByIdService,
   getShoppingByClientIdService,
+  putCancelarCompraClienteService,
   postNewAddressClientesService,
   putNewAddressClientesService,
   putUpdateClientesService,
@@ -168,6 +169,10 @@ export const useClientes = () => {
     return await getShopByIdService(TokenClient, id)
   }
 
+  const cancelarCompra = async (id, data) => {
+    return await putCancelarCompraClienteService(TokenClient, id, data)
+  }
+
   const getAllAddressByClientes = async () => {
     setLoading(true)
     try {
@@ -212,6 +217,7 @@ export const useClientes = () => {
     putClienteNewAddress,
     getAllClientesPagination,
     dataP,
-    getShoppingByClientId
+    getShoppingByClientId,
+    cancelarCompra,
   }
 }

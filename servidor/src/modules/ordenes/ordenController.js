@@ -6,6 +6,7 @@ import {
 import { crearLogsElastic } from "../../utils/index.js";
 import { INDEX_ES_MAIN } from "../../config.js";
 import { sendOrdenDetail, sendOrdenStatusPreparacion } from "../../services/mailService.js";
+import { sendOrdenStatusEnCamino } from "../../services/mail/index.js";
 
 // Funciones auxiliares fuera de la clase
 const construirConsultaOrdenes = ({ perPage, page, search, status }) => {
@@ -143,10 +144,14 @@ export const actualizar = async (req, res) => {
   try {
 
     const r = await ordenService.actualizarOrden(req.params.id, req.body);
+    const order = await ordenService.obtenerOrdenPorId(req.params.id)
 
     if(req.body.status && req.body.status==="En Proceso"){
-      const order = await ordenService.obtenerOrdenPorId(req.params.id)
       sendOrdenStatusPreparacion(order)
+    }
+
+    if(req.body.status && req.body.status==="En Camino"){
+      sendOrdenStatusEnCamino(order)
     }
 
     if (r.body.result === "updated") {
