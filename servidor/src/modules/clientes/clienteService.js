@@ -104,6 +104,10 @@ class ClienteService {
   async marcarTokenResetUsado(id) {
     return await updateElasticByType(id, { used: true });
   }
+
+  async actualizarCompra(id, data) {
+    return await updateElasticByType(id, data);
+  }
 }
 
 export default new ClienteService();

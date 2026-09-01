@@ -5,6 +5,7 @@ import { useClientes } from '../../../../hooks/useClientes'
 import { ViewDollar } from '../../../../utils'
 import { Step, StepLabel, Stepper } from '@mui/material'
 import { Button, Modal } from 'react-bootstrap'
+import toast from 'react-hot-toast'
 import './MisComprasPages.css'
 import StepperStatus from './components/StepperStatus'
 import CardShopping from './components/CardShopping'
@@ -12,11 +13,22 @@ import { useNavigate } from 'react-router-dom'
 import logo_ame from '../../../../assets/Logo.png'
 
 export default function MisComprasPages() {
-  const { getAllShoppingByClientes, loading, dataShopping, getShopDetailById, dataShopDetail } =
-    useClientes()
+  const {
+    getAllShoppingByClientes,
+    loading,
+    dataShopping,
+    getShopDetailById,
+    dataShopDetail,
+    cancelarCompra,
+  } = useClientes()
   const [show, setShow] = useState(false)
   const [ShopDetail, setShopDetail] = useState(null)
   const [loadingDetail, setLoadingDetail] = useState(false)
+  const [showCancel, setShowCancel] = useState(false)
+  const [pedidoACancelar, setPedidoACancelar] = useState(null)
+  const [motivoCancelacion, setMotivoCancelacion] = useState('')
+  const [loadingCancelar, setLoadingCancelar] = useState(false)
+  const [cancelError, setCancelError] = useState('')
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -36,6 +48,35 @@ export default function MisComprasPages() {
       console.log(error)
     } finally {
       setLoadingDetail(false)
+    }
+  }
+
+  const handleAbrirCancelar = (shop) => {
+    setPedidoACancelar(shop)
+    setMotivoCancelacion('')
+    setCancelError('')
+    setShowCancel(true)
+  }
+
+  const handleConfirmarCancelar = async () => {
+    if (!motivoCancelacion.trim()) return
+    try {
+      setLoadingCancelar(true)
+      setCancelError('')
+      const result = await cancelarCompra(pedidoACancelar._id, {
+        note_client: motivoCancelacion,
+      })
+      toast.success(result.data.message)
+      setShowCancel(false)
+      getAllShoppingByClientes()
+    } catch (error) {
+      console.log(error)
+      const resData = error?.response?.data
+      setCancelError(
+        resData?.detail ?? resData?.message ?? 'No se pudo cancelar el pedido.',
+      )
+    } finally {
+      setLoadingCancelar(false)
     }
   }
 
@@ -66,7 +107,11 @@ export default function MisComprasPages() {
           {dataShopping &&
             dataShopping.map((shop) => (
               <div key={shop._id} className="col-md-6">
-                <CardShopping shop={shop} onVerDetalle={handleVerDetalle} />
+                <CardShopping
+                  shop={shop}
+                  onVerDetalle={handleVerDetalle}
+                  onCancelar={handleAbrirCancelar}
+                />
               </div>
             ))}
         </div>
@@ -201,6 +246,32 @@ export default function MisComprasPages() {
             >
               <i className="fa-solid fa-xmark me-2"></i>Cerrar
             </Button>
+          </div>
+        </Modal.Body>
+      </Modal>
+
+      <Modal centered show={showCancel} onHide={() => setShowCancel(false)}>
+        <Modal.Body>
+          <p className="text-center">¿Seguro que deseas cancelar este pedido?</p>
+          <textarea
+            className="form-control"
+            rows="3"
+            placeholder="Cuéntanos el motivo de la cancelación"
+            value={motivoCancelacion}
+            onChange={(e) => setMotivoCancelacion(e.target.value)}
+          />
+          {cancelError && <p className="text-danger small mt-2">{cancelError}</p>}
+          <div className="d-flex gap-3 justify-content-center mt-3">
+            <button
+              className="btn btn-danger text-white"
+              disabled={loadingCancelar || !motivoCancelacion.trim()}
+              onClick={handleConfirmarCancelar}
+            >
+              {loadingCancelar ? 'Cancelando...' : 'Sí, Cancelar Pedido'}
+            </button>
+            <button className="btn btn-secondary" onClick={() => setShowCancel(false)}>
+              Volver
+            </button>
           </div>
         </Modal.Body>
       </Modal>

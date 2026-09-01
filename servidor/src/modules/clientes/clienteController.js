@@ -499,3 +499,63 @@ export const obtenerCompraPorId = async (req, res) => {
     return res.status(500).json({ message: error.message });
   }
 };
+
+export const cancelarCompra = async (req, res) => {
+  const ESTADOS_NO_CANCELABLES = ["En Camino", "Entregada", "Cancelada"];
+  try {
+    const decoded = jwtDecode(req.headers.authorization);
+    const { note_client } = req.body ?? {};
+
+    if (typeof note_client !== "string" || !note_client.trim()) {
+      return res.status(400).json({
+        error: true,
+        message: "Motivo requerido.",
+        detail: "Debes indicar el motivo de la cancelación.",
+      });
+    }
+
+    const orden = await clienteService.obtenerDocumentoPorId(req.params.id);
+
+    if (!orden || orden.type !== "orden") {
+      return res.status(404).json({
+        error: true,
+        message: "Pedido no encontrado.",
+        detail: null,
+      });
+    }
+
+    if (orden.cliente?.client_id !== decoded._id) {
+      return res.status(403).json({
+        error: true,
+        message: "No autorizado.",
+        detail: "Este pedido no pertenece a tu cuenta.",
+      });
+    }
+
+    if (ESTADOS_NO_CANCELABLES.includes(orden.status)) {
+      return res.status(400).json({
+        error: true,
+        message: "No se puede cancelar este pedido.",
+        detail: `El pedido está en estado "${orden.status}" y ya no admite cancelación.`,
+      });
+    }
+
+    await clienteService.actualizarCompra(req.params.id, {
+      status: "Cancelada",
+      note_client: note_client.trim(),
+    });
+    await clienteService.refreshIndex();
+
+    return res.status(200).json({
+      message: "Pedido cancelado correctamente.",
+      detail: null,
+    });
+  } catch (error) {
+    console.error("[clientes/cancelarCompra] error:", error);
+    return res.status(500).json({
+      error: true,
+      message: "Error interno del servidor.",
+      detail: "Ocurrió un error al cancelar el pedido. Por favor intenta de nuevo.",
+    });
+  }
+};

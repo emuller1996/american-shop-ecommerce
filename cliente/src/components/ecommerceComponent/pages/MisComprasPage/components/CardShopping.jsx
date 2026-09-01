@@ -4,6 +4,7 @@ import PropTypes from 'prop-types'
 import ReactTimeAgo from 'react-time-ago'
 import { IconButton } from '@mui/material'
 import { ViewDollar } from '../../../../../utils'
+import { NonCancelableStatuses } from '../../../../../utils/optionsConfig'
 import MethodPayment from './MethodPayment'
 
 const getStatusClass = (status) => {
@@ -22,9 +23,10 @@ const getStatusClass = (status) => {
 CardShopping.propTypes = {
   shop: PropTypes.object.isRequired,
   onVerDetalle: PropTypes.func,
+  onCancelar: PropTypes.func,
 }
 
-export default function CardShopping({ shop, onVerDetalle }) {
+export default function CardShopping({ shop, onVerDetalle, onCancelar }) {
   return (
     <div className="card card-mi-compra shadow-sm">
       <div className="card-body">
@@ -62,6 +64,11 @@ export default function CardShopping({ shop, onVerDetalle }) {
           <IconButton title="Ver Detalle Compra" onClick={() => onVerDetalle?.(shop)}>
             <i className="fa-solid fa-eye"></i>
           </IconButton>
+          {!NonCancelableStatuses.includes(shop.status) && (
+            <IconButton title="Cancelar Pedido" color="error" onClick={() => onCancelar?.(shop)}>
+              <i className="fa-solid fa-ban"></i>
+            </IconButton>
+          )}
         </div>
       </div>
     </div>

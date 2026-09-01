@@ -20,6 +20,8 @@ export const StatusOrderOptions = [
   { label: 'Cancelada', value: 'Cancelada' },
 ]
 
+export const NonCancelableStatuses = ['En Camino', 'Entregada', 'Cancelada']
+
 export const TransportistaOptions = [
   { label: 'Servientrega', value: 'Servientrega' },
   { label: 'Interrapidísimo', value: 'Interrapidísimo' },
