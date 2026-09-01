@@ -2,15 +2,14 @@
 
 import React, { useEffect, useState } from 'react'
 import { useClientes } from '../../../../hooks/useClientes'
-import ReactTimeAgo from 'react-time-ago'
 import { ViewDollar } from '../../../../utils'
-import { IconButton, Step, StepLabel, Stepper } from '@mui/material'
+import { Step, StepLabel, Stepper } from '@mui/material'
 import { Button, Modal } from 'react-bootstrap'
 import './MisComprasPages.css'
 import StepperStatus from './components/StepperStatus'
+import CardShopping from './components/CardShopping'
 import { useNavigate } from 'react-router-dom'
 import logo_ame from '../../../../assets/Logo.png'
-import MethodPayment from './components/MethodPayment'
 
 export default function MisComprasPages() {
   const { getAllShoppingByClientes, loading, dataShopping, getShopDetailById, dataShopDetail } =
@@ -26,16 +25,17 @@ export default function MisComprasPages() {
     getAllShoppingByClientes()
   }, [])
 
-  const getStatusClass = (status) => {
-    switch (status) {
-      case 'Pendiente':
-        return 'bg-warning text-dark'
-      case 'Aprobado':
-        return 'bg-success'
-      case 'Cancelado':
-        return 'bg-danger'
-      default:
-        return 'bg-secondary'
+  const handleVerDetalle = async (shop) => {
+    try {
+      setShow(true)
+      setShopDetail(null)
+      setLoadingDetail(true)
+      const result = await getShopDetailById(shop._id)
+      setShopDetail(result.data)
+    } catch (error) {
+      console.log(error)
+    } finally {
+      setLoadingDetail(false)
     }
   }
 
@@ -66,104 +66,7 @@ export default function MisComprasPages() {
           {dataShopping &&
             dataShopping.map((shop) => (
               <div key={shop._id} className="col-md-6">
-                {/* <div className="card card-mi-compra">
-                  <div className="card-body">
-                    <div className="d-flex justify-content-between mb-1">
-                      <span>
-                        <ReactTimeAgo date={shop.createdTime} locale="en-CO" />
-                      </span>
-                      <span className="badge bg-badged-eco" >{shop?.status}</span>
-                    </div>
-                    <div className="d-flex justify-content-between">
-                      <span className="card-text">Total</span>
-                      <span className="card-title">{`${ViewDollar(shop.total_order ?? 0)}`}</span>
-                    </div>
-                    <div className="d-flex justify-content-between">
-                      <span className="card-text">Num. Productos</span>
-                      <span className="card-title">{shop.products.length}</span>
-                    </div>
-                    <div className="text-center">
-                      <IconButton
-                        title="Ver Detalle Compra"
-                        onClick={async (e) => {
-                          try {
-                            setShow(true)
-                            console.log(shop)
-                            setShopDetail(null)
-                            setLoadingDetail(true)
-                            const result = await getShopDetailById(shop._id)
-                            console.log(result.data)
-                            setShopDetail(result.data)
-                          } catch (error) {
-                            console.log(error)
-                          } finally {
-                            setLoadingDetail(false)
-                          }
-                        }}
-                      >
-                        <i className="fa-solid fa-eye"></i>
-                      </IconButton>
-                    </div>
-                  </div>
-                </div> */}
-                <div className="card card-mi-compra shadow-sm">
-                  <div className="card-body">
-                    {/* Header */}
-                    <div className="d-flex justify-content-between align-items-center mb-2">
-                      <div>
-                        <div className="fw-semibold">Order #{shop._id.slice(-6)}</div>
-                        <small className="text-muted">
-                          <ReactTimeAgo date={shop.createdTime} locale="en-CO" />
-                        </small>
-                      </div>
-
-                      <span className={`badge ${getStatusClass(shop.status)}`}>{shop.status}</span>
-                    </div>
-
-                    {/* Info resumida */}
-                    <div className="d-flex justify-content-between mb-1">
-                      <small className="text-muted">Productos</small>
-                      <span>{shop.products.length}</span>
-                    </div>
-
-                    {/* Total destacado */}
-                    <div className="d-flex justify-content-between align-items-center mt-3">
-                      <span className="fw-semibold">Total</span>
-                      <span className="fs-5 fw-bold text-success">
-                        {ViewDollar(shop.total_order ?? 0)}
-                      </span>
-                    </div>
-                    <hr />
-                    <div className="d-flex justify-content-between align-items-center mb-1">
-                      <small className="text-muted">Metodo de Pago</small>
-                      {shop && <MethodPayment payment_method={shop?.payment_method} />}
-                    </div>
-
-                    {/* Acción */}
-                    <div className="text-center mt-3">
-                      <IconButton
-                        title="Ver Detalle Compra"
-                        onClick={async (e) => {
-                          try {
-                            setShow(true)
-                            console.log(shop)
-                            setShopDetail(null)
-                            setLoadingDetail(true)
-                            const result = await getShopDetailById(shop._id)
-                            console.log(result.data)
-                            setShopDetail(result.data)
-                          } catch (error) {
-                            console.log(error)
-                          } finally {
-                            setLoadingDetail(false)
-                          }
-                        }}
-                      >
-                        <i className="fa-solid fa-eye"></i>
-                      </IconButton>
-                    </div>
-                  </div>
-                </div>
+                <CardShopping shop={shop} onVerDetalle={handleVerDetalle} />
               </div>
             ))}
         </div>
