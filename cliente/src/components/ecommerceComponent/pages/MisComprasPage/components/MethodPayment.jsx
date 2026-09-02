@@ -27,6 +27,14 @@ export default function MethodPayment({ payment_method }) {
           </div>
         </>
       )}
+      {payment_method === 'Wompi' && (
+        <>
+          <div>
+            <img src={tarjeta_log} />
+            <span>{payment_method}</span>
+          </div>
+        </>
+      )}
       </div>
     </>
   )

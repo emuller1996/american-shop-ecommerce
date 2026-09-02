@@ -7,6 +7,7 @@ import { Accordion, Spinner } from 'react-bootstrap'
 import { Payment, initMercadoPago } from '@mercadopago/sdk-react'
 import './ConfirmarCompraPage.css'
 import SelectAddressShop from './components/SelectAddressShop'
+import WompiButton from './components/WompiButton'
 import axios from 'axios'
 import toast from 'react-hot-toast'
 import { useNavigate } from 'react-router-dom'
@@ -167,26 +168,28 @@ export default function ConfirmarCompraPage({}) {
     */
   }
 
+  const buildOrderData = () => ({
+    products: Data.map((stk) => ({
+      stock_id: stk._id,
+      cantidad: stk.cantidad,
+      product_id: stk.product_id,
+      price: stk.product.price,
+    })),
+    address_id: direccionSelecionada,
+    cliente: {
+      client_id: client._id,
+      name_client: client.name_client,
+      email_client: client.email_client,
+      phone_client: client.phone_client,
+      number_document_client: client.number_document_client,
+    },
+    total_order: total,
+  })
+
   const handleNequiPayment = async () => {
     try {
       setIsLoadingNequi(true)
-      const orderData = {
-        products: Data.map((stk) => ({
-          stock_id: stk._id,
-          cantidad: stk.cantidad,
-          product_id: stk.product_id,
-          price: stk.product.price,
-        })),
-        address_id: direccionSelecionada,
-        cliente: {
-          client_id: client._id,
-          name_client: client.name_client,
-          email_client: client.email_client,
-          phone_client: client.phone_client,
-          number_document_client: client.number_document_client,
-        },
-        total_order: total,
-      }
+      const orderData = buildOrderData()
 
       const response = await axios.post('/ordenes/nequi_payment', { orderData })
       if (response.data.order) {
@@ -282,6 +285,17 @@ export default function ConfirmarCompraPage({}) {
                           </button>
                         )}
                       </div>
+                      {!nequiOrder && (
+                        <WompiButton
+                          orderData={buildOrderData()}
+                          total={total}
+                          onSuccess={() => {
+                            setCartEcommerceAmericanState([])
+                            setCartEcommerceAmerican([])
+                            setPasoActive('2')
+                          }}
+                        />
+                      )}
                     </div>
                   )}
                   <div className="text-center mt-3">
