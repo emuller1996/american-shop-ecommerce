@@ -3,6 +3,12 @@ import {
   crearPagoMercadoPago,
   obtenerPagoMercadoPago,
 } from "./mercadoPagoClient.js";
+import {
+  generarReferenciaOrden,
+  generarFirmaIntegridad,
+  obtenerTransaccionWompi,
+  verificarFirmaEvento,
+} from "./wompiClient.js";
 import { crearLogsElastic } from "../../utils/index.js";
 import { INDEX_ES_MAIN } from "../../config.js";
 import { sendOrdenDetail, sendOrdenStatusPreparacion } from "../../services/mailService.js";
@@ -63,7 +69,10 @@ const enriquecerProductos = async (productos = []) => {
   );
 };
 
-const enriquecerOrden = async (orden, { incluirMercadoPago = false } = {}) => {
+const enriquecerOrden = async (
+  orden,
+  { incluirMercadoPago = false, incluirWompi = false } = {},
+) => {
   if (orden.address_id) {
     orden.address = await ordenService.obtenerDocumentoPorId(orden.address_id);
   }
@@ -75,6 +84,16 @@ const enriquecerOrden = async (orden, { incluirMercadoPago = false } = {}) => {
       );
     } catch (err) {
       console.error("[ordenes] error consultando Mercado Pago:", err.message);
+    }
+  }
+  console.log(orden.payment_method === "Wompi" && orden.wompi_transaction_id);
+
+  if (orden.payment_method === "Wompi" && orden.wompi_transaction_id) {
+    try {
+      orden.wompi_data = await obtenerTransaccionWompi(orden.wompi_transaction_id);
+    } catch (err) {
+      console.log(err.request);
+      console.error("[ordenes] error consultando Wompi:", err.message);
     }
   }
 
@@ -138,6 +157,94 @@ export const crearOrdenNequi = async (req, res) => {
     console.error("[ordenes/crearOrdenNequi] error:", error.message);
     return res.status(500).json({ message: error.message });
   }
+};
+
+export const generarFirmaWompi = async (req, res) => {
+  try {
+    const { amountInCents } = req.body ?? {};
+
+    if (!amountInCents || isNaN(Number(amountInCents))) {
+      return res.status(400).json({ message: "amountInCents es requerido." });
+    }
+
+    const reference = generarReferenciaOrden();
+    const signature = generarFirmaIntegridad({ reference, amountInCents });
+
+    return res.status(200).json({ reference, signature });
+  } catch (error) {
+    console.error("[ordenes/generarFirmaWompi] error:", error.message);
+    return res.status(500).json({ message: error.message });
+  }
+};
+
+export const crearOrdenWompi = async (req, res) => {
+  try {
+    const ordenData = { ...req.body.orderData };
+    const { transactionId } = req.body;
+
+    const transaction = await obtenerTransaccionWompi(transactionId);
+
+    if (transaction.status !== "APPROVED") {
+      return res.json({
+        message: "ERROR EN EL PAGO CON WOMPI",
+        transaction,
+      });
+    }
+
+    ordenData.payment_method = "Wompi";
+    ordenData.wompi_transaction_id = transaction.id;
+    ordenData.wompi_data = JSON.stringify(transaction);
+    ordenData.status = "Pendiente";
+
+    const response = await ordenService.crearOrden(ordenData);
+    const order = response.body;
+
+    const ordenDataSend = await ordenService.obtenerOrdenPorId(order._id);
+    await enriquecerOrden(ordenDataSend);
+
+    await sendOrdenDetail(ordenDataSend);
+
+    return res.status(200).json({
+      message: "Orden creada exitosamente con Wompi",
+      order,
+    });
+  } catch (error) {
+    console.error("[ordenes/crearOrdenWompi] error:", error.message);
+    return res.status(500).json({ message: error.message });
+  }
+};
+
+export const webhookWompi = async (req, res) => {
+  try {
+    const { signature, timestamp, data } = req.body ?? {};
+
+    const firmaValida =
+      signature &&
+      verificarFirmaEvento({
+        properties: signature.properties,
+        timestamp,
+        checksum: signature.checksum,
+        dataEvento: data,
+      });
+
+    if (firmaValida) {
+      const transaction = data?.transaction ?? {};
+      const pagoDatos = {
+        status: transaction.status,
+        amount_in_cents: transaction.amount_in_cents,
+        reference: transaction.reference,
+        payment_method_type: transaction.payment_method_type,
+        wompi_transaction_id: transaction.id,
+      };
+      await ordenService.crearPago(pagoDatos);
+    } else {
+      console.error("[ordenes/webhookWompi] firma inválida, evento ignorado.");
+    }
+  } catch (error) {
+    console.error("[ordenes/webhookWompi] error:", error.message);
+  }
+
+  return res.status(200).json({});
 };
 
 export const actualizar = async (req, res) => {
@@ -210,7 +317,7 @@ export const obtenerPaginados = async (req, res) => {
 export const obtenerPorId = async (req, res) => {
   try {
     const orden = await ordenService.obtenerOrdenPorId(req.params.id);
-    await enriquecerOrden(orden, { incluirMercadoPago: true });
+    await enriquecerOrden(orden, { incluirMercadoPago: true, incluirWompi: true });
 
     crearLogsElastic(
       JSON.stringify(req.headers),
