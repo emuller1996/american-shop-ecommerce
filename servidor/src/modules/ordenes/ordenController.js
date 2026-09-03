@@ -193,7 +193,7 @@ export const crearOrdenWompi = async (req, res) => {
 
     ordenData.payment_method = "Wompi";
     ordenData.wompi_transaction_id = transaction.id;
-    ordenData.wompi_data = transaction;
+    ordenData.wompi_data = JSON.stringify(transaction);
     ordenData.status = "Pendiente";
 
     const response = await ordenService.crearOrden(ordenData);
