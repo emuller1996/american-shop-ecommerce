@@ -69,7 +69,10 @@ const enriquecerProductos = async (productos = []) => {
   );
 };
 
-const enriquecerOrden = async (orden, { incluirMercadoPago = false } = {}) => {
+const enriquecerOrden = async (
+  orden,
+  { incluirMercadoPago = false, incluirWompi = false } = {},
+) => {
   if (orden.address_id) {
     orden.address = await ordenService.obtenerDocumentoPorId(orden.address_id);
   }
@@ -81,6 +84,16 @@ const enriquecerOrden = async (orden, { incluirMercadoPago = false } = {}) => {
       );
     } catch (err) {
       console.error("[ordenes] error consultando Mercado Pago:", err.message);
+    }
+  }
+  console.log(orden.payment_method === "Wompi" && orden.wompi_transaction_id);
+
+  if (orden.payment_method === "Wompi" && orden.wompi_transaction_id) {
+    try {
+      orden.wompi_data = await obtenerTransaccionWompi(orden.wompi_transaction_id);
+    } catch (err) {
+      console.log(err.request);
+      console.error("[ordenes] error consultando Wompi:", err.message);
     }
   }
 
@@ -180,6 +193,7 @@ export const crearOrdenWompi = async (req, res) => {
 
     ordenData.payment_method = "Wompi";
     ordenData.wompi_transaction_id = transaction.id;
+    ordenData.wompi_data = transaction;
     ordenData.status = "Pendiente";
 
     const response = await ordenService.crearOrden(ordenData);
@@ -303,7 +317,7 @@ export const obtenerPaginados = async (req, res) => {
 export const obtenerPorId = async (req, res) => {
   try {
     const orden = await ordenService.obtenerOrdenPorId(req.params.id);
-    await enriquecerOrden(orden, { incluirMercadoPago: true });
+    await enriquecerOrden(orden, { incluirMercadoPago: true, incluirWompi: true });
 
     crearLogsElastic(
       JSON.stringify(req.headers),

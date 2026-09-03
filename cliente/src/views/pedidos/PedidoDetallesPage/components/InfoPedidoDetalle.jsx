@@ -4,6 +4,17 @@ import PropTypes from 'prop-types'
 import MethodPayment from '../../../../components/ecommerceComponent/pages/MisComprasPage/components/MethodPayment'
 import { ViewDollar } from '../../../../utils'
 
+const wompiPaymentMethodLabel = (type) => {
+  const labels = {
+    CARD: 'Tarjeta',
+    NEQUI: 'Nequi',
+    PSE: 'PSE',
+    BANCOLOMBIA_TRANSFER: 'Transferencia Bancolombia',
+    BANCOLOMBIA_QR: 'QR Bancolombia',
+  }
+  return labels[type] ?? type ?? ''
+}
+
 InfoPedidoDetalle.propTypes = {
   pedido: PropTypes.object,
 }
@@ -100,6 +111,36 @@ export default function InfoPedidoDetalle({ pedido }) {
               <span className="">Monto Tarifa. {`(MercadoPago)`}</span>
               <span className="text-warning fw-semibold">
                 {ViewDollar(pedido?.mercadopago_data?.fee_details?.[0]?.amount)}
+              </span>
+            </div>
+            <div className="d-flex justify-content-between">
+              <span className="">Estado {`(Wompi)`}</span>
+              <span className="text-uppercase ">{pedido?.wompi_data?.status}</span>
+            </div>
+            <div className="d-flex justify-content-between">
+              <span className="">Fecha {`(Wompi)`}</span>
+              <span className="">{pedido?.wompi_data?.created_at}</span>
+            </div>
+            <div className="d-flex justify-content-between">
+              <span className="">Tipo de Pago {`(Wompi)`}</span>
+              <span className="text-uppercase ">
+                {wompiPaymentMethodLabel(pedido?.wompi_data?.payment_method_type)}
+              </span>
+            </div>
+            <div className="d-flex justify-content-between">
+              <span className="">Monto Transacción {`(Wompi)`}</span>
+              <span className="text-success fw-semibold">
+                {pedido?.wompi_data?.amount_in_cents != null
+                  ? ViewDollar(pedido.wompi_data.amount_in_cents / 100)
+                  : ''}
+              </span>
+            </div>
+            <div className="d-flex justify-content-between">
+              <span className="">Tarifa {`(Wompi)`}</span>
+              <span className="text-warning fw-semibold">
+                {pedido?.wompi_data?.payment_method?.extra?.fee_in_cents != null
+                  ? ViewDollar(pedido.wompi_data.payment_method.extra.fee_in_cents / 100)
+                  : 'No disponible'}
               </span>
             </div>
           </div>
