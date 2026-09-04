@@ -48,7 +48,7 @@ const CategoriasPage = () => {
                         console.log('Primary')
                       }}
                     >
-                      Edit
+                      <i className="fa-solid fa-pen-to-square"></i>
                     </Button>
                   </div>
                 </div>
