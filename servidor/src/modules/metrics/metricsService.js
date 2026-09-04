@@ -57,6 +57,18 @@ class MetricsService {
             field: "total_order",
           },
         },
+        total_products_sold: {
+          nested: {
+            path: "products",
+          },
+          aggs: {
+            total: {
+              sum: {
+                field: "products.cantidad",
+              },
+            },
+          },
+        },
       },
     };
 
@@ -65,12 +77,14 @@ class MetricsService {
         index: INDEX_ES_MAIN,
         body: query,
       });
-      
+
+
       const aggregations = response.body.aggregations || response.body.aggs || {};
       const buckets = aggregations.orders_over_time?.buckets || [];
       const totalRevenue = aggregations.total_revenue?.value || 0;
       const totalOrders = response.body.hits?.total?.value || 0;
-                      
+      const totalProductsSold = aggregations.total_products_sold?.total?.value || 0;
+
       return {
         dailyStats: buckets.map(bucket => ({
           date: bucket.key_as_string || new Date(bucket.key).toLocaleDateString('en-CA', { timeZone: 'America/Bogota' }),
@@ -79,7 +93,8 @@ class MetricsService {
         })),
         totals: {
           totalOrders,
-          totalRevenue
+          totalRevenue,
+          totalProductsSold
         }
       };
     } catch (error) {
