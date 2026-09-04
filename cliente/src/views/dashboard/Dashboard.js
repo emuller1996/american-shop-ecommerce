@@ -77,6 +77,27 @@ const Dashboard = () => {
             </CCardBody>
           </CCard>
         </CCol>
+
+        {/* Total Productos Vendidos Card */}
+        <CCol xs={12} md={6} lg={4}>
+          <CCard className="mb-4 shadow-sm">
+            <CCardBody className="d-flex align-items-center">
+              <div
+                className="rounded-circle bg-warning p-3 me-3 text-white d-flex align-items-center justify-content-center"
+                style={{ width: '45px', height: '45px' }}
+              >
+                <i className="fa-solid fa-box"></i>
+              </div>
+              <div>
+                <h6 className="text-muted mb-0">Productos Vendidos</h6>
+                <small className="text-muted">Ultimos 14 Dias</small>
+                <h4 className="mb-0 fw-bold">
+                  {isLoading ? '...' : metricsData?.totals?.totalProductsSold}
+                </h4>
+              </div>
+            </CCardBody>
+          </CCard>
+        </CCol>
       </CRow>
 
       <CRow>
@@ -160,8 +181,9 @@ const Dashboard = () => {
                       <YAxis
                         tick={{ fill: getStyle('--cui-body-color') }}
                         axisLine={{ stroke: getStyle('--cui-border-color-translucent') }}
+                        tickFormatter={(value) => ViewDollar(value)}
                       />
-                      <Tooltip />
+                      <Tooltip formatter={(value) => ViewDollar(value)} />
                       <Legend />
                       <Line
                         type="monotone"

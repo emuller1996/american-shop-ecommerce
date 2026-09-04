@@ -22,6 +22,7 @@ export const useClientes = () => {
   const [dataAddress, setDataAddress] = useState(null)
   const [dataShopping, setDataShopping] = useState(null)
   const [dataShopDetail, setDataShopDetail] = useState(null)
+  const [dataShoppingP, setDataShoppingP] = useState(undefined)
 
   const [error, setError] = useState(null)
   const [loading, setLoading] = useState(false)
@@ -137,10 +138,11 @@ export const useClientes = () => {
     }
   }
 
-  const getShoppingByClientId = async (id) => {
+  const getShoppingByClientId = async (id, params = {}) => {
     setLoading(true)
+    setDataShoppingP(undefined)
     try {
-      const res = await getShoppingByClientIdService(Token, id)
+      const res = await getShoppingByClientIdService(Token, id, params)
       if (res.status !== 200) {
         let err = new Error('Error en la petición Fetch')
         err.status = res.status || '00'
@@ -149,12 +151,12 @@ export const useClientes = () => {
       }
       console.log(res)
       if (!signal.aborted) {
-        setDataShopping(res.data)
+        setDataShoppingP(res.data)
         setError(null)
       }
     } catch (error) {
       if (!signal.aborted) {
-        setDataShopping(null)
+        setDataShoppingP(null)
         setError(error)
       }
     } finally {
@@ -218,6 +220,7 @@ export const useClientes = () => {
     getAllClientesPagination,
     dataP,
     getShoppingByClientId,
+    dataShoppingP,
     cancelarCompra,
   }
 }

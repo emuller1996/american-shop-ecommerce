@@ -38,8 +38,11 @@ const CategoriasPage = () => {
               <div key={cate._id} className="col-md-3">
                 <div className="card">
                   <div className="card-body d-flex align-items-center justify-content-between">
-                    <span>{cate?.name}</span>
+                    <span>
+                      {cate?.name} ({cate?.productos_count ?? 0})
+                    </span>
                     <Button
+                      title="Modificar Categoria"
                       variant="primary"
                       size="sm"
                       onClick={() => {
@@ -48,7 +51,7 @@ const CategoriasPage = () => {
                         console.log('Primary')
                       }}
                     >
-                      Edit
+                      <i className="fa-solid fa-pen-to-square"></i>
                     </Button>
                   </div>
                 </div>

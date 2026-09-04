@@ -52,8 +52,18 @@ export const putCancelarCompraClienteService = (token, id, data) => {
 }
 
 
-export const getShoppingByClientIdService = (token, id) => {
-  return axios.get(`/clientes/${id}/shoppings/`,{ headers: { "access-token": `${token}` } })
+export const getShoppingByClientIdService = (token, id, params = {}) => {
+  const searchs = new URLSearchParams();
+
+  Object.entries(params).forEach(([key, value]) => {
+    if (value !== undefined && value !== null && value !== "") {
+      searchs.append(key, value);
+    }
+  });
+
+  return axios.get(`/clientes/${id}/shoppings/?${searchs.toString()}`, {
+    headers: { "access-token": `${token}` },
+  })
 }
 
 export const getClientesSearchPaginationServices = async (token, ...params) => {

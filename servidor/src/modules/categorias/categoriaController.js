@@ -3,7 +3,13 @@ import categoriaService from "./categoriaService.js";
 // Obtener todas las categorías
 export const obtenerTodas = async (req, res) => {
   try {
-    const data = await categoriaService.buscarCategorias();
+    const categorias = await categoriaService.buscarCategorias();
+    const data = await Promise.all(
+      categorias.map(async (categoria) => ({
+        ...categoria,
+        productos_count: await categoriaService.contarProductosPorCategoria(categoria._id),
+      }))
+    );
     return res.status(200).json(data);
   } catch (error) {
     return res.status(500).json({ message: error.message });

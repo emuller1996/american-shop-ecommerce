@@ -27,6 +27,23 @@ class CategoriaService {
   async refreshIndex() {
     await client.indices.refresh({ index: INDEX_ES_MAIN });
   }
+
+  async contarProductosPorCategoria(categoryId) {
+    const response = await client.count({
+      index: INDEX_ES_MAIN,
+      body: {
+        query: {
+          bool: {
+            filter: [
+              { term: { type: "producto" } },
+              { term: { "category_id.keyword": categoryId } },
+            ],
+          },
+        },
+      },
+    });
+    return response.body.count;
+  }
 }
 
 export default new CategoriaService();
