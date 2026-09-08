@@ -1,6 +1,7 @@
 import React from 'react'
 import { createRoot } from 'react-dom/client'
 import { Provider } from 'react-redux'
+import { HelmetProvider } from 'react-helmet-async'
 import 'core-js'
 import { createTheme, ThemeProvider } from '@mui/material/styles'
 
@@ -32,9 +33,11 @@ const theme = createTheme({
 })
 
 createRoot(document.getElementById('root')).render(
-  <Provider store={store}>
-    <ThemeProvider theme={theme}>
-      <App />
-    </ThemeProvider>
-  </Provider>,
+  <HelmetProvider>
+    <Provider store={store}>
+      <ThemeProvider theme={theme}>
+        <App />
+      </ThemeProvider>
+    </Provider>
+  </HelmetProvider>,
 )
