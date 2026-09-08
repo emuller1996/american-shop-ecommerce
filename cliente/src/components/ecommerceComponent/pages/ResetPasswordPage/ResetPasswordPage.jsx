@@ -5,6 +5,7 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { Alert } from 'react-bootstrap'
 import toast from 'react-hot-toast'
 import { postResetPasswordClientesService } from '../../../../services/clientes.services'
+import Seo from '../../../Seo'
 import '../../FormLogin.css'
 
 export default function ResetPasswordPage() {
@@ -53,6 +54,7 @@ export default function ResetPasswordPage() {
 
   return (
     <CContainer className="px-0 py-4" lg>
+      <Seo noindex title="Restablecer Contraseña" />
       <div className="glass-form-container">
         {success ? (
           <>

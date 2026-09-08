@@ -5,6 +5,7 @@ import 'leaflet/dist/leaflet.css'
 import PropTypes from 'prop-types'
 import L from 'leaflet'
 import { usePuntoVenta } from '../../../../hooks/usePuntoVenta'
+import Seo from '../../../Seo'
 
 // Definir el icono personalizado
 const customIcon = new L.Icon({
@@ -39,8 +40,41 @@ export default function PuntosVentasPages({}) {
 
     return null
   }
+
+  const storeListSchema =
+    ListPuntoVenta && ListPuntoVenta.length > 0
+      ? {
+          '@context': 'https://schema.org',
+          '@type': 'ItemList',
+          itemListElement: ListPuntoVenta.map((punto, index) => ({
+            '@type': 'Store',
+            position: index + 1,
+            name: punto.name,
+            address: {
+              '@type': 'PostalAddress',
+              streetAddress: punto.address,
+              addressLocality: punto.city,
+              addressCountry: 'CO',
+            },
+            ...(punto.coordinates && {
+              geo: {
+                '@type': 'GeoCoordinates',
+                latitude: punto.coordinates.lat,
+                longitude: punto.coordinates.lng,
+              },
+            }),
+          })),
+        }
+      : undefined
+
   return (
     <div>
+      <Seo
+        title="Puntos de Venta"
+        description="Conoce nuestros locales American Shop Vip en Buenaventura, Valle del Cauca."
+        path="/eco/puntos-ventas/"
+        jsonLd={storeListSchema}
+      />
       <div className="container mt-5">
         <h4 className="text-center ">Puntos Venta</h4>
         <p className="text-center fs-5">¡Conoce nuestros locales en Buenaventura!</p>

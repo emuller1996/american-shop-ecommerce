@@ -1,0 +1,11 @@
+User-agent: *
+Allow: /
+Disallow: /d/
+Disallow: /login
+Disallow: /eco/mi-perfil
+Disallow: /eco/mi-carrito
+Disallow: /eco/confirmar-compra
+Disallow: /eco/mis-compras
+Disallow: /eco/reset-password/
+
+Sitemap: https://americanshopvip.com/sitemap.xml

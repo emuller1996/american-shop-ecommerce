@@ -11,6 +11,7 @@ import StepperStatus from './components/StepperStatus'
 import CardShopping from './components/CardShopping'
 import { useNavigate } from 'react-router-dom'
 import logo_ame from '../../../../assets/Logo.png'
+import Seo from '../../../Seo'
 
 export default function MisComprasPages() {
   const {
@@ -82,6 +83,7 @@ export default function MisComprasPages() {
 
   return (
     <div className="container mt-5 mb-5">
+      <Seo noindex title="Mis Compras" />
       {/* <p className="text-center fs-4">Mis Compras</p> */}
       <div className="card card-body position-relative card-cart mb-4">
         <button

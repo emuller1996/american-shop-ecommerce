@@ -5,6 +5,7 @@ import FormRegister from '../../FormRegister'
 import AuthContext from '../../../../context/AuthContext'
 import MisDirecciones from './components/MisDirecciones'
 import { useNavigate } from 'react-router-dom'
+import Seo from '../../../Seo'
 
 export default function MiProfilePage() {
   const { client } = useContext(AuthContext)
@@ -12,6 +13,7 @@ export default function MiProfilePage() {
 
   return (
     <div className="container mt-5">
+      <Seo noindex title="Mi Perfil" />
       {/*  <p className="text-center fs-4">Mi Perfil</p> */}
       <div className="card card-body position-relative card-cart">
         <button

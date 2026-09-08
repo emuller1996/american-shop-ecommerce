@@ -22,6 +22,7 @@ import { useLocalStorage } from '../../hooks/useLocalStorage'
 import { jwtDecode } from 'jwt-decode'
 import logo from '../../assets/Logo.png'
 import { Spinner } from 'react-bootstrap'
+import Seo from '../../components/Seo'
 
 const Login = () => {
   const [, setTokenAccess] = useLocalStorage('tokenAccessAmericanShop', null)
@@ -59,6 +60,7 @@ const Login = () => {
   }
   return (
     <div className="bg-body-tertiary min-vh-100 d-flex flex-row align-items-center">
+      <Seo noindex title="Iniciar Sesión" />
       <CContainer>
         <CRow className="justify-content-center">
           <CCol md={8}>

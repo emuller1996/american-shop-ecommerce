@@ -13,6 +13,7 @@ import toast from 'react-hot-toast'
 import { useNavigate } from 'react-router-dom'
 import logoNequi from '../../../../assets/nequi-logo.svg'
 import { useLocalStorage } from '../../../../hooks/useLocalStorage'
+import Seo from '../../../Seo'
 
 initMercadoPago(import.meta.env.VITE_MERCA_PUBLIC_KEY)
 
@@ -218,6 +219,7 @@ export default function ConfirmarCompraPage({}) {
 
   return (
     <div className="mt-4 mb-5" style={{ minHeight: '50vh' }}>
+      <Seo noindex title="Confirmar Compra" />
       <div className="card card-body position-relative card-cart mb-4">
         <button
           onClick={() => navigate(-1)}
