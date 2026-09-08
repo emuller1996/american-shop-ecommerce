@@ -1,5 +1,6 @@
 /* eslint-disable prettier/prettier */
 import React, { useEffect, useState } from 'react'
+import Seo from '../../Seo'
 import CardProducto from '../../../views/landing/components/CardProducto'
 import { useProductos } from '../../../hooks/useProductos'
 import { useCategorias } from '../../../hooks/useCategorias'
@@ -11,6 +12,17 @@ import { useSelector, useDispatch } from 'react-redux'
 import './HomeLanding.css'
 import { seFiltertData } from '../../../redux/slices/ProductsSlice'
 import CardProductoHolderTest from '../../../views/landing/components/CardProductoHolderTest'
+
+const organizationSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'ClothingStore',
+  name: 'American Shop Vip',
+  url: import.meta.env.VITE_SITE_URL,
+  logo: `${import.meta.env.VITE_SITE_URL}/favicon.ico`,
+  description:
+    'Tienda online de tenis, ropa y accesorios Nike, Adidas, Jordan, Puma y Lecop Sporting. Camisetas, jeans, tenis para niños, gorras y más, con envíos a toda Colombia.',
+  address: { '@type': 'PostalAddress', addressCountry: 'CO' },
+}
 
 export default function HomeLanding() {
   const { dataP: Productos, getAllProductosPublished, loading, getBrandsProductos } = useProductos()
@@ -40,6 +52,12 @@ export default function HomeLanding() {
 
   return (
     <div className="home-landing-wrapper">
+      <Seo
+        title="Tenis, Ropa y Accesorios Nike, Adidas, Jordan, Puma"
+        description="Tienda online de tenis, ropa y accesorios Nike, Adidas, Jordan, Puma y Lecop Sporting. Camisetas, jeans, tenis para niños, gorras y más, con envíos a toda Colombia."
+        path="/"
+        jsonLd={organizationSchema}
+      />
       <div className="container">
         <Carousel data-bs-theme="dark" prevIcon={<> <i className="text-danger fa-2xl fa-solid fa-chevron-left"></i></>} nextIcon={<> <i className="text-danger fa-2x fa-solid fa-chevron-right"></i></>}> 
           <Carousel.Item>
