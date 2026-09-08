@@ -2,6 +2,7 @@
 import React from 'react'
 import contactanos_img from '../../assets/contactanos.jpg'
 import { useForm } from 'react-hook-form'
+import Seo from '../../components/Seo'
 export default function ContactanosPage() {
   const {
     register,
@@ -15,6 +16,11 @@ export default function ContactanosPage() {
   }
   return (
     <>
+      <Seo
+        title="Contáctanos"
+        description="Contáctanos para conocer más sobre American Shop Vip, tienda de tenis, ropa y accesorios Nike, Adidas, Jordan y Puma en Colombia."
+        path="/contactanos"
+      />
       <h3 className="text-center mt-4">Contáctanos</h3>
       <div className="card p-4 mb-5">
         <div className="row">

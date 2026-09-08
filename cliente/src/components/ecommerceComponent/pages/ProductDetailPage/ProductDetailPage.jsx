@@ -11,9 +11,31 @@ import toast from 'react-hot-toast'
 import AuthContext from '../../../../context/AuthContext'
 import ConsultasProductoComponent from './components/ConsultasProductoComponent'
 import RelatedProductsComponent from './components/RelatedProductsComponent'
+import Seo from '../../../Seo'
+
+const truncate = (text, max) =>
+  text && text.length > max ? `${text.slice(0, max).trim()}…` : text
+
 export default function ProductDetailPage() {
   const { id } = useParams()
   const { getProductById, dataDetalle } = useProductos()
+
+  const productSchema = dataDetalle && {
+    '@context': 'https://schema.org',
+    '@type': 'Product',
+    name: dataDetalle.name,
+    description: dataDetalle.description,
+    image: dataDetalle.Imagenes?.[0]?.image,
+    brand: { '@type': 'Brand', name: dataDetalle.brand },
+    offers: {
+      '@type': 'Offer',
+      priceCurrency: 'COP',
+      price: dataDetalle.price,
+      availability: dataDetalle.Stock?.some((s) => s.stock != 0)
+        ? 'https://schema.org/InStock'
+        : 'https://schema.org/OutOfStock',
+    },
+  }
 
   const [sizeSelected, setSizeSelected] = useState(null)
   const { setCartEcommerceAmericanState, cartEcommerceAmericanState } = useContext(AuthContext)
@@ -31,6 +53,13 @@ export default function ProductDetailPage() {
 
   return (
     <>
+      <Seo
+        title={dataDetalle?.name || 'Detalle del producto'}
+        description={dataDetalle?.description ? truncate(dataDetalle.description, 160) : undefined}
+        image={dataDetalle?.Imagenes?.[0]?.image}
+        path={`/eco/${id}/producto`}
+        jsonLd={productSchema}
+      />
       <div className="mt-4" style={{ minHeight: '10vh' }}>
         <div className="card card-body position-relative card-cart">
           <button
