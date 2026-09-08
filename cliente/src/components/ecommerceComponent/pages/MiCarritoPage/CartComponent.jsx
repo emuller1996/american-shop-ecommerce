@@ -6,6 +6,7 @@ import { ViewDollar } from '../../../../utils'
 import { useProductos } from '../../../../hooks/useProductos'
 import toast from 'react-hot-toast'
 import { Link, useNavigate } from 'react-router-dom'
+import Seo from '../../../Seo'
 import './CartComponent.css'
 
 export default function CartComponent() {
@@ -58,6 +59,7 @@ export default function CartComponent() {
 
   return (
     <div className="mt-5">
+      <Seo noindex title="Mi Carrito" />
       <div className="card card-body position-relative card-cart">
         <button onClick={() => navigate(-1)} className='btn btn-back position-absolute start-0' style={{zIndex:10, top:"10px"}}>
           <i className="fa-solid fa-chevron-left me-2"></i>Atras
