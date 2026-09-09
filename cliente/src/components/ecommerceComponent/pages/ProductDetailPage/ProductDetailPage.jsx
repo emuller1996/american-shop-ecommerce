@@ -2,7 +2,7 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { useProductos } from '../../../../hooks/useProductos'
 import { useNavigate, useParams } from 'react-router-dom'
-import { ViewDollar } from '../../../../utils'
+import { ViewDollar, tieneDescuentoVigente, precioConDescuento } from '../../../../utils'
 import { Carousel } from 'react-bootstrap'
 import './ProductDetailPage.css'
 import StockComponent from './components/StockComponent'
@@ -20,6 +20,9 @@ export default function ProductDetailPage() {
   const { id } = useParams()
   const { getProductById, dataDetalle } = useProductos()
 
+  const enDescuento = tieneDescuentoVigente(dataDetalle)
+  const precioFinal = precioConDescuento(dataDetalle)
+
   const productSchema = dataDetalle && {
     '@context': 'https://schema.org',
     '@type': 'Product',
@@ -30,7 +33,7 @@ export default function ProductDetailPage() {
     offers: {
       '@type': 'Offer',
       priceCurrency: 'COP',
-      price: dataDetalle.price,
+      price: precioFinal,
       availability: dataDetalle.Stock?.some((s) => s.stock != 0)
         ? 'https://schema.org/InStock'
         : 'https://schema.org/OutOfStock',
@@ -107,9 +110,36 @@ export default function ProductDetailPage() {
               <div className="col-lg-5">
                 <div className="right-content">
                   <h4>{dataDetalle?.name}</h4>
-                  <span className="d-block fs-4 mb-2 fw-bold price">
-                    {ViewDollar(dataDetalle?.price)}
-                  </span>
+                  {enDescuento ? (
+                    <div className="mb-2">
+                      <span className="d-block text-muted text-decoration-line-through">
+                        {ViewDollar(dataDetalle?.price)}
+                      </span>
+                      <span className="d-block fs-4 fw-bold price text-danger">
+                        {ViewDollar(precioFinal)}{' '}
+                        <span className="badge bg-danger align-middle">
+                          -{dataDetalle.porcentaje_descuento}%
+                        </span>
+                      </span>
+                      {dataDetalle.fecha_limite_descuento && (
+                        <span className="d-block text-muted small mt-1">
+                          <i className="fa-regular fa-clock me-1"></i>
+                          Descuento válido hasta el{' '}
+                          {new Date(
+                            `${dataDetalle.fecha_limite_descuento}T00:00:00`,
+                          ).toLocaleDateString('es-CO', {
+                            day: 'numeric',
+                            month: 'long',
+                            year: 'numeric',
+                          })}
+                        </span>
+                      )}
+                    </div>
+                  ) : (
+                    <span className="d-block fs-4 mb-2 fw-bold price">
+                      {ViewDollar(dataDetalle?.price)}
+                    </span>
+                  )}
 
                   <span className="brad_product">{dataDetalle?.brand}</span>
                   <hr />
