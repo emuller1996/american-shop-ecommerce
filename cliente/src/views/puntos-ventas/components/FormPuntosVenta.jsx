@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Button, Form } from 'react-bootstrap'
 import { useForm } from 'react-hook-form'
 import toast from 'react-hot-toast'
@@ -45,18 +45,32 @@ export default function FormPuntosVenta({ onHide, getAllPuntosVenta, puntoVenta 
   } = useForm()
 
   const [coordinates, setCoordinates] = useState(puntoVenta ? puntoVenta.coordinates : null)
-  const [base64Image, setBase64Image] = useState(puntoVenta ? puntoVenta.base64Image : null)
+  const [selectedFile, setSelectedFile] = useState(null)
+  const [previewUrl, setPreviewUrl] = useState(null)
+
+  useEffect(() => {
+    return () => {
+      if (previewUrl) URL.revokeObjectURL(previewUrl)
+    }
+  }, [previewUrl])
 
   const onSubmit = async (data) => {
-    console.log(data)
-    data.base64Image = base64Image
     if (!coordinates) {
       return toast.error('Selecionar la Direccion en el Mapa')
     }
-    data.coordinates = coordinates
+
+    const formData = new FormData()
+    formData.append('name', data.name)
+    formData.append('type_sales_point', data.type_sales_point)
+    formData.append('description', data.description ?? '')
+    formData.append('city', data.city ?? '')
+    formData.append('address', data.address ?? '')
+    formData.append('coordinates', JSON.stringify(coordinates))
+    if (selectedFile) formData.append('image', selectedFile)
+
     if (!puntoVenta) {
       try {
-        const result = await postCreatePuntoVentaService(data)
+        const result = await postCreatePuntoVentaService(formData)
         console.log(result.data)
         toast.success(result.data.message)
         onHide()
@@ -65,7 +79,7 @@ export default function FormPuntosVenta({ onHide, getAllPuntosVenta, puntoVenta 
       }
     } else {
       try {
-        const result = await patchCreatePuntoVentaService(puntoVenta._id, data)
+        const result = await patchCreatePuntoVentaService(puntoVenta._id, formData)
         console.log(result.data)
         toast.success(result.data.message)
         onHide()
@@ -76,15 +90,13 @@ export default function FormPuntosVenta({ onHide, getAllPuntosVenta, puntoVenta 
   }
 
   const handleFileChange = (event) => {
-    const file = event.target.files[0];
+    const file = event.target.files[0]
     if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setBase64Image(reader.result);
-      };
-      reader.readAsDataURL(file);
+      if (previewUrl) URL.revokeObjectURL(previewUrl)
+      setSelectedFile(file)
+      setPreviewUrl(URL.createObjectURL(file))
     }
-  };
+  }
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -181,9 +193,14 @@ export default function FormPuntosVenta({ onHide, getAllPuntosVenta, puntoVenta 
           className='form-control'
         />
 
-        {base64Image && (
+        {(previewUrl || puntoVenta?.image_url) && (
           <div className="d-flex justify-content-center  my-4">
-            <img src={base64Image} alt="Selected" style={{maxWidth:"500px", minWidth:"300px"}} className="img-fluid h-52" />
+            <img
+              src={previewUrl || puntoVenta?.image_url}
+              alt="Selected"
+              style={{ maxWidth: '500px', minWidth: '300px' }}
+              className="img-fluid h-52"
+            />
           </div>
         )}
       </div>

@@ -2,11 +2,15 @@
 
 import axios from "axios";
 
-export const postCreatePuntoVentaService = (data) => {
-  return axios.post("/punto_venta", data);
+export const postCreatePuntoVentaService = (formData) => {
+  return axios.post("/punto_venta", formData, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
 };
-export const patchCreatePuntoVentaService = (id,data) => {
-  return axios.patch(`/punto_venta/${id}/`, data);
+export const patchCreatePuntoVentaService = (id, formData) => {
+  return axios.patch(`/punto_venta/${id}/`, formData, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
 };
 
 export const getAllPuntoVentaService = (data) => {

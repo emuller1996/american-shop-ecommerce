@@ -101,9 +101,9 @@ export default function PuntosVentasPages({}) {
                 <div className="row align-items-center">
                   <div className="col-md-4 col-12">
                     {
-                      punto?.base64Image && (
+                      punto?.image_url && (
                         <div className=' mb-3 d-flex justify-content-center'>
-                          <img src={punto?.base64Image} className='img-fluid rounded overflow-hidden' style={{height:"150px"}} alt="" />
+                          <img src={punto?.image_url} className='img-fluid rounded overflow-hidden' style={{height:"150px"}} alt={punto?.name} />
                         </div>
                       )
                     }
