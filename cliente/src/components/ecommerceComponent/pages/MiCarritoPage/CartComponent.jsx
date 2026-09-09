@@ -2,7 +2,7 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { useLocalStorage } from '../../../../hooks/useLocalStorage'
 import AuthContext from '../../../../context/AuthContext'
-import { ViewDollar } from '../../../../utils'
+import { ViewDollar, tieneDescuentoVigente, precioConDescuento } from '../../../../utils'
 import { useProductos } from '../../../../hooks/useProductos'
 import toast from 'react-hot-toast'
 import { Link, useNavigate } from 'react-router-dom'
@@ -94,7 +94,10 @@ export default function CartComponent() {
               </tr>
             )}
             {Data &&
-              Data.map((st) => (
+              Data.map((st) => {
+                const enDescuento = tieneDescuentoVigente(st?.product)
+                const precioFinal = precioConDescuento(st?.product)
+                return (
                 <tr key={st?._id}>
                   <td data-label="Producto" width={'450px'} scope="row">
                     <img
@@ -106,8 +109,24 @@ export default function CartComponent() {
                   </td>
                   <td data-label="Unidades">{st?.cantidad}</td>
                   <td data-label="Talla">{st?.size}</td>
-                  <td data-label="Precio U.">{ViewDollar(st?.product?.price)}</td>
-                  <td data-label="Total U." className="fw-bold">{ViewDollar(st?.product?.price * st?.cantidad)}</td>
+                  <td data-label="Precio U.">
+                    {enDescuento ? (
+                      <div className="d-flex flex-column">
+                        <span className="text-muted text-decoration-line-through small">
+                          {ViewDollar(st?.product?.price)}
+                        </span>
+                        <span className="fw-bold text-danger">
+                          {ViewDollar(precioFinal)}{' '}
+                          <span className="badge bg-danger">
+                            -{st.product.porcentaje_descuento}%
+                          </span>
+                        </span>
+                      </div>
+                    ) : (
+                      ViewDollar(st?.product?.price)
+                    )}
+                  </td>
+                  <td data-label="Total U." className="fw-bold">{ViewDollar(precioFinal * st?.cantidad)}</td>
                   <td data-label="Acción">
                     <button
                       onClick={() => {
@@ -127,13 +146,36 @@ export default function CartComponent() {
                     </button>
                   </td>
                 </tr>
-              ))}
+                )
+              })}
 
             {Data && Array.isArray(Data) && Data.length === 0 && (
               <tr>
                 <td colSpan={6}>
                   <p className="text-center text-muted mt-4 fw-bold">NO HAY PRODUCTOS EN EL CARRITO</p>
                 </td>
+              </tr>
+            )}
+            {Data && Data.some((st) => tieneDescuentoVigente(st?.product)) && (
+              <tr className="total-row">
+                <td colSpan={4} align="right" data-label="Descuento">
+                  <span className="fw-bold text-success">Ahorras en descuentos</span>
+                </td>
+                <td colSpan={1} data-label="Monto">
+                  <span className="fw-bold text-success">
+                    -
+                    {ViewDollar(
+                      Data.reduce(
+                        (acumulador, actual) =>
+                          acumulador +
+                          (actual?.product?.price - precioConDescuento(actual?.product)) *
+                            actual?.cantidad,
+                        0,
+                      ),
+                    )}
+                  </span>
+                </td>
+                <td data-label="Acción"></td>
               </tr>
             )}
             <tr className="total-row">
@@ -145,7 +187,8 @@ export default function CartComponent() {
                   {Data &&
                     ViewDollar(
                       Data.reduce(
-                        (acumulador, actual) => acumulador + actual?.product?.price * actual?.cantidad,
+                        (acumulador, actual) =>
+                          acumulador + precioConDescuento(actual?.product) * actual?.cantidad,
                         0,
                       ),
                     )}
