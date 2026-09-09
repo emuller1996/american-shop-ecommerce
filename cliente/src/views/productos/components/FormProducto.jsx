@@ -24,8 +24,11 @@ export default function FormProducto({ onHide, getAllProduct, producto }) {
     register,
     handleSubmit,
     control,
+    watch,
     formState: { errors, isSubmitting },
   } = useForm()
+
+  const isDescuento = watch('is_descuento', producto?.is_descuento ?? false)
 
   const { createProducto, updatedProducto, getBrandsProductos } = useProductos()
   const { getAllCategorias, data: ListCategorias } = useCategorias()
@@ -65,6 +68,13 @@ export default function FormProducto({ onHide, getAllProduct, producto }) {
     console.log(data)
     data.price = parseFloat(data.price)
     data.cost = parseFloat(data.cost)
+
+    if (data.is_descuento) {
+      data.porcentaje_descuento = parseInt(data.porcentaje_descuento, 10)
+    } else {
+      data.porcentaje_descuento = null
+      data.fecha_limite_descuento = null
+    }
 
     if (!producto) {
       try {
@@ -305,7 +315,7 @@ export default function FormProducto({ onHide, getAllProduct, producto }) {
             }}
           />
         </div>
-        <div className="col-md-12">
+        <div className="col-md-6">
           <Form.Group className="" controlId="published">
             <Form.Check // prettier-ignore
               type={'checkbox'}
@@ -316,6 +326,50 @@ export default function FormProducto({ onHide, getAllProduct, producto }) {
             />
           </Form.Group>
         </div>
+        <div className="col-md-6">
+          <Form.Group className="" controlId="is_descuento">
+            <Form.Check // prettier-ignore
+              type={'checkbox'}
+              id={`is_descuento`}
+              label={`¿En descuento?`}
+              defaultChecked={producto?.is_descuento}
+              {...register('is_descuento')}
+            />
+          </Form.Group>
+        </div>
+        {isDescuento && (
+          <>
+            <div className="col-md-6">
+              <Form.Group controlId="porcentaje_descuento">
+                <Form.Label>Porcentaje de Descuento</Form.Label>
+                <Form.Control
+                  defaultValue={producto?.porcentaje_descuento}
+                  {...register('porcentaje_descuento', {
+                    required: isDescuento,
+                    min: 1,
+                    max: 100,
+                    valueAsNumber: true,
+                  })}
+                  type="number"
+                  min={1}
+                  max={100}
+                  step={1}
+                  placeholder="Ej: 20"
+                />
+              </Form.Group>
+            </div>
+            <div className="col-md-6">
+              <Form.Group controlId="fecha_limite_descuento">
+                <Form.Label>Fecha Límite del Descuento</Form.Label>
+                <Form.Control
+                  defaultValue={producto?.fecha_limite_descuento}
+                  {...register('fecha_limite_descuento', { required: isDescuento })}
+                  type="date"
+                />
+              </Form.Group>
+            </div>
+          </>
+        )}
         <div className="col-12">
           <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">
             <Form.Label>Descripcion</Form.Label>

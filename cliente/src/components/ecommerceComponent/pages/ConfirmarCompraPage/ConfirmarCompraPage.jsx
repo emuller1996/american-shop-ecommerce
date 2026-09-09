@@ -2,7 +2,7 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { useProductos } from '../../../../hooks/useProductos'
 import AuthContext from '../../../../context/AuthContext'
-import { ViewDollar } from '../../../../utils'
+import { ViewDollar, tieneDescuentoVigente, precioConDescuento } from '../../../../utils'
 import { Accordion, Spinner } from 'react-bootstrap'
 import { Payment, initMercadoPago } from '@mercadopago/sdk-react'
 import './ConfirmarCompraPage.css'
@@ -71,7 +71,8 @@ export default function ConfirmarCompraPage({}) {
       const res2 = await Promise.all(rest)
       const productosValidos = res2.filter((c) => c && c.product)
       const totalCarrito = productosValidos.reduce(
-        (acumulador, actual) => acumulador + (actual.product?.price ?? 0) * (actual.cantidad ?? 0),
+        (acumulador, actual) =>
+          acumulador + precioConDescuento(actual.product) * (actual.cantidad ?? 0),
         0,
       )
       settotal(totalCarrito)
@@ -100,7 +101,7 @@ export default function ConfirmarCompraPage({}) {
                   stock_id: stk._id,
                   cantidad: stk.cantidad,
                   product_id: stk.product_id,
-                  price: stk.product.price,
+                  price: precioConDescuento(stk.product),
                 }
               }),
               address_id: direccionSelecionada,
@@ -174,7 +175,7 @@ export default function ConfirmarCompraPage({}) {
       stock_id: stk._id,
       cantidad: stk.cantidad,
       product_id: stk.product_id,
-      price: stk.product.price,
+      price: precioConDescuento(stk.product),
     })),
     address_id: direccionSelecionada,
     cliente: {
@@ -367,7 +368,20 @@ export default function ConfirmarCompraPage({}) {
                           {st?.cantidad}
                         </td>
                         <td style={{ color: '#696969' }}>{st?.size}</td>
-                        <td style={{ color: '#696969' }}>{ViewDollar(st?.product?.price)}</td>
+                        <td style={{ color: '#696969' }}>
+                          {tieneDescuentoVigente(st?.product) ? (
+                            <div className="d-flex flex-column">
+                              <span className="text-muted text-decoration-line-through small">
+                                {ViewDollar(st?.product?.price)}
+                              </span>
+                              <span className="fw-bold text-danger">
+                                {ViewDollar(precioConDescuento(st?.product))}
+                              </span>
+                            </div>
+                          ) : (
+                            ViewDollar(st?.product?.price)
+                          )}
+                        </td>
                       </tr>
                     ))}
                   <tr>
@@ -384,7 +398,7 @@ export default function ConfirmarCompraPage({}) {
                           ViewDollar(
                             Data.reduce(
                               (acumulador, actual) =>
-                                acumulador + actual.product.price * actual.cantidad,
+                                acumulador + precioConDescuento(actual.product) * actual.cantidad,
                               0,
                             ),
                           )}

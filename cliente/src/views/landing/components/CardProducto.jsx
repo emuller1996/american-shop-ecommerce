@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
-import { ViewDollar } from '../../../utils'
+import { ViewDollar, tieneDescuentoVigente, precioConDescuento } from '../../../utils'
 import { getImageByidService } from '../../../services/images.services'
 import './CardProducto.css'
 import { Link } from 'react-router-dom'
@@ -43,6 +43,8 @@ const CardProducto = ({ producto }) => {
   }
 
   const genderInfo = renderGender()
+  const enDescuento = tieneDescuentoVigente(producto)
+  const precioFinal = precioConDescuento(producto)
 
   const getImage = async () => {
     try {
@@ -64,6 +66,14 @@ const CardProducto = ({ producto }) => {
           className="product-image-container"
           style={{ height: '300px', overflow: 'hidden', position: 'relative' }}
         >
+          {enDescuento && (
+            <span
+              className="badge bg-danger"
+              style={{ position: 'absolute', top: '10px', left: '10px', zIndex: 2 }}
+            >
+              -{producto.porcentaje_descuento}%
+            </span>
+          )}
           {producto.image_id && !isLoading ? (
             <img
               className="card-img-top product-img-zoom"
@@ -87,9 +97,20 @@ const CardProducto = ({ producto }) => {
             <h4 className="card-title fs-5 text-truncate" title={producto?.name}>
               {producto?.name}
             </h4>
-            <p className="card-text m-0 fs-4 fw-bold" style={{ color: '#7A2B2B' }}>
-              {ViewDollar(producto?.price)}
-            </p>
+            {enDescuento ? (
+              <div className="m-0">
+                <span className="text-muted text-decoration-line-through small d-block">
+                  {ViewDollar(producto?.price)}
+                </span>
+                <span className="card-text fs-4 fw-bold text-danger">
+                  {ViewDollar(precioFinal)}
+                </span>
+              </div>
+            ) : (
+              <p className="card-text m-0 fs-4 fw-bold" style={{ color: '#7A2B2B' }}>
+                {ViewDollar(producto?.price)}
+              </p>
+            )}
             <p className="card-text text-center m-0 text-muted small">
               {producto?.categoria?.name}
             </p>
