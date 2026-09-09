@@ -6,10 +6,11 @@ import PropTypes from 'prop-types'
 import L from 'leaflet'
 import { usePuntoVenta } from '../../../../hooks/usePuntoVenta'
 import Seo from '../../../Seo'
+import logo_ame from "../../../../assets/Logo.png"
 
 // Definir el icono personalizado
 const customIcon = new L.Icon({
-  iconUrl: 'https://www.esmuller.cloud/assets/Logo-LBxHafXJ.png', // Cambia esto por la ruta de tu imagen
+  iconUrl: logo_ame, // Cambia esto por la ruta de tu imagen
   iconSize: [42, 42], // Tamaño del icono
   iconAnchor: [16, 32], // Punto de anclaje
   popupAnchor: [0, -32], // Punto de anclaje del popup
