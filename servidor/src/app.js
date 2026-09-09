@@ -1,4 +1,5 @@
 import express from "express";
+import path from "path";
 import cookieParser from "cookie-parser";
 import bodyParser from "body-parser";
 import morgan from "morgan";
@@ -21,8 +22,8 @@ server.use(fileUpload({
     useTempFiles: true,
     tempFileDir: "/tmp/"
   }));
-  
 
+server.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
 
 server.use("/", routes);
 
