@@ -6,10 +6,11 @@ import PropTypes from 'prop-types'
 import L from 'leaflet'
 import { usePuntoVenta } from '../../../../hooks/usePuntoVenta'
 import Seo from '../../../Seo'
+import logo_ame from "../../../../assets/Logo.png"
 
 // Definir el icono personalizado
 const customIcon = new L.Icon({
-  iconUrl: 'https://www.esmuller.cloud/assets/Logo-LBxHafXJ.png', // Cambia esto por la ruta de tu imagen
+  iconUrl: logo_ame, // Cambia esto por la ruta de tu imagen
   iconSize: [42, 42], // Tamaño del icono
   iconAnchor: [16, 32], // Punto de anclaje
   popupAnchor: [0, -32], // Punto de anclaje del popup
@@ -101,9 +102,9 @@ export default function PuntosVentasPages({}) {
                 <div className="row align-items-center">
                   <div className="col-md-4 col-12">
                     {
-                      punto?.base64Image && (
+                      punto?.image_url && (
                         <div className=' mb-3 d-flex justify-content-center'>
-                          <img src={punto?.base64Image} className='img-fluid rounded overflow-hidden' style={{height:"150px"}} alt="" />
+                          <img src={punto?.image_url} className='img-fluid rounded overflow-hidden' style={{height:"150px"}} alt={punto?.name} />
                         </div>
                       )
                     }

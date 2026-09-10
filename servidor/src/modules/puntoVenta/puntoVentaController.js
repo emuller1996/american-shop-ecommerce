@@ -1,4 +1,5 @@
 import puntoVentaService from "./puntoVentaService.js";
+import { guardarImagenWebp, eliminarImagenLocal } from "../../services/localImageService.js";
 
 // Controladores principales
 export const obtenerTodos = async (req, res) => {
@@ -21,7 +22,15 @@ export const obtenerPorId = async (req, res) => {
 
 export const crear = async (req, res) => {
   try {
-    const data = req.body;
+    const data = { ...req.body };
+    if (data.coordinates) data.coordinates = JSON.parse(data.coordinates);
+
+    const file = req.files?.image;
+    if (file) {
+      const { relativeUrl } = await guardarImagenWebp(file.tempFilePath, "puntos_ventas");
+      data.image_url = `${req.protocol}://${req.get("host")}${relativeUrl}`;
+    }
+
     await puntoVentaService.crearPuntoVenta(data);
     return res
       .status(201)
@@ -33,11 +42,25 @@ export const crear = async (req, res) => {
 
 export const actualizar = async (req, res) => {
   try {
-    const data = req.body;
+    const data = { ...req.body };
+    if (data.coordinates) data.coordinates = JSON.parse(data.coordinates);
+
+    const file = req.files?.image;
+    if (file) {
+      const puntoActual = await puntoVentaService.obtenerPuntoVentaPorId(req.params.id);
+      const { relativeUrl } = await guardarImagenWebp(file.tempFilePath, "puntos_ventas");
+      data.image_url = `${req.protocol}://${req.get("host")}${relativeUrl}`;
+
+      if (puntoActual?.image_url) {
+        const vieja = new URL(puntoActual.image_url).pathname;
+        eliminarImagenLocal(vieja);
+      }
+    }
+
     const response = await puntoVentaService.actualizarPuntoVenta(req.params.id, data);
     return res
       .status(201)
-      .json({ message: "Punto de Venta Creado.", response, data });
+      .json({ message: "Punto de Venta Actualizado.", response, data });
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
