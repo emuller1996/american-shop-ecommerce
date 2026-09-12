@@ -12,7 +12,15 @@ import { requestLogger } from "./middlewares/requestLogger.js";
 dotenv.config();
 const server = express();
 
-server.use(cors());
+const corsOptions = {
+  origin: [
+    "https://www.americanshopvip.shop",
+    "https://americanshopvip.shop",
+    "http://localhost:3000",
+  ],
+};
+
+server.use(cors(corsOptions));
 server.use(bodyParser.urlencoded({ extended: true, limit: "50mb" }));
 server.use(bodyParser.json({ limit: "50mb" }));
 server.use(cookieParser());
