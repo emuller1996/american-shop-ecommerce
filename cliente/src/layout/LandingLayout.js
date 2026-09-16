@@ -22,8 +22,7 @@ const LandingLayout = () => {
       <div className="bg-white border-top">
         <div className="container ">
           <footer className="row  py-4 my-4 ">
-            <div className="col-md-6 mb-3">
-              <h5>American Shop Vip</h5>
+            <div className="col-md-4 mb-3">
               <ul className="nav flex-column">
                 <li className="nav-item mb-2">
                   <Link className="nav-link p-0 text-muted" to={`/eco/puntos-ventas/`}>
@@ -52,12 +51,17 @@ const LandingLayout = () => {
                 </li>
               </ul>
             </div>
-            <div className="col-md-6 align-self-center">
+            <div className="col-md-4  text-muted">
+              <h5>American Shop Vip</h5>
+              <p className="m-0">Colombia - Valle del Cauca</p>
+              <p className="m-0">Buenaventura</p>
+              <p className="m-0">San Andresito Parte Baja</p>
+              <p className="m-0">Te Viste Real y te deja de paker!!</p>
+
+            </div>
+            <div className="col-md-4 align-self-center">
               <div className="d-flex justify-content-end">
-                <img
-                  width={'220px'}
-                  src="https://mercadoroyal.com/assets/images/footer/lpago.png"
-                />
+                <img width={'240px'} src="pagos_wompi.png" />
               </div>
             </div>
 
