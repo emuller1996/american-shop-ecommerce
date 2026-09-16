@@ -235,7 +235,7 @@ export default function ConfirmarCompraPage({}) {
       </div>
       <div className="row g-4">
         <div className="col-md-6 col-payment">
-          <Accordion defaultActiveKey="0" activeKey={pasoActive}>
+          <Accordion className="checkout-accordion" defaultActiveKey="0" activeKey={pasoActive}>
             <Accordion.Item eventKey="0">
               <Accordion.Header>Direccion de Envio</Accordion.Header>
               <Accordion.Body>
