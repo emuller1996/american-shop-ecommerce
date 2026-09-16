@@ -41,7 +41,7 @@ const FormLogin = ({ onHide }) => {
       setTokenAccessCliente(result.data.token)
       setClient(jwtDecode(result.data.token))
       onHide()
-      navigate('/eco/mi-perfil')
+      //navigate('/eco/mi-perfil')
     } catch (error) {
       console.error(error)
       const resData = error?.response?.data

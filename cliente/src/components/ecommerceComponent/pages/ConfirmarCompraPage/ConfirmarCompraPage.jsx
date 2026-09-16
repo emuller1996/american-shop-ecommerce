@@ -4,7 +4,6 @@ import { useProductos } from '../../../../hooks/useProductos'
 import AuthContext from '../../../../context/AuthContext'
 import { ViewDollar, tieneDescuentoVigente, precioConDescuento } from '../../../../utils'
 import { Accordion, Spinner } from 'react-bootstrap'
-import { Payment, initMercadoPago } from '@mercadopago/sdk-react'
 import './ConfirmarCompraPage.css'
 import SelectAddressShop from './components/SelectAddressShop'
 import WompiButton from './components/WompiButton'
@@ -12,10 +11,9 @@ import axios from 'axios'
 import toast from 'react-hot-toast'
 import { useNavigate } from 'react-router-dom'
 import logoNequi from '../../../../assets/nequi-logo.svg'
+import pagosWompiImg from '../../../../assets/pagos_wompi.png'
 import { useLocalStorage } from '../../../../hooks/useLocalStorage'
 import Seo from '../../../Seo'
-
-initMercadoPago(import.meta.env.VITE_MERCA_PUBLIC_KEY)
 
 export default function ConfirmarCompraPage({}) {
   const { validateProductoCart } = useProductos()
@@ -43,15 +41,6 @@ export default function ConfirmarCompraPage({}) {
 
   console.log(client)
 
-  const customization = {
-    paymentMethods: {
-      //ticket: 'all',
-      //bankTransfer: 'all',
-      creditCard: 'all',
-      debitCard: 'all',
-      //mercadoPago: 'all',
-    },
-  }
   const getAllProductCart = async () => {
     try {
       setisLoading(true)
@@ -82,92 +71,6 @@ export default function ConfirmarCompraPage({}) {
     } finally {
       setisLoading(false)
     }
-  }
-
-  const onSubmit = async ({ selectedPaymentMethod, formData }) => {
-    // callback llamado al hacer clic en el botón enviar datos
-    return new Promise((resolve, reject) => {
-      /* formData.ordenData.total_order = parseFloat(total)
-      formData.ordenData.productos = Data
-      formData.ordenData.address_id = direccionSelecionada */
-      axios
-        .post(
-          '/ordenes/process_payment',
-          JSON.stringify({
-            paymentMercado: formData,
-            orderData: {
-              products: Data.map((stk) => {
-                return {
-                  stock_id: stk._id,
-                  cantidad: stk.cantidad,
-                  product_id: stk.product_id,
-                  price: precioConDescuento(stk.product),
-                }
-              }),
-              address_id: direccionSelecionada,
-              cliente: {
-                client_id: client._id,
-                name_client: client.name_client,
-                email_client: client.email_client,
-                phone_client: client.phone_client,
-                number_document_client: client.number_document_client,
-              },
-              total_order: total,
-            },
-          }),
-          {
-            headers: {
-              'Content-Type': 'application/json',
-            },
-          },
-        )
-        .then((response) => {
-          // recibir el resultado del pago
-          console.log(response)
-          if (response.data.mercaResponse.status === 'approved') {
-            setCartEcommerceAmericanState([])
-            toast.success('Se ha Generado su Pedido Correctamente.')
-            setPasoActive('2')
-            resolve()
-          } else {
-            //toast.error('HUBO UN ERROR EN EL PROCESO DE PAGO')
-            let txtError = ''
-            if (response.data.mercaResponse.status_detail === 'cc_rejected_insufficient_amount') {
-              txtError = 'La tarjeta no cuenta con los fondos para el cobro de la orden.'
-            }
-            if (response.data.mercaResponse.status_detail === 'cc_rejected_other_reason') {
-              txtError = 'La tarjeta ha sido rechazada por otras razones.'
-            }
-
-            toast((t) => (
-              <div className="" role="alert">
-                <span className="fw-bold text-center">ERROR AL PROCESAR EL PAGO</span>
-                <span className="d-block">
-                  {txtError}
-                  <button className="btn btn-sm btn-danger" onClick={() => toast.dismiss(t.id)}>
-                    Dismiss
-                  </button>
-                </span>
-              </div>
-            ))
-            reject()
-          }
-        })
-        .catch((error) => {
-          // manejar la respuesta de error al intentar crear el pago
-          reject()
-        })
-    })
-  }
-  const onError = async (error) => {
-    // callback llamado para todos los casos de error de Brick
-    console.log(error)
-  }
-  const onReady = async () => {
-    /*
-      Callback llamado cuando el Brick está listo.
-      Aquí puede ocultar cargamentos de su sitio, por ejemplo.
-    */
   }
 
   const buildOrderData = () => ({
@@ -209,7 +112,7 @@ export default function ConfirmarCompraPage({}) {
   }
 
   const goToWhatsApp = () => {
-    const phone = import.meta.env.VITE_NUMBER_PHONE // Reemplazar con el número del negocio
+    const phone = import.meta.env.VITE_NEQUI_PHONE // Reemplazar con el número del negocio
     const message = `Hola! Quiero confirmar mi pago por Nequi.\n\n*Orden:* ${nequiOrder._id}\n*Cliente:* ${client.name_client}\n*Total:* ${ViewDollar(total)}\n\nAdjunto el comprobante de pago.`
     const url = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`
     window.open(url, '_blank')
@@ -235,7 +138,7 @@ export default function ConfirmarCompraPage({}) {
       </div>
       <div className="row g-4">
         <div className="col-md-6 col-payment">
-          <Accordion defaultActiveKey="0" activeKey={pasoActive}>
+          <Accordion className="checkout-accordion" defaultActiveKey="0" activeKey={pasoActive}>
             <Accordion.Item eventKey="0">
               <Accordion.Header>Direccion de Envio</Accordion.Header>
               <Accordion.Body>
@@ -252,58 +155,89 @@ export default function ConfirmarCompraPage({}) {
                 <div>
                   {total && pasoActive === '1' && (
                     <div className="d-flex flex-column gap-3">
-                      {/* <Payment
-                        initialization={{ amount: total }}
-                        customization={customization}
-                        onSubmit={onSubmit}
-                        onReady={onReady}
-                        onError={onError}
-                      /> */}
-                      <div className="text-center mt-3">
-                        <hr />
+                      {/* Opción principal: Wompi */}
+                      <div className="checkout-payment-card checkout-payment-recommended">
+                        <span className="checkout-payment-badge">Recomendado</span>
+                        <p className="text-center text-muted small mb-3">
+                          Paga de forma rápida y segura con tarjeta, PSE, Nequi y más.
+                        </p>
+                        {!nequiOrder && (
+                          <WompiButton
+                            orderData={buildOrderData()}
+                            total={total}
+                            onSuccess={() => {
+                              setCartEcommerceAmericanState([])
+                              setCartEcommerceAmerican([])
+                              setPasoActive('2')
+                            }}
+                          />
+                        )}
+                        <div className="text-center mt-3">
+                          <img
+                            src={pagosWompiImg}
+                            alt="Medios de pago aceptados: Wompi, Visa, Mastercard, PSE, Nequi"
+                            className="checkout-payment-methods-img"
+                          />
+                        </div>
+                      </div>
+
+                      <div className="checkout-payment-divider">
+                        <span>o</span>
+                      </div>
+
+                      {/* Opción alterna: Nequi manual */}
+                      <div className="checkout-payment-card">
+                        <div className="d-flex align-items-center justify-content-center gap-2 mb-3">
+                          <img src={logoNequi} alt="Nequi" style={{ height: '26px' }} />
+                          <span className="fw-bold">Pago manual por Nequi</span>
+                        </div>
+
                         {!nequiOrder ? (
-                          <button
-                            disabled={isLoadingNequi}
-                            className="btn btn-light w-100 text-dark fw-bold"
-                            onClick={handleNequiPayment}
-                            //style={{ backgroundColor: '#2ecc71' }}
-                          >
-                            {isLoadingNequi ? (
-                              <Spinner size="sm" />
-                            ) : (
-                              <>
-                                <i className="fa-solid fa-mobile-screen-button me-2"></i>
-                                Pagar con
-                                <img src={logoNequi} />
-                              </>
-                            )}
-                          </button>
+                          <>
+                            <ol className="checkout-payment-instructions">
+                              <li>
+                                Realiza tu pago por Nequi al número{' '}
+                                <strong>{import.meta.env.VITE_NEQUI_PHONE} (Est****  Mul****)</strong> por el valor
+                                de <strong>{ViewDollar(total)}</strong>.
+                              </li>
+                              <li>Presiona el botón para generar tu pedido.</li>
+                              <li>
+                                Envía el comprobante de pago por WhatsApp para confirmar tu compra.
+                              </li>
+                            </ol>
+                            <button
+                              disabled={isLoadingNequi}
+                              className="btn btn-light w-100 text-dark fw-bold border rounded-3"
+                              onClick={handleNequiPayment}
+                            >
+                              {isLoadingNequi ? (
+                                <Spinner size="sm" />
+                              ) : (
+                                'Ya realicé el pago, generar pedido'
+                              )}
+                            </button>
+                          </>
                         ) : (
-                          <button
-                            className="btn btn-primary w-100 text-white fw-bold"
-                            onClick={goToWhatsApp}
-                          >
-                            <i className="fa-brands fa-whatsapp me-2"></i>
-                            Confirmar Pago en WhatsApp
-                          </button>
+                          <>
+                            <div className="alert alert-success small">
+                              Pedido generado. Ahora envía tu comprobante de pago por WhatsApp para
+                              confirmar tu compra.
+                            </div>
+                            <button
+                              className="btn btn-primary w-100 text-white fw-bold rounded-3"
+                              onClick={goToWhatsApp}
+                            >
+                              <i className="fa-brands fa-whatsapp me-2"></i>
+                              Confirmar Pago en WhatsApp
+                            </button>
+                          </>
                         )}
                       </div>
-                      {!nequiOrder && (
-                        <WompiButton
-                          orderData={buildOrderData()}
-                          total={total}
-                          onSuccess={() => {
-                            setCartEcommerceAmericanState([])
-                            setCartEcommerceAmerican([])
-                            setPasoActive('2')
-                          }}
-                        />
-                      )}
                     </div>
                   )}
                   <div className="text-center mt-3">
                     <button
-                      className="btn btn-danger text-white"
+                      className="btn btn-danger text-white rounded-3"
                       onClick={() => {
                         setPasoActive('0')
                       }}

@@ -6,6 +6,7 @@ import toast from 'react-hot-toast'
 import PropTypes from 'prop-types'
 import { Modal } from 'react-bootstrap'
 import FormDireccion from '../../MiPerfilPage/components/FormDireccion'
+import './SelectAddressShop.css'
 
 export default function SelectAddressShop({
   setDireccionSelecionada,
@@ -36,7 +37,7 @@ export default function SelectAddressShop({
       <div>
         <div className="text-center mb-3 mt-2">
           <button
-            className="btn btn-danger text-white"
+            className="btn btn-danger text-white rounded-3"
             onClick={() => {
               setAddresUpdate(null)
               setShow(true)
@@ -67,17 +68,9 @@ export default function SelectAddressShop({
                   seterrorSelected({ isError: false, message: '' })
                 }
               }}
-              className="card mb-2"
-              style={{
-                borderColor: direccionSelecionada === address._id ? 'rgb(112, 166, 241)' : '#dfdfdf',
-                backgroundColor:
-                  direccionSelecionada === address._id ? 'rgba(232, 242, 255, 0.61)' : '#ffffff',
-                boxShadow:
-                  direccionSelecionada === address._id
-                    ? 'rgba(3, 102, 214, 0.3) 0px 0px 0px 3px'
-                    : '',
-                cursor: 'pointer',
-              }}
+              className={`card mb-2 address-card ${
+                direccionSelecionada === address._id ? 'selected' : ''
+              }`}
             >
               <div className="card-body">
                 <div className="row g-4">
@@ -103,7 +96,7 @@ export default function SelectAddressShop({
                         setShow(true)
                       }}
                     >
-                      <i className="fa-solid fa-pen-to-square" style={{color:"#3e85d6"}}></i>
+                      <i className="fa-solid fa-pen-to-square" style={{color:"#1A1A1A"}}></i>
                     </button>
                     </div>
                     
@@ -130,14 +123,14 @@ export default function SelectAddressShop({
           className="btn btn-success text-white"
           onClick={() => {
             if (!direccionSelecionada) {
-              toast.error(`Selecciona una Dirección de Envió!`)
+              //toast.error(`Selecciona una Dirección de Envió!`)
               seterrorSelected({ isError: true, message: 'Selecciona una Dirección de Envió' })
               return
             }
             setPasoActive('1')
           }}
         >
-          Siguiente
+          Siguiente <i className="fa-solid fa-angle-right"></i>
         </button>
       </div>
 
