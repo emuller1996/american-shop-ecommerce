@@ -58,6 +58,81 @@
     padding: 1.5rem;
 }
 
+/* Tarjetas de método de pago */
+.checkout-payment-card {
+    position: relative;
+    border-radius: 16px;
+    border: 1px solid #e5e5e5;
+    background: #ffffff;
+    padding: 1.5rem;
+}
+
+.checkout-payment-recommended {
+    border-color: rgba(201, 51, 51, 0.3);
+    box-shadow: 0 8px 24px rgba(201, 51, 51, 0.08);
+}
+
+.checkout-payment-badge {
+    position: absolute;
+    top: -12px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #c93333;
+    color: #fff;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 0.25rem 0.9rem;
+    border-radius: 999px;
+    box-shadow: 0 4px 10px rgba(201, 51, 51, 0.35);
+}
+
+.checkout-payment-methods-img {
+    max-width: 200px;
+    width: 100%;
+    height: auto;
+}
+
+.checkout-payment-divider {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    color: #999;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.checkout-payment-divider::before,
+.checkout-payment-divider::after {
+    content: '';
+    flex: 1;
+    border-bottom: 1px solid #e5e5e5;
+}
+
+.checkout-payment-divider span {
+    padding: 0 0.75rem;
+}
+
+.checkout-payment-instructions {
+    background: #faf7f2;
+    border: 1px solid #eee;
+    border-radius: 12px;
+    padding: 1rem 1rem 1rem 2.2rem;
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+    color: #444;
+}
+
+.checkout-payment-instructions li {
+    margin-bottom: 0.5rem;
+}
+
+.checkout-payment-instructions li:last-child {
+    margin-bottom: 0;
+}
+
 @media (max-width: 768px) {
 
     .col-payment {

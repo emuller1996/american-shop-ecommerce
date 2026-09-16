@@ -4,6 +4,8 @@ import PropTypes from 'prop-types'
 import axios from 'axios'
 import toast from 'react-hot-toast'
 import { Spinner } from 'react-bootstrap'
+import wompiLogo from '../../../../../assets/Wompi_LogoPrincipal.png'
+import './WompiButton.css'
 
 WompiButton.propTypes = {
   orderData: PropTypes.object,
@@ -66,15 +68,15 @@ export default function WompiButton({ orderData, total, onSuccess, disabled }) {
   return (
     <button
       disabled={disabled || loadingWompi}
-      className="btn btn-dark w-100 text-white fw-bold"
+      className="btn btn-light w-100 fw-bold checkout-wompi-btn"
       onClick={handlePagarConWompi}
     >
       {loadingWompi ? (
         <Spinner size="sm" />
       ) : (
         <>
-          <i className="fa-solid fa-credit-card me-2"></i>
-          Pagar con Wompi
+          <span className="text-muted">Pagar con</span>
+          <img src={wompiLogo} alt="Wompi" className="checkout-wompi-logo" />
         </>
       )}
     </button>
