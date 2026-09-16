@@ -12,6 +12,7 @@ import { ViewDollar } from '../utils'
 import CardProducto from '../views/landing/components/CardProducto'
 import { useCategorias } from '../hooks/useCategorias'
 import AppContentLanding from '../components/ecommerceComponent/AppContentLanding'
+import imgWompi from '../assets/pagos_wompi.png'
 
 const LandingLayout = () => {
   return (
@@ -57,11 +58,10 @@ const LandingLayout = () => {
               <p className="m-0">Buenaventura</p>
               <p className="m-0">San Andresito Parte Baja</p>
               <p className="m-0">Te Viste Real y te deja de paker!!</p>
-
             </div>
             <div className="col-md-4 align-self-center">
               <div className="d-flex justify-content-end">
-                <img width={'240px'} src="pagos_wompi.png" />
+                <img width={'240px'} src={imgWompi} />
               </div>
             </div>
 
