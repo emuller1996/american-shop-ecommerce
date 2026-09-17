@@ -3,3 +3,6 @@
 // If you want to customize your project please add your variables below.
 
 $enable-deprecation-messages: false !default;
+
+// La app usa un solo modo (claro) siempre, sin importar la preferencia del sistema.
+$enable-dark-mode: false;
