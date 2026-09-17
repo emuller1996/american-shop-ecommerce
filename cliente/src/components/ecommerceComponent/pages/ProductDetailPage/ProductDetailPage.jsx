@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 import { useProductos } from '../../../../hooks/useProductos'
 import { useNavigate, useParams } from 'react-router-dom'
 import { ViewDollar, tieneDescuentoVigente, precioConDescuento } from '../../../../utils'
@@ -49,9 +49,11 @@ export default function ProductDetailPage() {
   )
 
   const navigate = useNavigate()
+  const topRef = useRef(null)
 
   useEffect(() => {
     getProductById(id)
+    topRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
   }, [id])
 
   return (
@@ -63,7 +65,7 @@ export default function ProductDetailPage() {
         path={`/eco/${id}/producto`}
         jsonLd={productSchema}
       />
-      <div className="mt-4" style={{ minHeight: '10vh' }}>
+      <div ref={topRef} className="mt-4" style={{ minHeight: '10vh' }}>
         <div className="card card-body position-relative card-cart">
           <button
             onClick={() => navigate(-1)}
