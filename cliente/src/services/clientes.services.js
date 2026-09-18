@@ -39,8 +39,16 @@ export const getGetAddressClientesService = (token) => {
 }
 
 
-export const getGetShoppingClientesService = (token) => {
-  return axios.get(`/clientes/get/shopping`,{ headers: { 'Authorization': token } })
+export const getGetShoppingClientesService = (token, params = {}) => {
+  const searchs = new URLSearchParams();
+
+  Object.entries(params).forEach(([key, value]) => {
+    if (value !== undefined && value !== null && value !== "") {
+      searchs.append(key, value);
+    }
+  });
+
+  return axios.get(`/clientes/get/shopping/?${searchs.toString()}`,{ headers: { 'Authorization': token } })
 }
 
 export const getShopByIdService = (token, id) => {

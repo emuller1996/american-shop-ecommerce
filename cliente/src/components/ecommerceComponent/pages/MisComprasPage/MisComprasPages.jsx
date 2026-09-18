@@ -12,6 +12,7 @@ import CardShopping from './components/CardShopping'
 import { useNavigate } from 'react-router-dom'
 import logo_ame from '../../../../assets/Logo.png'
 import Seo from '../../../Seo'
+import Pagination from '@mui/material/Pagination'
 
 export default function MisComprasPages() {
   const {
@@ -30,13 +31,12 @@ export default function MisComprasPages() {
   const [motivoCancelacion, setMotivoCancelacion] = useState('')
   const [loadingCancelar, setLoadingCancelar] = useState(false)
   const [cancelError, setCancelError] = useState('')
+  const [page, setPage] = useState(1)
   const navigate = useNavigate()
 
   useEffect(() => {
-    console.log('raro')
-
-    getAllShoppingByClientes()
-  }, [])
+    getAllShoppingByClientes({ perPage: 6, page })
+  }, [page])
 
   const handleVerDetalle = async (shop) => {
     try {
@@ -69,7 +69,7 @@ export default function MisComprasPages() {
       })
       toast.success(result.data.message)
       setShowCancel(false)
-      getAllShoppingByClientes()
+      getAllShoppingByClientes({ perPage: 6, page })
     } catch (error) {
       console.log(error)
       const resData = error?.response?.data
@@ -106,8 +106,8 @@ export default function MisComprasPages() {
       )}
       <div style={{ minHeight: '65vh' }}>
         <div className="row g-3 ">
-          {dataShopping &&
-            dataShopping.map((shop) => (
+          {dataShopping?.data &&
+            dataShopping.data.map((shop) => (
               <div key={shop._id} className="col-md-6">
                 <CardShopping
                   shop={shop}
@@ -117,6 +117,17 @@ export default function MisComprasPages() {
               </div>
             ))}
         </div>
+        {dataShopping?.total_pages > 1 && (
+          <div className="p-2 d-flex justify-content-center">
+            <Pagination
+              page={page}
+              count={dataShopping?.total_pages}
+              onChange={(eve, newPage) => {
+                setPage(newPage)
+              }}
+            />
+          </div>
+        )}
       </div>
 
       <Modal
