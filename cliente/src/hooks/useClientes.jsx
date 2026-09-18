@@ -111,10 +111,10 @@ export const useClientes = () => {
     }
   }
 
-  const getAllShoppingByClientes = async () => {
+  const getAllShoppingByClientes = async (params = {}) => {
     setLoading(true)
     try {
-      const res = await getGetShoppingClientesService(TokenClient, signal)
+      const res = await getGetShoppingClientesService(TokenClient, params)
       if (res.status !== 200) {
         let err = new Error('Error en la petición Fetch')
         err.status = res.status || '00'

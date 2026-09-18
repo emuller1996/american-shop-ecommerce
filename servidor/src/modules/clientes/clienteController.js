@@ -463,7 +463,11 @@ export const obtenerComprasClienteAutenticado = async (req, res) => {
       _id: c._id,
     }));
 
-    return res.status(200).json(data);
+    return res.status(200).json({
+      data,
+      total: searchResult.hits.total.value,
+      total_pages: Math.ceil(searchResult.hits.total.value / perPage),
+    });
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
