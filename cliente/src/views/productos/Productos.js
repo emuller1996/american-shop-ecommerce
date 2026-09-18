@@ -18,6 +18,7 @@ import { Chip } from '@mui/material'
 import ImagesPage from './ImagesPage/ImagesPage'
 import TallasPage from './TallasPage/TallasPage'
 import { useCategorias } from '../../hooks/useCategorias'
+import logoAmerican from '../../assets/Logo.png'
 
 const ProductosPage = () => {
   const [show, setShow] = useState(false)
@@ -223,6 +224,23 @@ const ProductosPage = () => {
                 },
               },
               //{ name: 'Id', selector: (row) => row._id, width: '100px' },
+              {
+                name: 'Avatar',
+                width: '80px',
+                cell: (row) => (
+                  <img
+                    src={row?.imageBase64 || logoAmerican}
+                    alt={row?.name ?? 'Producto'}
+                    className="rounded-circle"
+                    style={{
+                      width: '40px',
+                      height: '40px',
+                      objectFit: 'cover',
+                      opacity: row?.imageBase64 ? 1 : 0.4,
+                    }}
+                  />
+                ),
+              },
               { name: 'Nombre', selector: (row) => row?.name ?? '', width: '250px' },
 
               {
