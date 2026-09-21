@@ -10,6 +10,7 @@ import {
   getAllProductoLogsStockService,
   getAllProductoService,
   getAllProductoStockService,
+  getPlantillaImportProductoService,
   getProductoBrandsService,
   getProductoSearchPaginationServices,
   getProductoSearchPublishedServices,
@@ -203,6 +204,10 @@ export const useProductos = () => {
     return postImportProductoService(data, Token)
   }
 
+  const descargarPlantillaProductos = async () => {
+    return getPlantillaImportProductoService(Token)
+  }
+
   const validateProductoCart = async (id, data) => {
     return postValidateStockProductoService(data, id, Token)
   }
@@ -236,6 +241,7 @@ export const useProductos = () => {
     getStockByProductId,
     updateStockProducto,
     importProductos,
+    descargarPlantillaProductos,
     getAllProductosPagination,
     dataP,
     getAllProductosPublished,

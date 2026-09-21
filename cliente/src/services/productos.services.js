@@ -76,6 +76,13 @@ export const postImportProductoService = (data, token) => {
   })
 }
 
+export const getPlantillaImportProductoService = (token) => {
+  return axios.get(`/productos/import-excel/plantilla`, {
+    headers: { 'access-token': token },
+    responseType: 'blob',
+  })
+}
+
 
 export const getProductoSearchPaginationServices = async (token, ...params) => {
   const searchs = new URLSearchParams();
