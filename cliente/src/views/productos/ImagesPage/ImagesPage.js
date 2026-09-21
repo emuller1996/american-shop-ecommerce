@@ -11,8 +11,7 @@ const ImagesPage = ({ idProduct }) => {
   ImagesPage.propTypes = {
     idProduct: PropTypes.string,
   }
-  const [selectedImage, setSelectedImage] = useState(null)
-  const [previewUrl, setPreviewUrl] = useState(null)
+  const [selectedImages, setSelectedImages] = useState([])
   const [isLoading, setisLoading] = useState(true)
   const [isLoadingUpload, setisLoadingUpload] = useState(false)
   const [deletingId, setDeletingId] = useState(null)
@@ -34,12 +33,12 @@ const ImagesPage = ({ idProduct }) => {
     }
   }, [idProduct])
 
-  // Liberar object URL del preview cuando cambie/desmonte.
+  // Liberar object URLs del preview cuando cambie/desmonte.
   useEffect(() => {
     return () => {
-      if (previewUrl) URL.revokeObjectURL(previewUrl)
+      selectedImages.forEach((img) => URL.revokeObjectURL(img.previewUrl))
     }
-  }, [previewUrl])
+  }, [selectedImages])
 
   const getAllDataFetch = async () => {
     try {
@@ -54,10 +53,17 @@ const ImagesPage = ({ idProduct }) => {
   }
 
   const resetSelection = (inputEl) => {
-    if (previewUrl) URL.revokeObjectURL(previewUrl)
-    setSelectedImage(null)
-    setPreviewUrl(null)
+    selectedImages.forEach((img) => URL.revokeObjectURL(img.previewUrl))
+    setSelectedImages([])
     if (inputEl) inputEl.value = ''
+  }
+
+  const handleRemoveSelected = (index) => {
+    setSelectedImages((prev) => {
+      const target = prev[index]
+      if (target) URL.revokeObjectURL(target.previewUrl)
+      return prev.filter((_, i) => i !== index)
+    })
   }
 
   const handleImageChange = async (e) => {
@@ -65,8 +71,8 @@ const ImagesPage = ({ idProduct }) => {
     try {
       resetSelection()
       setErrorFile(null)
-      const file = inputEl.files[0]
-      if (!file) return
+      const files = Array.from(inputEl.files || [])
+      if (!files.length) return
 
       const options = {
         maxSizeMB: 1,
@@ -76,16 +82,22 @@ const ImagesPage = ({ idProduct }) => {
         initialQuality: 0.8,
       }
 
-      const compressedFile = await imageCompression(file, options)
+      const processed = []
+      for (const file of files) {
+        const compressedFile = await imageCompression(file, options)
 
-      // Asegura nombre con .webp para el upload
-      const webpFile =
-        compressedFile instanceof File && compressedFile.name?.endsWith('.webp')
-          ? compressedFile
-          : new File([compressedFile], `${Date.now()}.webp`, { type: 'image/webp' })
+        // Asegura nombre con .webp para el upload
+        const webpFile =
+          compressedFile instanceof File && compressedFile.name?.endsWith('.webp')
+            ? compressedFile
+            : new File([compressedFile], `${Date.now()}-${file.name}.webp`, {
+                type: 'image/webp',
+              })
 
-      setSelectedImage(webpFile)
-      setPreviewUrl(URL.createObjectURL(webpFile))
+        processed.push({ file: webpFile, previewUrl: URL.createObjectURL(webpFile) })
+      }
+
+      setSelectedImages(processed)
     } catch (error) {
       console.error('Error al procesar imagen:', error.message)
       inputEl.value = ''
@@ -94,13 +106,25 @@ const ImagesPage = ({ idProduct }) => {
   }
 
   const handleUpload = async (inputEl) => {
-    if (!selectedImage) return
+    if (!selectedImages.length) return
     try {
       setisLoadingUpload(true)
-      await uploadProductoImage(idProduct, selectedImage)
+      const results = await Promise.allSettled(
+        selectedImages.map((img) => uploadProductoImage(idProduct, img.file)),
+      )
+      const failed = results.filter((r) => r.status === 'rejected').length
       await getImagesByProductId(idProduct)
       resetSelection(inputEl)
-      toast.success('Imagen subida correctamente.')
+
+      if (failed === 0) {
+        toast.success(
+          results.length > 1 ? 'Imágenes subidas correctamente.' : 'Imagen subida correctamente.',
+        )
+      } else if (failed < results.length) {
+        toast.error(`${failed} de ${results.length} imágenes no se pudieron subir.`)
+      } else {
+        toast.error('No se pudieron subir las imágenes.')
+      }
     } catch (err) {
       console.log(err)
       toast.error(err?.response?.data?.message ?? 'No se pudo subir la imagen.')
@@ -158,17 +182,38 @@ const ImagesPage = ({ idProduct }) => {
           <div className="row g-4 mt-4">
             <div className="col-md-6 ">
               <div className="card card-body">
-                <p className="text-center text-muted">Ingresa imagen para el producto.</p>
+                <p className="text-center text-muted">
+                  Ingresa una o varias imágenes para el producto.
+                </p>
                 <Form.Group controlId="formFile" className="mb-3">
-                  <Form.Label>Imagen del Producto.</Form.Label>
-                  <Form.Control type="file" accept="image/*" onChange={handleImageChange} />
+                  <Form.Label>Imagenes del Producto.</Form.Label>
+                  <Form.Control
+                    type="file"
+                    accept="image/*"
+                    multiple
+                    onChange={handleImageChange}
+                  />
                 </Form.Group>
 
-                {selectedImage && previewUrl && (
-                  <div className=" d-flex gap-4 justify-content-center my-4">
-                    <div className="rounded-4 border overflow-hidden">
-                      <img src={previewUrl} alt="Preview" width="300px" />
-                    </div>
+                {selectedImages.length > 0 && (
+                  <div className="d-flex gap-3 flex-wrap justify-content-center my-4">
+                    {selectedImages.map((img, index) => (
+                      <div key={img.previewUrl} className="position-relative">
+                        <div className="rounded-4 border overflow-hidden">
+                          <img src={img.previewUrl} alt="Preview" width="140px" />
+                        </div>
+                        <Button
+                          variant="contained"
+                          color="error"
+                          size="small"
+                          className="position-absolute top-0 end-0 m-1"
+                          onClick={() => handleRemoveSelected(index)}
+                          disabled={isLoadingUpload}
+                        >
+                          <i className="fa-solid fa-xmark"></i>
+                        </Button>
+                      </div>
+                    ))}
                   </div>
                 )}
                 {ErrorFile && <Alert variant="warning"> {ErrorFile}</Alert>}
@@ -179,9 +224,11 @@ const ImagesPage = ({ idProduct }) => {
                     color="primary"
                     loading={isLoadingUpload}
                     onClick={() => handleUpload(document.getElementById('formFile'))}
-                    disabled={!selectedImage || isLoadingUpload}
+                    disabled={!selectedImages.length || isLoadingUpload}
                   >
-                    Agregar Imagen
+                    {selectedImages.length > 1
+                      ? `Agregar ${selectedImages.length} Imágenes`
+                      : 'Agregar Imagen'}
                   </Button>
                 </div>
               </div>
