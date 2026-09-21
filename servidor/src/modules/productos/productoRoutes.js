@@ -18,6 +18,7 @@ import {
   crearConsulta,
   obtenerConsultas,
   importarDesdeExcel,
+  descargarPlantillaExcel,
   obtenerRelacionados,
 } from "./productoController.js";
 import {
@@ -55,6 +56,7 @@ ProductosRouters.post("/:id/consultas", validateTokenClientMid, crearConsulta);
 ProductosRouters.get("/:id/consultas", obtenerConsultas);
 
 // Ruta de importación
+ProductosRouters.get("/import-excel/plantilla", validateTokenMid, descargarPlantillaExcel);
 ProductosRouters.post("/import-excel", importarDesdeExcel);
 
 export default ProductosRouters;

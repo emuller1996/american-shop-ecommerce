@@ -1,4 +1,5 @@
 import productoService from "./productoService.js";
+import categoriaService from "../categorias/categoriaService.js";
 import { crearLogsElastic } from "../../utils/index.js";
 import { jwtDecode } from "jwt-decode";
 import { INDEX_ES_MAIN } from "../../config.js";
@@ -155,7 +156,7 @@ export const obtenerPaginados = async (req, res) => {
         categoria: product.category_id
           ? await productoService.obtenerCategoria(product.category_id)
           : "",
-        imageBase64: product.image_id
+        image_id: product.image_id
           ? await productoService.obtenerImagen(product.image_id).catch(() => null)
           : null,
       }))
@@ -552,6 +553,13 @@ export const validarStock = async (req, res) => {
   }
 };
 
+const parsePublished = (value) => {
+  if (typeof value === "boolean") return value;
+  if (typeof value === "string") return ["true", "1"].includes(value.trim().toLowerCase());
+  if (typeof value === "number") return value === 1;
+  return false;
+};
+
 export const importarDesdeExcel = async (req, res) => {
   try {
     const { file } = req.files;
@@ -563,12 +571,75 @@ export const importarDesdeExcel = async (req, res) => {
     const worksheet = workbook.Sheets[workbook.SheetNames[0]];
     let data = xlsx.utils.sheet_to_json(worksheet);
 
-    data = data.map((da) => ({ ...da, published: false }));
+    const categorias = await categoriaService.buscarCategorias();
+    const categoriaIdPorNombre = new Map(
+      categorias.map((cat) => [String(cat.name).trim().toLowerCase(), cat._id])
+    );
+
+    data = data.map((da) => {
+      const { categoria, ...rest } = da;
+      const category_id = categoria
+        ? categoriaIdPorNombre.get(String(categoria).trim().toLowerCase())
+        : undefined;
+
+      return {
+        ...rest,
+        published: parsePublished(da.published),
+        ...(category_id ? { category_id } : {}),
+      };
+    });
 
     const r = await productoService.importarProductosExcel(data);
 
     return res.status(200).json({ message: "Importada Realizada", data: r });
   } catch (error) {
     return res.status(500).send("Error al procesar el archivo: " + error.message);
+  }
+};
+
+export const descargarPlantillaExcel = async (req, res) => {
+  try {
+    const categorias = await categoriaService.buscarCategorias();
+
+    const filaEjemplo = {
+      name: "Jordan Niño Retro 3 Negros",
+      published: true,
+      description: "Jordan Niño Retro 3 Negros",
+      price: 145000,
+      cost: 89000,
+      gender: "kid",
+      brand: "Jordan",
+      categoria: categorias[0]?.name ?? "",
+    };
+
+    const wb = xlsx.utils.book_new();
+
+    const wsProductos = xlsx.utils.json_to_sheet([filaEjemplo], {
+      header: ["name", "published", "description", "price", "cost", "gender", "brand", "categoria"],
+    });
+    xlsx.utils.book_append_sheet(wb, wsProductos, "Productos");
+
+    const wsCategorias = xlsx.utils.json_to_sheet(
+      categorias.map((cat) => ({ categoria: cat.name }))
+    );
+    xlsx.utils.book_append_sheet(wb, wsCategorias, "Categorias validas");
+
+    const wsGeneros = xlsx.utils.json_to_sheet([
+      { gender: "men", significado: "Hombre" },
+      { gender: "women", significado: "Mujer" },
+      { gender: "kid", significado: "Niños" },
+    ]);
+    xlsx.utils.book_append_sheet(wb, wsGeneros, "Generos validos");
+
+    const buffer = xlsx.write(wb, { type: "buffer", bookType: "xlsx" });
+
+    res.setHeader(
+      "Content-Type",
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    );
+    res.setHeader("Content-Disposition", 'attachment; filename="plantilla-productos.xlsx"');
+    return res.status(200).send(buffer);
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
   }
 };
