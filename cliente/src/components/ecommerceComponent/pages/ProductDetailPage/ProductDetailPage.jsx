@@ -12,6 +12,13 @@ import AuthContext from '../../../../context/AuthContext'
 import ConsultasProductoComponent from './components/ConsultasProductoComponent'
 import RelatedProductsComponent from './components/RelatedProductsComponent'
 import Seo from '../../../Seo'
+import Lightbox from 'yet-another-react-lightbox'
+import Zoom from 'yet-another-react-lightbox/plugins/zoom'
+import Thumbnails from 'yet-another-react-lightbox/plugins/thumbnails'
+import Counter from 'yet-another-react-lightbox/plugins/counter'
+import 'yet-another-react-lightbox/styles.css'
+import 'yet-another-react-lightbox/plugins/thumbnails.css'
+import 'yet-another-react-lightbox/plugins/counter.css'
 
 const truncate = (text, max) =>
   text && text.length > max ? `${text.slice(0, max).trim()}…` : text
@@ -41,6 +48,8 @@ export default function ProductDetailPage() {
   }
 
   const [sizeSelected, setSizeSelected] = useState(null)
+  const [activeSlide, setActiveSlide] = useState(0)
+  const [lightboxOpen, setLightboxOpen] = useState(false)
   const { setCartEcommerceAmericanState, cartEcommerceAmericanState } = useContext(AuthContext)
 
   const [cartEcommerceAmerican, setCartEcommerceAmerican] = useLocalStorage(
@@ -53,6 +62,7 @@ export default function ProductDetailPage() {
 
   useEffect(() => {
     getProductById(id)
+    setActiveSlide(0)
     topRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
   }, [id])
 
@@ -85,7 +95,11 @@ export default function ProductDetailPage() {
           <div className="glass-panel">
             <div className="row g-4">
               <div className="col-lg-7">
-                <Carousel interval={1500}>
+                <Carousel
+                  interval={1500}
+                  activeIndex={activeSlide}
+                  onSelect={(selectedIndex) => setActiveSlide(selectedIndex)}
+                >
                   {/* <Carousel.Item key={2123}>
                     <img className="d-block w-100" src={dataDetalle?.imageBase64} alt={`Slidess`} />
                   </Carousel.Item> */}
@@ -104,10 +118,24 @@ export default function ProductDetailPage() {
                   {dataDetalle?.Imagenes &&
                     dataDetalle?.Imagenes.map((im) => (
                       <Carousel.Item key={im._id}>
-                        <img className="d-block w-100" src={im.image} alt={`Slidess`} />
+                        <img
+                          className="d-block w-100"
+                          src={im.image}
+                          alt={`Slidess`}
+                          style={{ cursor: 'zoom-in' }}
+                          onClick={() => setLightboxOpen(true)}
+                        />
                       </Carousel.Item>
                     ))}
                 </Carousel>
+                <Lightbox
+                  open={lightboxOpen}
+                  close={() => setLightboxOpen(false)}
+                  index={activeSlide}
+                  slides={(dataDetalle?.Imagenes ?? []).map((im) => ({ src: im.image }))}
+                  on={{ view: ({ index }) => setActiveSlide(index) }}
+                  plugins={[Zoom, Thumbnails, Counter]}
+                />
               </div>
               <div className="col-lg-5">
                 <div className="right-content">
