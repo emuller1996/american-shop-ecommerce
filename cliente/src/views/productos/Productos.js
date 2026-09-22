@@ -229,14 +229,14 @@ const ProductosPage = () => {
                 width: '80px',
                 cell: (row) => (
                   <img
-                    src={row?.imageBase64 || logoAmerican}
+                    src={row?.image || logoAmerican}
                     alt={row?.name ?? 'Producto'}
                     className="rounded-circle"
                     style={{
                       width: '40px',
                       height: '40px',
                       objectFit: 'cover',
-                      opacity: row?.imageBase64 ? 1 : 0.4,
+                      opacity: row?.image ? 1 : 0.4,
                     }}
                   />
                 ),
