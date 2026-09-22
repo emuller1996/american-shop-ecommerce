@@ -61,7 +61,7 @@ export default function HomeLanding() {
       <div className="container">
         <Carousel data-bs-theme="dark" prevIcon={<> <i className="text-danger fa-2xl fa-solid fa-chevron-left"></i></>} nextIcon={<> <i className="text-danger fa-2x fa-solid fa-chevron-right"></i></>}> 
           <Carousel.Item>
-            <div className="row p-5 align-items-center">
+            <div className="row align-items-center">
               <div className="mx-auto col-md-8 col-lg-6 order-lg-last">
                 <img className="img-fluid" src="/banner_1_home.png" alt="Banner" />
               </div>
@@ -83,7 +83,7 @@ export default function HomeLanding() {
             </div>
           </Carousel.Item>
           <Carousel.Item>
-            <div className="row p-5 align-items-center">
+            <div className="row align-items-center">
               <div className="mx-auto col-md-8 col-lg-6 align-self-center" style={{ height: '408px' }}>
                 <div className="d-flex flex-column h-100 justify-content-center">
                   <img

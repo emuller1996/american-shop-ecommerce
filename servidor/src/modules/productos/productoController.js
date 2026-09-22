@@ -156,7 +156,7 @@ export const obtenerPaginados = async (req, res) => {
         categoria: product.category_id
           ? await productoService.obtenerCategoria(product.category_id)
           : "",
-        image_id: product.image_id
+        image: product.image_id
           ? await productoService.obtenerImagen(product.image_id).catch(() => null)
           : null,
       }))

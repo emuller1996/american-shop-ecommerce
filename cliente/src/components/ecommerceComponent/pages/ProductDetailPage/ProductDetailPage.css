@@ -167,3 +167,10 @@
 .card-cart:hover {
     box-shadow: var(--glass-shadow);
 }
+
+.yarl__container {
+    background-color: #696969a8 !important;
+}
+.yarl__thumbnails_container {
+    background-color: #ee35353b !important;
+}

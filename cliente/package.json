@@ -59,7 +59,8 @@
     "react-time-ago": "^7.3.3",
     "recharts": "^3.8.1",
     "redux": "5.0.1",
-    "simplebar-react": "^3.2.4"
+    "simplebar-react": "^3.2.4",
+    "yet-another-react-lightbox": "^3.32.2"
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^4.2.1",
