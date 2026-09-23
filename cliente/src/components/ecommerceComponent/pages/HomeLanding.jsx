@@ -5,13 +5,12 @@ import CardProducto from '../../../views/landing/components/CardProducto'
 import { useProductos } from '../../../hooks/useProductos'
 import { useCategorias } from '../../../hooks/useCategorias'
 import Pagination from '@mui/material/Pagination'
-import { Carousel } from 'react-bootstrap'
-import envio_img from '../../../assets/images/envio.png'
 import { useSelector, useDispatch } from 'react-redux'
 
 import './HomeLanding.css'
 import { seFiltertData } from '../../../redux/slices/ProductsSlice'
 import CardProductoHolderTest from '../../../views/landing/components/CardProductoHolderTest'
+import PublicacionesCarousel from './components/PublicacionesCarousel'
 
 const organizationSchema = {
   '@context': 'https://schema.org',
@@ -59,59 +58,7 @@ export default function HomeLanding() {
         jsonLd={organizationSchema}
       />
       <div className="container">
-        <Carousel data-bs-theme="dark" prevIcon={<> <i className="text-danger fa-2xl fa-solid fa-chevron-left"></i></>} nextIcon={<> <i className="text-danger fa-2x fa-solid fa-chevron-right"></i></>}> 
-          <Carousel.Item>
-            <div className="row align-items-center">
-              <div className="mx-auto col-md-8 col-lg-6 order-lg-last">
-                <img className="img-fluid" src="/banner_1_home.png" alt="Banner" />
-              </div>
-              <div className="col-lg-6">
-                <div className="glass-panel carousel-glass-content animate-fade-in">
-                  <h1 className="h1 text-danger">
-                    <b>AmericanShop</b> Comercio Electrónico
-                  </h1>
-                  <h3 className="h2">Te Viste Real y te Deja de Paker!!</h3>
-                  <p className="text-muted">
-                    La Moda de América, en tu Hogar. Envíos Rápidos en Toda Colombia.
-                    <span className="d-block mt-2">
-                      Descubre la Colección Exclusiva de Réplicas AAA: Lujo Auténtico a tu Alcance.
-                      Explora Estilo y Calidad en Cada Detalle. ¡Bienvenido!
-                    </span>
-                  </p>
-                </div>
-              </div>
-            </div>
-          </Carousel.Item>
-          <Carousel.Item>
-            <div className="row align-items-center">
-              <div className="mx-auto col-md-8 col-lg-6 align-self-center" style={{ height: '408px' }}>
-                <div className="d-flex flex-column h-100 justify-content-center">
-                  <img
-                    className="img-fluid align-self-center"
-                    style={{ scale: '1.2' }}
-                    src={envio_img}
-                    alt="Envío Nacional"
-                  />
-                </div>
-              </div>
-              <div className="col-lg-6">
-                <div className="glass-panel carousel-glass-content animate-fade-in">
-                  <h1 className="h1 text-danger">
-                    <b>🚚 Envíos nacionales </b> a todo el país.
-                  </h1>
-                  <h3 className="h2 mb-3">¡No importa en qué parte de Colombia estés!</h3>
-                  <p className="text-muted">
-                    📦 Envíos seguros a todo el territorio colombiano. Cobertura nacional garantizada.
-                    <span className="d-block mt-2">
-                      Compra con tranquilidad, enviamos cada prenda hasta tu ciudad. Trabajamos con
-                      las mejores transportadoras para que recibas tu pedido en 3 a 5 días hábiles.
-                    </span>
-                  </p>
-                </div>
-              </div>
-            </div>
-          </Carousel.Item>
-        </Carousel>
+        <PublicacionesCarousel />
       </div>
 
       <div className="container mt-5">
