@@ -14,6 +14,7 @@ const PedidoDetallesPage = React.lazy(
   () => import('./views/pedidos/PedidoDetallesPage/PedidoDetallesPage'),
 )
 const LogsPage = React.lazy(() => import('./views/logs/LogsPage'))
+const PublicacionesPage = React.lazy(() => import('./views/publicaciones/Publicaciones'))
 
 const routes = [
   { path: '/', exact: true, name: 'Home' },
@@ -29,6 +30,7 @@ const routes = [
   { path: '/productos/:idProduct/images', name: 'ImagesPage', element: ImagesPage },
   { path: '/productos/:idProduct/gestion-tallas', name: 'ImagesPage', element: TallasPage },
   { path: '/logs', name: 'Logs', element: LogsPage },
+  { path: '/publicaciones', name: 'Publicaciones', element: PublicacionesPage },
 ]
 
 export default routes
