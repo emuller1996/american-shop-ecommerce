@@ -14,6 +14,7 @@ import PagosRouters from "../modules/pagos/pagoRoutes.js";
 import ImagesRouters from "../modules/imagenes/imagenRoutes.js";
 import MetricsRouters from "../modules/metrics/metricsRoutes.js";
 import LogsRouters from "../modules/Modulelogs/logRoutes.js";
+import PublicacionesRouters from "../modules/publicaciones/publicacionRoutes.js";
 
 // Importar todos los routers;
 // Ejemplo: const authRouter = require('./auth.js');
@@ -35,6 +36,7 @@ router.use("/punto_venta", PuntoVentaRouters);
 router.use("/pagos", PagosRouters);
 router.use("/metrics", validateTokenMid, MetricsRouters);
 router.use("/logs", validateTokenMid, LogsRouters);
+router.use("/publicaciones", PublicacionesRouters);
 
 
 

@@ -44,6 +44,16 @@ const _nav = [
   },
   {
     component: CNavTitle,
+    name: 'Landing Page',
+  },
+  {
+    component: CNavItem,
+    name: 'Publicaciones',
+    to: '/d/publicaciones',
+    icon: <i className="fa-solid fa-images nav-icon"></i>,
+  },
+  {
+    component: CNavTitle,
     name: 'Tabla de Control',
   },
   {
