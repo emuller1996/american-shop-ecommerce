@@ -4,10 +4,8 @@ import { crearLogsElastic } from "../../utils/index.js";
 import { jwtDecode } from "jwt-decode";
 import { INDEX_ES_MAIN } from "../../config.js";
 import xlsx from "xlsx";
-import {
-  uploadImageFromTempFile,
-  deleteImage as cloudinaryDeleteImage,
-} from "../../services/cloudinaryService.js";
+import { deleteImage as cloudinaryDeleteImage } from "../../services/cloudinaryService.js";
+import { guardarImagenOriginal, eliminarImagenLocal } from "../../services/localImageService.js";
 
 // Funciones auxiliares fuera de la clase
 const construirConsultaProductos = ({ perPage, page, search, gender, category, published, brand }) => {
@@ -331,12 +329,12 @@ export const agregarImagen = async (req, res) => {
       return res.status(400).json({ message: "Archivo 'image' requerido." });
     }
 
-    const uploaded = await uploadImageFromTempFile(file.tempFilePath);
+    const uploaded = await guardarImagenOriginal(file.tempFilePath, "productos_images", file.name);
 
     const imageData = {
       product_id: req.params.id,
-      image: uploaded.url,
-      public_id: uploaded.public_id,
+      image: `${req.protocol}://${req.get("host")}${uploaded.relativeUrl}`,
+      path: uploaded.relativeUrl,
       width: uploaded.width,
       height: uploaded.height,
       bytes: uploaded.bytes,
@@ -348,7 +346,7 @@ export const agregarImagen = async (req, res) => {
     await crearLogsElastic(
       JSON.stringify(req.headers),
       "",
-      "Se ha cargado nueva imagen a un producto (Cloudinary)."
+      "Se ha cargado nueva imagen a un producto (local)."
     );
 
     return res.status(201).json({ message: "Imagen creada.", resElasCreateFun });
@@ -367,7 +365,10 @@ export const eliminarImagen = async (req, res) => {
       return res.status(404).json({ message: "Imagen no encontrada." });
     }
 
-    if (imagen.public_id) {
+    if (imagen.path) {
+      eliminarImagenLocal(imagen.path);
+    } else if (imagen.public_id) {
+      // Imágenes antiguas que quedaron almacenadas en Cloudinary
       try {
         await cloudinaryDeleteImage(imagen.public_id);
       } catch (err) {

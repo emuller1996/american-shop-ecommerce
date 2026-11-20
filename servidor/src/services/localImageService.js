@@ -20,6 +20,28 @@ export async function guardarImagenWebp(tempFilePath, folder) {
   return { relativeUrl: `/uploads/${folder}/${filename}` };
 }
 
+// Guarda la imagen tal cual llega (sin re-comprimir) en uploads/<folder>.
+export async function guardarImagenOriginal(tempFilePath, folder, originalName = "") {
+  const destDir = path.join(UPLOADS_ROOT, folder);
+  fs.mkdirSync(destDir, { recursive: true });
+
+  const meta = await sharp(tempFilePath).metadata();
+  const ext = meta.format || path.extname(originalName).replace(".", "") || "webp";
+  const filename = `${Date.now()}-${crypto.randomBytes(6).toString("hex")}.${ext}`;
+  const destPath = path.join(destDir, filename);
+
+  await fs.promises.copyFile(tempFilePath, destPath);
+  const { size } = await fs.promises.stat(destPath);
+
+  return {
+    relativeUrl: `/uploads/${folder}/${filename}`,
+    width: meta.width,
+    height: meta.height,
+    bytes: size,
+    format: meta.format,
+  };
+}
+
 export function eliminarImagenLocal(relativeUrl) {
   if (!relativeUrl) return;
   const filePath = path.join(process.cwd(), relativeUrl);
