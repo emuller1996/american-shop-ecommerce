@@ -32,6 +32,12 @@ const theme = createTheme({
   },
 })
 
+// Compatibilidad con enlaces antiguos de HashRouter (ej. /#/eco/reset-password/<token>):
+// se convierten a la ruta equivalente de BrowserRouter antes de montar la app.
+if (window.location.hash.startsWith('#/')) {
+  window.history.replaceState(null, '', window.location.hash.slice(1))
+}
+
 createRoot(document.getElementById('root')).render(
   <HelmetProvider>
     <Provider store={store}>

@@ -318,7 +318,7 @@ export const forgotPassword = async (req, res) => {
         used: false,
       });
 
-      const resetUrl = `${FRONTEND_URL}/#/eco/reset-password/${token}`;
+      const resetUrl = `${FRONTEND_URL}/eco/reset-password/${token}`;
       await sendResetPasswordEmail(email_client, resetUrl);
     }
 
